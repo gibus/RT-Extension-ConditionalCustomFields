@@ -1,4 +1,7 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+0.02 2017-03-25
+ - Add a linefeed to please PAUSE
+
 0.01 2017-03-25
  - Initial commit
