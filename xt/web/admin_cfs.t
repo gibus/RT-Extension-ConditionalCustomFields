@@ -3,6 +3,8 @@ use warnings;
 
 use RT::Extension::ConditionalCustomFields::Test tests => 18;
 
+use WWW::Mechanize::PhantomJS;
+
 my $cf_condition = RT::CustomField->new(RT->SystemUser);
 $cf_condition->Create(Name => 'Condition', Type => 'SelectSingle', Queue => 'General');
 $cf_condition->AddValue(Name => 'Passed', SortOder => 0);
