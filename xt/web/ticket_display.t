@@ -46,5 +46,3 @@ $ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-Sh
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when condition is not met');
 $ticket_cf_conditioned_by_child = $mjs->selector('#CF-'. $cf_conditioned_by_child->id . '-ShowRow', single => 1);
 ok($ticket_cf_conditioned_by_child->is_hidden, 'Hide Child when condition is not met');
-
-undef $mjs;

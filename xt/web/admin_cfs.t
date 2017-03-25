@@ -46,5 +46,3 @@ $cf_conditioned_by_CF_select = $cf_conditioned_by_form->find_input('ConditionalC
 is($cf_conditioned_by_CF_select->value, $cf_condition->id, 'ConditionalCF set');
 my $cf_conditioned_by_CFV_select = $cf_conditioned_by_form->find_input('ConditionedBy');
 is($cf_conditioned_by_CFV_select->value, $cf_values->[0]->id, 'ConditionedBy set');
-
-undef $m;
