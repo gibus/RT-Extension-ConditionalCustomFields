@@ -104,10 +104,7 @@ sub SetConditionedBy {
             Content => $value,
         );
     } elsif ($attr) {
-        ($ret, $msg) = $attr->Delete(
-            Name    => 'ConditionedBy',
-            Content => $value,
-        );
+        ($ret, $msg) = $attr->Delete;
     }
 
     if ($ret) {
