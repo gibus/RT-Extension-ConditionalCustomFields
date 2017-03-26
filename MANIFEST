@@ -41,3 +41,6 @@ xt/data/firstcf
 xt/data/initialdata
 xt/initialdata.t
 xt/ticket_display.t
+xt/ticket_modify_dropdown.t
+xt/ticket_modify_list.t
+xt/ticket_modify_selectbox.t
