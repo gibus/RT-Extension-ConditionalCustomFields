@@ -25,7 +25,6 @@ inc/Module/Install/Win32.pm
 inc/Module/Install/WriteAll.pm
 inc/YAML/Tiny.pm
 lib/RT/Extension/ConditionalCustomFields.pm
-lib/RT/Extension/ConditionalCustomFields/Test.pm
 lib/RT/Extension/ConditionalCustomFields/Test.pm.in
 LICENSE
 Makefile.PL
@@ -36,9 +35,9 @@ patches/4.4-add-callbacks-to-extend-customfields-capabilities.patch
 README
 README.md
 xt/00-load.t
+xt/admin_cfs.t
 xt/api.t
 xt/data/firstcf
 xt/data/initialdata
 xt/initialdata.t
-xt/tmp/ports
-xt/web.t
+xt/ticket_display.t
