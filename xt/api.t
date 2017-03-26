@@ -10,7 +10,7 @@ $cf_condition->AddValue(Name => 'Failed', SortOrder => 1);
 my $cf_values = $cf_condition->Values->ItemsArrayRef;
 
 my $cf_conditioned_by = RT::CustomField->new(RT->SystemUser);
-$cf_conditioned_by->Create(Name => 'Condition', Type => 'FreeformSingle', Queue => 'General');
+$cf_conditioned_by->Create(Name => 'ConditionedBy', Type => 'FreeformSingle', Queue => 'General');
 
 my $cf_conditioned_by_child = RT::CustomField->new(RT->SystemUser);
 $cf_conditioned_by_child->Create(Name => 'Child', Type => 'FreeformSingle', Queue => 'General', BasedOn => $cf_conditioned_by->id);
