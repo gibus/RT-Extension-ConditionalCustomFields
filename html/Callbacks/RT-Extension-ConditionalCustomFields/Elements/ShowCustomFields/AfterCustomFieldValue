@@ -1,4 +1,4 @@
-<& /Elements/ShowConditionalCustomFields, CustomField => $CustomField &>
+<& /Elements/ShowConditionalCustomFields, CustomField => $CustomField, ParentSelector => 'id' &>
 <%ARGS>
 $CustomField
 </%ARGS>
