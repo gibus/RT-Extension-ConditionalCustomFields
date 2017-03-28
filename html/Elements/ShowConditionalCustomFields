@@ -16,7 +16,6 @@ jQuery(function() {
 %       } else {
     var conditionedby_class = <% '.record-field.CustomField__' . $CustomField->ConditionedByCustomField->Name . '_' |h,n,j%>;
     conditionedby_class = conditionedby_class.replace(/:/g,'\\:');
-    var cf_class = <% 'CF-' . $CustomField->id . '-ShowRow' |h,n,j%>;
     var cf_class = <% '.record-field.CustomField__' . $CustomField->Name . '_' |h,n,j%>;
     cf_class = cf_class.replace(/:/g,'\\:');
     var conditionedby_val = '<% $CustomField->ConditionedByCustomFieldValue->Name %>';
