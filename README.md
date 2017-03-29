@@ -141,11 +141,11 @@ Gérald Sédrati-Dinet <gibus@easter-eggs.com>
 
 All bugs should be reported via email to
 
-    L<bug-RT-Extension-ConditionalCustomFields@rt.cpan.org|mailto:bug-RT-Extension-ConditionalCustomFields@rt.cpan.org>
+[bug-RT-Extension-ConditionalCustomFields@rt.cpan.org](mailto:bug-RT-Extension-ConditionalCustomFields@rt.cpan.org)
 
 or via the web at
 
-    L<rt.cpan.org|http://rt.cpan.org/Public/Dist/Display.html?Name=RT-Extension-ConditionalCustomFields>.
+[rt.cpan.org](http://rt.cpan.org/Public/Dist/Display.html?Name=RT-Extension-ConditionalCustomFields).
 
 # LICENSE AND COPYRIGHT
 
@@ -153,4 +153,4 @@ This software is Copyright (c) 2017 by Gérald Sédrati-Dinet, Easter-Eggs
 
 This is free software, licensed under:
 
-    The GNU General Public License, Version 3, June 2007
+The GNU General Public License, Version 3, June 2007
