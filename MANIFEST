@@ -9,6 +9,7 @@ html/Callbacks/RT-Extension-ConditionalCustomFields/Elements/ShowCustomFields/Af
 html/Callbacks/RT-Extension-ConditionalCustomFields/Elements/ShowRecord/AfterValue
 html/Elements/EditConditionalCustomFields
 html/Elements/ShowConditionalCustomFields
+html/Helpers/SelectCondition
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
 inc/Module/Install/AutoInstall.pm
