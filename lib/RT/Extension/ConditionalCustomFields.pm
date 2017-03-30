@@ -98,7 +98,7 @@ sub SetConditionedBy {
             unless     $cf_value->id
                     && $cf_value->CustomFieldObj
                     && $cf_value->CustomFieldObj->id
-                    && $cf_value->CustomFieldObj->CurrentUserCanSee;
+                    && $cf_value->CustomFieldObj->CurrentUserHasRight('SeeCustomField');
         ($ret, $msg) = $self->SetAttribute(
             Name    => 'ConditionedBy',
             Content => $value,
