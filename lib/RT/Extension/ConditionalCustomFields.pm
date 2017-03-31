@@ -245,10 +245,6 @@ The L<CustomField|RT::CustomField> that this new L<CustomField|RT::CustomField> 
 
 =cut
 
-use RT;
-BEGIN { RT::LoadConfig() };
-require RT::Handle;
-
 {
     my $old_InsertData = RT::Handle->can("InsertData");
     *RT::Handle::InsertData = sub {
