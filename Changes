@@ -1,8 +1,11 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+0.05 2017-03-31
+ - Fix reload of Config, avoid duplicating plugins
+
 0.04 2017-03-31
  - Test and submit form for admin CF with WWW:Mechanize::PhantomJS
- - Add AJAX handler to select values vailable for selectes CF
+ - Add AJAX handler to select values available for selected CF
  - Use CurrentUserHasRight instead of CurrentUserCanSee for RT 4.2 compatibility
  - Format pod
 
