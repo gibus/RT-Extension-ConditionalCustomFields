@@ -85,9 +85,13 @@ sub SetConditionedBy {
     my $self = shift;
     my $cf = shift;
     my $value = shift;
-    my($ret, $msg);
 
-    return (0, $self->loc('CF parametrer is mandatory')) unless $cf;
+    return (0, $self->loc('CF parametrer is mandatory')) if (!$cf && $value);
+
+    # Use empty RT::CustomField to delete attribute
+    unless ($cf) {
+        $cf = RT::CustomField->new($self->CurrentUser);
+    }
 
     # Use $cf as a RT::CustomField object
     unless (ref $cf) {
@@ -106,23 +110,28 @@ sub SetConditionedBy {
         return (1, $self->loc('ConditionedBy unchanged'));
     }
 
-    if ($value) {
+    if ($cf->id && $value) {
         return (0, "Permission Denied")
             unless $cf->CurrentUserHasRight('SeeCustomField');
 
-        ($ret, $msg) = $self->SetAttribute(
+        my ($ret, $msg) = $self->SetAttribute(
             Name    => 'ConditionedBy',
             Content => {CF => $cf->id, val => $value},
         );
+        if ($ret) {
+            return ($ret, $self->loc('ConditionedBy changed to CustomField #[_1], value [_2]', $cf->id, $value));
+        }
+        else {
+            return ($ret, $self->loc( "Can't change ConditionedBy to CustomField #[_1], value [_2]: [_3]", $cf->id, $value, $msg));
+        }
     } elsif ($attr) {
-        ($ret, $msg) = $attr->Delete;
-    }
-
-    if ($ret) {
-        return ($ret, $self->loc('ConditionedBy changed to CustomField #[_1], value [_2]', $cf->id, $value));
-    }
-    else {
-        return ($ret, $self->loc( "Can't change ConditionedBy to CustomField #[_1], value [_2]: [_3]", $cf->id, $value, $msg));
+        my ($ret, $msg) = $attr->Delete;
+        if ($ret) {
+            return ($ret, $self->loc('ConditionedBy deleted'));
+        }
+        else {
+            return ($ret, $self->loc( "Can't delete ConditionedBy: [_1]", $msg));
+        }
     }
 }
 
