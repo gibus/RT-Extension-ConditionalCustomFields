@@ -7,17 +7,18 @@
 %               $Grouping =~ s/\W//g if $Grouping;
 %               my $cf_id = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField, Grouping => $Grouping );
 %               my $conditionedby_name = GetCustomFieldInputName(Object => $Object, CustomField => $conditioned_by_cf, Grouping => $Grouping );
-%               my $conditionedby_val = $conditionedby_name . '-1';
+%               my $conditionedby_id = $conditionedby_name . '-1';
 <script type="text/javascript">
 jQuery(function() {
     var conditionedby_name = <% "$conditionedby_name" |h,n,j%>;
     conditionedby_name = conditionedby_name.replace(/:/g,'\\:');
     jQuery('input[name="'+conditionedby_name+'"]').change(function() {
-        var conditionedby_val = <% "$conditionedby_val" |h,n,j%>;
-        conditionedby_val = conditionedby_val.replace(/:/g,'\\:');
+        var conditionedby_id = <% "$conditionedby_id" |h,n,j%>;
+        conditionedby_id = conditionedby_id.replace(/:/g,'\\:');
         var cf_id = <% "$cf_id" |h,n,j%>;
         cf_id = cf_id.replace(/:/g,'\\:');
-        if (jQuery('#'+conditionedby_val).is(':checked')) {
+        var conditionedby_val = '<% $conditioned_by->{val} %>';
+        if (jQuery('#'+conditionedby_id+'[value="'+conditioned_by_val+'"]').is(':checked')) {
             jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
         }
         else {
