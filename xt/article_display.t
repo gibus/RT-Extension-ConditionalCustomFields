@@ -38,7 +38,7 @@ ok($article_cf_conditioned_by->is_displayed, 'Show ConditionalCF when no conditi
 my $article_cf_conditioned_by_child = $mjs->selector('#CF-'. $cf_conditioned_by_child->id . '-ShowRow', single => 1);
 ok($article_cf_conditioned_by_child->is_displayed, 'Show Child when no condition is set');
 
-$cf_conditioned_by->SetConditionedBy($cf_values->[0]->id);;
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, $cf_values->[0]->Name);
 $mjs->get($m->rt_base_url . 'Articles/Article/Display.html?id=' . $article->id);
 $article_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
 ok($article_cf_conditioned_by->is_displayed, 'Show ConditionalCF when condition is met');

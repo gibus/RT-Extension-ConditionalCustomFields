@@ -1,14 +1,44 @@
 use strict;
 use warnings;
 
+### after: use lib qw(@RT_LIB_PATH@);
+use lib qw(/opt/rt4/local/lib /opt/rt4/lib);
+
+BEGIN {
+    $INC{'RT/CustomFieldValues/ExternalConditonCF.pm'} = __FILE__;
+    package RT::CustomFieldValues::ExternalConditonCF;
+    use strict;
+    use warnings;
+
+    use base qw(RT::CustomFieldValues::External);
+
+    sub SourceDescription {
+        return 'External values for CF';
+    }
+
+    sub ExternalValues {
+        my $self = shift;
+        my @res = (
+            {name => 'Passed', sortorder => 0},
+            {name => 'Failed', sortorder => 1},
+        );
+        return (\@res);
+    }
+
+    1;
+}
+
+package main;
+
 use RT::Extension::ConditionalCustomFields::Test tests => 22;
 
+use RT::CustomFieldValues::ExternalConditonCF;
 use WWW::Mechanize::PhantomJS;
 
+RT->Config->Set(CustomFieldValuesSources => 'RT::CustomFieldValues::ExternalConditonCF');
+
 my $cf_condition = RT::CustomField->new(RT->SystemUser);
-$cf_condition->Create(Name => 'Condition', Type => 'SelectSingle', RenderType => 'Dropdown', Queue => 'General');
-$cf_condition->AddValue(Name => 'Passed', SortOder => 0);
-$cf_condition->AddValue(Name => 'Failed', SortOrder => 1);
+$cf_condition->Create(Name => 'Condition', Type => 'SelectSingle', RenderType => 'Dropdown', Queue => 'General', ValuesClass => 'RT::CustomFieldValues::ExternalConditonCF');
 my $cf_values = $cf_condition->Values->ItemsArrayRef;
 
 my $cf_conditioned_by = RT::CustomField->new(RT->SystemUser);
@@ -51,6 +81,7 @@ $mjs->field($cf_conditioned_by_CF_select, $cf_condition->id);
 $mjs->eval_in_page("jQuery('.conditionedby select').trigger('change');");
 
 my @cf_conditioned_by_CFV_options = $mjs->xpath('//select[@name="ConditionedBy"]/option');
+die $mjs->content;
 is(scalar(@cf_conditioned_by_CFV_options), 2, 'Two values available for conditioned by');
 is($cf_conditioned_by_CFV_options[0]->get_value, $cf_values->[0]->Name, 'First value for conditioned by');
 is($cf_conditioned_by_CFV_options[1]->get_value, $cf_values->[1]->Name, 'Second value for conditioned by');

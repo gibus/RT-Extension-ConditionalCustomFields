@@ -13,7 +13,7 @@
         DefaultValues => [ 'Failed' ],
     },
     {
-        Name => 'Conditioned with cf and value',
+        Name => 'Conditioned with cf name and value',
         Type => 'FreeformSingle',
         Queue => [ 'General' ],
         LookupType => 'RT::Queue-RT::Ticket',
@@ -27,12 +27,5 @@
         LookupType => 'RT::Queue-RT::Ticket',
         ConditionedByCF => 3,
         ConditionedBy => 'Passed',
-    },
-    {
-        Name => 'Conditioned with cf value id',
-        Type => 'FreeformSingle',
-        Queue => [ 'General' ],
-        LookupType => 'RT::Queue-RT::Ticket',
-        ConditionedBy => 1,
     },
 );

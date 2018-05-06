@@ -13,3 +13,4 @@ pod2htm*.tmp
 /t/tmp
 /xt/tmp
 lib/RT/Extension/ConditionalCustomFields/Test.pm
+xt/external_customfield_values.t
