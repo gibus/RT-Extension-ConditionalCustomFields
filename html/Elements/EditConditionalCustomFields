@@ -1,19 +1,23 @@
-%   if ($CustomField->ConditionedByCustomField) {
-%       if ($CustomField->ConditionedByCustomField->RenderType eq 'List') {
-%           $Grouping =~ s/\W//g if $Grouping;
-%           my $cf_id = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField, Grouping => $Grouping );
-%           my $conditionedby_name = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField->ConditionedByCustomField, Grouping => $Grouping );
-%           my $conditionedby_id = $conditionedby_name . '-' . $CustomField->ConditionedByCustomFieldValue->id;
+%   my $conditioned_by = $CustomField->ConditionedBy;
+%   if ($conditioned_by) {
+%       my $conditioned_by_cf = RT::CustomField->new($session{CurrentUser});
+%       $conditioned_by_cf->Load($conditioned_by->{CF});
+%       if ($conditioned_by_cf->id) {
+%           if ($conditioned_by_cf->RenderType eq 'List') {
+%               $Grouping =~ s/\W//g if $Grouping;
+%               my $cf_id = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField, Grouping => $Grouping );
+%               my $conditionedby_name = GetCustomFieldInputName(Object => $Object, CustomField => $conditioned_by_cf, Grouping => $Grouping );
+%               my $conditionedby_val = $conditionedby_name . '-1';
 <script type="text/javascript">
 jQuery(function() {
     var conditionedby_name = <% "$conditionedby_name" |h,n,j%>;
     conditionedby_name = conditionedby_name.replace(/:/g,'\\:');
     jQuery('input[name="'+conditionedby_name+'"]').change(function() {
-        var conditionedby_id = <% "$conditionedby_id" |h,n,j%>;
-        conditionedby_id = conditionedby_id.replace(/:/g,'\\:');
+        var conditionedby_val = <% "$conditionedby_val" |h,n,j%>;
+        conditionedby_val = conditionedby_val.replace(/:/g,'\\:');
         var cf_id = <% "$cf_id" |h,n,j%>;
         cf_id = cf_id.replace(/:/g,'\\:');
-        if (jQuery('#'+conditionedby_id).is(':checked')) {
+        if (jQuery('#'+conditionedby_val).is(':checked')) {
             jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
         }
         else {
@@ -23,11 +27,11 @@ jQuery(function() {
     jQuery('input[name="'+conditionedby_name+'"]').first().trigger('change');
 });
 </script>
-%       }
-%       else {
-%           $Grouping =~ s/\W//g if $Grouping;
-%           my $cf_id = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField, Grouping => $Grouping );
-%           my $conditionedby_id = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField->ConditionedByCustomField, Grouping => $Grouping );
+%           }
+%           else {
+%               $Grouping =~ s/\W//g if $Grouping;
+%               my $cf_id = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField, Grouping => $Grouping );
+%               my $conditionedby_id = GetCustomFieldInputName(Object => $Object, CustomField => $conditioned_by_cf, Grouping => $Grouping );
 <script type="text/javascript">
 jQuery(function() {
     var conditionedby_id = <% "$conditionedby_id" |h,n,j%>;
@@ -35,7 +39,7 @@ jQuery(function() {
     jQuery('#'+conditionedby_id).change(function() {
         var cf_id = <% "$cf_id" |h,n,j%>;
         cf_id = cf_id.replace(/:/g,'\\:');
-        var conditionedby_val = '<% $CustomField->ConditionedByCustomFieldValue->Name %>';
+        var conditionedby_val = '<% $conditioned_by->{val} %>';
         if (jQuery(this).val() != conditionedby_val) {
             jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
         }
@@ -46,6 +50,7 @@ jQuery(function() {
     jQuery('#'+conditionedby_id).trigger('change');
 });
 </script>
+%           }
 %       }
 %   }
 <%ARGS>

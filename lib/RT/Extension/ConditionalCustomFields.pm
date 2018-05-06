@@ -4,7 +4,7 @@ use warnings;
 no warnings qw(redefine);
 package RT::Extension::ConditionalCustomFields;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 =encoding utf8
 
@@ -73,115 +73,77 @@ package
 
 =head1 METHODS
 
-ConditionalCustomFields adds a ConditionedBy property, along with the following methods, to L<RT::CustomField> objets:
+ConditionalCustomFields adds a ConditionedBy property, that is a L<CustomField|RT::CustomField> and a value, along with the following methods, to L<RT::CustomField> objets:
 
-=head2 SetConditionedBy VALUE
+=head2 SetConditionedBy CF, VALUE
 
-Set ConditionedBy for this L<CustomField|RT::CustomField> object to VALUE. If VALUE is numerical, it should be the id of an existing L<CustomFieldValue|RT::CustomFieldValue> object. Otherwise, VALUE should be an existing L<CustomFieldValue|RT::CustomFieldValue> object. Current user should have SeeCustomField and ModifyCustomField rights for this CustomField and SeeCustomField right for the CustomField which this CustomField is conditionned by. Returns (1, 'Status message') on success and (0, 'Error Message') on failure.
+Set the ConditionedBy property for this L<CustomField|RT::CustomField> object to L<CustomFieldValue|RT::CustomField> C<CF> with value set to C<VALUE>. C<CF> should be an existing L<CustomField|RT::CustomField> object or the id of an existing L<CustomField|RT::CustomField> object, or the name of an unambiguous existing L<CustomField|RT::CustomField> object. C<VALUE> should be a string. Current user should have C<SeeCustomField> and C<ModifyCustomField> rights for this L<CustomField|RT::CustomField> and C<SeeCustomField> right for the L<CustomField|RT::CustomField> which this L<CustomField|RT::CustomField> is conditionned by. Returns (1, 'Status message') on success and (0, 'Error Message') on failure.
 
 =cut
 
 sub SetConditionedBy {
     my $self = shift;
-    my $value = shift || 0;
-    my ($ret, $msg) = (1, '');
+    my $cf = shift;
+    my $value = shift;
+    my($ret, $msg);
+
+    return (0, $self->loc('CF parametrer is mandatory')) unless $cf;
+
+    # Use $cf as a RT::CustomField object
+    unless (ref $cf) {
+        my $cf_id = $cf;
+        $cf = RT::CustomField->new($self->CurrentUser);
+        $cf->Load($cf_id);
+        return(0, $self->loc("Couldn't load CustomField #[_1]", $cf_id)) unless $cf->id;
+    }
 
     my $attr = $self->FirstAttribute('ConditionedBy');
-    return $ret if $attr && $attr->Content && $attr->Content == $value;
+    if ($attr && $attr->Content
+              && $attr->Content->{CF}
+              && $attr->Content->{CF} == $cf->id
+              && $attr->Content->{val}
+              && $attr->Content->{val} eq $value) {
+        return (1, $self->loc('ConditionedBy unchanged'));
+    }
 
     if ($value) {
-        my $cf_value = RT::CustomFieldValue->new($self->CurrentUser);
-        $cf_value->SetContextObject($self->ContextObject);
-        $cf_value->Load(ref $value ? $value->id : $value);
-
         return (0, "Permission Denied")
-            unless     $cf_value->id
-                    && $cf_value->CustomFieldObj
-                    && $cf_value->CustomFieldObj->id
-                    && $cf_value->CustomFieldObj->CurrentUserHasRight('SeeCustomField');
+            unless $cf->CurrentUserHasRight('SeeCustomField');
+
         ($ret, $msg) = $self->SetAttribute(
             Name    => 'ConditionedBy',
-            Content => $value,
+            Content => {CF => $cf->id, val => $value},
         );
     } elsif ($attr) {
         ($ret, $msg) = $attr->Delete;
     }
 
     if ($ret) {
-        return ($ret, $self->loc('ConditionedBy changed to [_1]', $value));
+        return ($ret, $self->loc('ConditionedBy changed to CustomField #[_1], value [_2]', $cf->id, $value));
     }
     else {
-        return ($ret, $self->loc( "Can't change ConditionedBy to [_1]: [_2]", $value, $msg));
+        return ($ret, $self->loc( "Can't change ConditionedBy to CustomField #[_1], value [_2]: [_3]", $cf->id, $value, $msg));
     }
 }
 
-=head2 ConditionedByObj
+=head2 ConditionedBy
 
-Returns the current value as a L<CustomFieldValue|RT::CustomFieldValue> object of the ConditionedBy property for this L<CustomField|RT::CustomField> object. If this L<CustomField|RT::CustomField> object is not conditioned by another one, that is: if its ConditionedBy property is not defined, returns an empty L<CustomFieldValue|RT::CustomFieldValue> object (without id). Current user should have SeeCustomField right for both this CustomField and the CustomField which this CustomField is conditionned by.
+Returns the current C<ConditionedBy> property for this L<CustomField|RT::CustomField> object as a hash with keys C<CF> containing the id of the L<CustomField|RT::CustomField> which this  L<CustomField|RT::CustomField> is recursively conditionned by, and C<val> containing the value as string. If neither this L<CustomField|RT::CustomField> object nor one of its ancestor is conditioned by another one, that is: if their C<ConditionedBy> property is not (recursively) defined, returns C<undef>. Current user should have C<SeeCustomField> right for both this L<CustomField|RT::CustomField> and the L<CustomField|RT::CustomField> which this L<CustomField|RT::CustomField> is conditionned recursively by. I<"Recursively"> means that this method will search for a C<ConditionedBy> property for this L<CustomField|RT::CustomField> object, then for the L<CustomField|RT::CustomField> this one is C<BasedOn>, and so on until it find an acestor C<Category> with a C<ConditionedBy> property or, the L<CustomField|RT::CustomField> which is being looked up, is not based on any ancestor C<Category>.
+
 
 =cut
 
-sub ConditionedByObj {
+sub ConditionedBy {
     my $self = shift;
-
-    my $obj = RT::CustomFieldValue->new($self->CurrentUser);
-    $obj->SetContextObject($self->ContextObject);
 
     my $attr = $self->FirstAttribute('ConditionedBy');
-    if ($attr && $attr->Content && $attr->Content =~ /^\d+$/) {
-        $obj->Load($attr->Content);
-    }
-
-    return $obj;
-}
-
-=head2 ConditionedByAsString
-
-Returns the current value as a C<string> of the ConditionedBy property for this L<CustomField|RT::CustomField> object. If this L<CustomField|RT::CustomField> object is not conditioned by another one, that is: if its ConditionedBy property is not defined, returns undef. Current user should have SeeCustomField right for both this CustomField and the CustomField which this CustomField is conditionned by.
-
-=cut
-
-sub ConditionedByAsString {
-    my $self = shift;
-    my $cfv = $self->ConditionedByObj;
-    return undef unless $cfv && $cfv->id;
-    return $cfv->Name;
-}
-
-=head2 ConditionedByCustomField
-
-Returns the  L<CustomField|RT::CustomField> object that this CustomField is recursively conditionned by. "Recursively" means that this method will search for a ConditionedBy property for this L<CustomField|RT::CustomField> object, then for the Customfield this one is BasedOn, and so on until it find an acestor category with a ConditionedBy property or, the Customfield which is being looked up, is not based on any ancestor category. If neither this L<CustomField|RT::CustomField> object nor one of its ancestor is conditioned by another one, that is: if their ConditionedBy property is (recursively) not defined, returns undef. Current user should have SeeCustomField right for both this CustomField and the CustomField which this CustomField is conditionned by.
-
-=cut
-
-sub ConditionedByCustomField {
-    my $self = shift;
-    my $cfv = $self->ConditionedByObj;
-    # Recurse on ancestor category
-    unless ($cfv->id) {
+    unless ($attr && $attr->Content) {
+        # Recurse on ancestor category
         return undef unless $self->BasedOnObj->id;
-        return $self->BasedOnObj->ConditionedByCustomField;
+        return $self->BasedOnObj->ConditionedBy;
     }
-    my $cf = $cfv->CustomFieldObj;
-    $cf->SetContextObject($self->ContextObject);
-    return $cf;
-}
 
-=head2 ConditionedByCustomFieldValue
-
-Returns the current value as a L<CustomFieldValue|RT::CustomFieldValue> object that this CustomField is recursively conditionned by. "Recursively" means that this method will search for a ConditionedBy property for this L<CustomField|RT::CustomField> object, then for the Customfield this one is BasedOn, and so on until it find an acestor category with a ConditionedBy property or, the Customfield which is being looked up, is not based on any ancestor category. If neither this L<CustomField|RT::CustomField> object nor one of its ancestor is conditioned by another one, that is: if their ConditionedBy property is (recursively) not defined, returns an empty L<CustomField|RT::CustomField> object (without id). Current user should have SeeCustomField right for both this CustomField and the CustomField which this CustomField is conditionned by.
-
-=cut
-
-sub ConditionedByCustomFieldValue {
-    my $self = shift;
-    my $cfv = $self->ConditionedByObj;
-    # Recurse on ancestor category
-    unless ($cfv->id) {
-        return $cfv unless $self->BasedOnObj->id;
-        return $self->BasedOnObj->ConditionedByCustomFieldValue;
-    }
-    return $cfv;
+    return $attr->Content;
 }
 
 =head1 INITIALDATA
@@ -203,7 +165,7 @@ Also, ConditionalCustomFields allows to set the ConditionedBy property when crea
             DefaultValues => [ 'Failed' ],
         },
         {
-            Name => 'Conditioned with cf and value',
+            Name => 'Conditioned with cf name and value',
             Type => 'FreeformSingle',
             Queue => [ 'General' ],
             LookupType => 'RT::Queue-RT::Ticket',
@@ -218,28 +180,21 @@ Also, ConditionalCustomFields allows to set the ConditionedBy property when crea
             ConditionedByCF => 66,
             ConditionedBy => 'Passed',
         },
-        {
-            Name => 'Conditioned with cf value id',
-            Type => 'FreeformSingle',
-            Queue => [ 'General' ],
-            LookupType => 'RT::Queue-RT::Ticket',
-            ConditionedBy => 52,
-        },
     );
 
-This examples creates a select CustomField C<Condition> which should have the value C<Passed>, for CustomFields C<Conditioned with cf and value> and C<Conditioned with cf id and value> to be displayed or edited. It also created a CustomField C<Conditioned with cf value id> that is conditionned by another CustomField for the current object (L<ticket|RT::Ticket>, L<queue|RT::Queue>, L<user|RT::User|>, L<group|RT::Group>, or L<article|RT::Article>) having a C<CustomFieldValue> with C<id = 52>.
+This examples creates a select CustomField C<Condition> which should have the value C<Passed>, for CustomFields C<Conditioned with cf name and value> and C<Conditioned with cf id and value> to be displayed or edited.
 
 Additional fields for an element of C<@CustomFields> are:
 
 =over 4
 
-=item C<ConditonedBy>
-
-The L<CustomFieldValue|RT::CustomFieldValue> that this new L<CustomField|RT::CustomField> should conditionned by. It can be either the C<id> of an existing L<CustomFieldValue|RT::CustomFieldValue> object (in which case attribute C<ConditionedByCF> is ignored), or the value as a C<string> of the L<CustomField|RT::CustomField> attribute (which is then mandatory).
-
 =item C<ConditonedByCF>
 
 The L<CustomField|RT::CustomField> that this new L<CustomField|RT::CustomField> should conditionned by. It can be either the C<id> or the C<Name> of a previously created L<CustomField|RT::CustomField>. This implies that this L<CustomField|RT::CustomField> should be declared before this one in the F<initialdata> file, or it should already exist. When C<ConditionedByCF> attribute is set, C<ConditionedBy> attribute should always also be set.
+
+=item C<ConditonedBy>
+
+The value as a C<string> of the L<CustomField|RT::CustomField> defined by the C<ConditionedByCF> attribute (which is mandatory).
 
 =back
 
@@ -270,16 +225,14 @@ The L<CustomField|RT::CustomField> that this new L<CustomField|RT::CustomField> 
                 $conditional_cf->Load($item->{Name});
                 next unless $conditional_cf->id;
 
+                my $conditioned_by_cfid;
                 my $conditioned_by_value;
                 if ($item->{'ConditionedBy'}) {
-                    if ($item->{'ConditionedBy'} =~ /^\d+$/) {
-                        # Already have a cfvalue ID -- should be fine
-                        $conditioned_by_value = $item->{'ConditionedBy'};
-                    } elsif ($item->{'ConditionedByCF'} ) {
-                        my $cfid;
+                    $conditioned_by_value = $item->{'ConditionedBy'};
+                    if ($item->{'ConditionedByCF'} ) {
                         if ($item->{'ConditionedByCF'} =~ /^\d+$/) {
                             # Already have a cf ID
-                            $cfid = $item->{'ConditionedByCF'};
+                            $conditioned_by_cfid = $item->{'ConditionedByCF'};
                         } elsif ($item->{'LookupType'}) {
                             my $cf = RT::CustomField->new($RT::SystemUser);
                             my ($ok, $msg) = $cf->LoadByCols(
@@ -287,32 +240,20 @@ The L<CustomField|RT::CustomField> that this new L<CustomField|RT::CustomField> 
                                 LookupType => $item->{'LookupType'},
                                 Disabled => 0);
                             if ($ok) {
-                                $cfid = $cf->id;
+                                $conditioned_by_cfid = $cf->id;
                             } else {
                                 $RT::Logger->error("Unable to load $item->{ConditionedByCF} as a $item->{LookupType} CF. Skipping ConditionedBy: $msg");
                             }
                         } else {
                             $RT::Logger->error("Unable to load CF $item->{ConditionedByCF} because no LookupType was specified. Skipping ConditionedBy");
                         }
-
-                        if ($cfid) {
-                            my $conditioned_by = RT::CustomFieldValue->new($RT::SystemUser);
-                            my ($ok, $msg) = $conditioned_by->LoadByCols(
-                                Name => $item->{'ConditionedBy'},
-                                CustomField => $cfid);
-                            if ($ok) {
-                                $conditioned_by_value = $conditioned_by->Id;
-                            } else {
-                                $RT::Logger->error("Unable to load $item->{ConditionedByCF} as a $item->{LookupType} CF. Skipping ConditionedBy: $msg");
-                            }
-                        }
                     } else {
-                        $RT::Logger->error("Unable to load CFValue $item->{ConditionedBy} because no ConditionedByCF was specified. Skipping ConditionedBy");
+                        $RT::Logger->error("Unable to load value $item->{ConditionedBy} because no ConditionedByCF was specified. Skipping ConditionedBy");
                     }
                 }
 
                 if ($conditioned_by_value) {
-                    my ($ret, $msg) = $conditional_cf->SetConditionedBy($conditioned_by_value);
+                    my ($ret, $msg) = $conditional_cf->SetConditionedBy($conditioned_by_cfid, $conditioned_by_value);
                     unless($ret) {
                         $RT::Logger->error($msg);
                         next;
