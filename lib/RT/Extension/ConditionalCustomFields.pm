@@ -14,7 +14,11 @@ RT::Extension::ConditionalCustomFields - CF conditionned by the value of another
 
 =head1 DESCRIPTION
 
-Provide the ability to display/edit a custom field conditioned by the value of another (select) custom field for the same object, which can be anything that can have custom fields (L<ticket|RT::Ticket>, L<queue|RT::Queue>, L<user|RT::User>, L<group|RT::Group>, L<article|RT::Article> or L<asset|RT::Asset>).
+Provide the ability to display/edit a L<custom field|RT::CustomField> conditioned by the value of another (select) L<custom field|RT::CustomField> for the same object, which can be anything that can have custom fields (L<ticket|RT::Ticket>, L<queue|RT::Queue>, L<user|RT::User>, L<group|RT::Group>, L<article|RT::Article> or L<asset|RT::Asset>). If a L<custom field|RT::CustomField> is based on another (parent) L<custom field|RT::CustomField> which is conditioned by, this (child) L<custom field|RT::CustomField> will of course also be conditioned by (with the same condition as its parent).
+
+From version 0.07, the condition can be multivalued, that is: the conditioned custom field can be displayed/edited if the condition custom field has one of these values (In other words: there is an C<OR> bewteen the values of the condition). The condition custom field can be a select custom field with values defined by L<CustomFieldValues|RT::CustomFieldValues> or an L<external custom field|RT::CustomFieldValues::External>.
+
+I<Note that version 0.07 is a complete redesign: the API described below has changed; also, the way that ConditionedBy property is store has changed. If you upgrade from a previous version, you have to reconfigure the custom fields which are conditionned by.>
 
 =head1 RT VERSION
 
@@ -34,17 +38,22 @@ May need root permissions
 
 =item Patch your RT
 
-ConditionalCustomFields requires a small patch to add necessary Callbacks on versions of RT prior to 4.2.3.
+ConditionalCustomFields requires a small patch to add necessary Callbacks on versions of RT superior to 4.2.3. (The patch has been submitted to BestPractical in order to be included in future RT releases, as of RT 4.4.2, some parts of the patch are already included, but some other parts still required to apply this patch.)
 
 For RT 4.2, apply the included patch:
 
     cd /opt/rt4 # Your location may be different
     patch -p1 < /download/dir/RT-Extension-ConditionalCustomFields/patches/4.2-add-callbacks-to-extend-customfields-capabilities.patch
 
-For RT 4.4, apply the included patch:
+For RT 4.4.1, apply the included patch:
 
     cd /opt/rt4 # Your location may be different
-    patch -p1 < /download/dir/RT-Extension-ConditionalCustomFields/patches/4.4-add-callbacks-to-extend-customfields-capabilities.patch
+    patch -p1 < /download/dir/RT-Extension-ConditionalCustomFields/patches/4.4.1-add-callbacks-to-extend-customfields-capabilities.patch
+
+For RT 4.4.2, apply the included patch:
+
+    cd /opt/rt4 # Your location may be different
+    patch -p1 < /download/dir/RT-Extension-ConditionalCustomFields/patches/4.4.2-add-callbacks-to-extend-customfields-capabilities.patch
 
 =item Edit your F</opt/rt4/etc/RT_SiteConfig.pm>
 
