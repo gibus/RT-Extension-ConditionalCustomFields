@@ -1,5 +1,7 @@
 %   my $conditioned_by = $CustomField->ConditionedBy;
 %   if ($conditioned_by) {
+%       my $conditioned_by_val = $conditioned_by->{vals} || '';
+%       my @conditioned_by_vals = ref($conditioned_by_val) eq 'ARRAY' ? @$conditioned_by_val : ($conditioned_by_val);
 <script type="text/javascript">
 jQuery(function() {
 %       if ($ParentSelector eq 'id') {
@@ -7,8 +9,8 @@ jQuery(function() {
     conditionedby_id = conditionedby_id.replace(/:/g,'\\:');
     var cf_id = <% 'CF-' . $CustomField->id . '-ShowRow' |h,n,j%>;
     cf_id = cf_id.replace(/:/g,'\\:');
-    var conditionedby_val = '<% $conditioned_by->{val} %>';
-    if (jQuery.trim(jQuery('#'+conditionedby_id+' td.value').text()) != conditionedby_val) {
+    var conditionedby_vals = ["<% join('", "', @conditioned_by_vals) |n%>"];
+    if (jQuery.inArray(jQuery.trim(jQuery('#'+conditionedby_id+' td.value').text()), conditionedby_vals) == -1) {
         jQuery('#'+cf_id).hide();
     }
     else {
@@ -22,8 +24,8 @@ jQuery(function() {
     conditionedby_class = conditionedby_class.replace(/:/g,'\\:');
     var cf_class = <% '.record-field.CustomField__' . $CustomField->Name . '_' |h,n,j%>;
     cf_class = cf_class.replace(/:/g,'\\:');
-    var conditionedby_val = '<% $conditioned_by->{val} %>';
-    if (jQuery.trim(jQuery(conditionedby_class+' .value').text()) != conditionedby_val) {
+    var conditionedby_vals = ["<% join('", "', @conditioned_by_vals) |n%>"];
+    if (jQuery.inArray(jQuery.trim(jQuery(conditionedby_class+' .value').text()), conditionedby_vals) == -1) {
         jQuery(cf_class).hide();
     }
     else {

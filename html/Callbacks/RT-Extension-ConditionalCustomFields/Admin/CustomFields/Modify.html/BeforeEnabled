@@ -7,21 +7,21 @@ jQuery( function() {
         if (cf_id) {
             jQuery.getJSON('/Helpers/SelectCondition', {CustomFieldId: cf_id}, function(values) {
                 if (values) {
-                    jQuery('select[name=ConditionedBy] option').each(function() {
+                    jQuery('span input[name=ConditionedBy]').each(function() {
                         if (jQuery(this).val()) {
-                            jQuery(this).remove();
+                            jQuery(this).parent('.ConditionedByValue').remove();
                         }
                     });
                     jQuery.each(values, function(id, val) {
-                        jQuery('select[name=ConditionedBy]').append(jQuery('<option>', {value: val, text: val}));
+                        jQuery('span[name=ConditionedBy]').append('<span class="ConditionedByValue" style="display: block;"><input type="checkbox" name="ConditionedBy" value="' + val + '" />' + val + '</span>');
                     });
                 }
             });
             jQuery('.conditional-field-condition').show();
         } else {
-            jQuery('select[name=ConditionedBy] option').each(function() {
+            jQuery('span input[name=ConditionedBy]').each(function() {
                 if (jQuery(this).val()) {
-                    jQuery(this).remove();
+                    jQuery(this).parent('.ConditionedByValue').remove();
                 }
             });
             jQuery('.conditional-field-condition').hide();
@@ -45,18 +45,18 @@ jQuery( function() {
     Default => $default,
     Not => $CustomField->id,
 &>
-<span class="conditional-field-condition"<% $conditioned_by->{val} ? '' : 'style="display: none;"' |n%>>
+<span class="conditional-field-condition"<% $conditioned_by->{vals} ? '' : 'style="display: none;"' |n%>>
 <span class="label">is</span>
-<select name="ConditionedBy">
+<span name="ConditionedBy">
 %   if ($cf->id) {
-%       my $ConditionedBy = $conditioned_by->{val} || '';
+%       my $ConditionedBy = $conditioned_by->{vals} || '';
+%       my @ConditionedByAry = ref($ConditionedBy) eq 'ARRAY' ? @$ConditionedBy : ($ConditionedBy);
 %       my $cf_values = $cf->Values;
 %       while (my $cf_value = $cf_values->Next) {
-<option value="<% $cf_value->Name %>"<% $cf_value->Name eq $ConditionedBy ? qq[ selected="selected"] : '' |n%>><% $cf_value->Name %></option>
+    <span class="ConditionedByValue" style="display: block;"><input type="checkbox" name="ConditionedBy" value="<% $cf_value->Name %>"<% (grep {$_ eq $cf_value->Name} @ConditionedByAry) ? qq[ checked="checked"] : '' |n%> /><% $cf_value->Name %></span>
 %       }
-</select>
 %   }
-</span></td></tr>
+</span></span></td></tr>
 % }
 <%ARGS>
 $CustomField

@@ -101,28 +101,41 @@ sub SetConditionedBy {
         return(0, $self->loc("Couldn't load CustomField #[_1]", $cf_id)) unless $cf->id;
     }
 
+    my @values = ref($value) eq 'ARRAY' ? @$value : ($value);
+
+    sub arrays_identical {
+        my( $left, $right ) = @_;
+        my @leftary = ref $left eq 'ARRAY' ? @$left : ($left);
+        my @rightary = ref $right eq 'ARRAY' ? @$right : ($right);
+        return 0 if scalar @$left != scalar @$right;
+        my %hash;
+        @hash{ @leftary, @rightary } = ();
+        return scalar keys %hash == scalar @leftary;
+    }
+
     my $attr = $self->FirstAttribute('ConditionedBy');
     if ($attr && $attr->Content
               && $attr->Content->{CF}
+              && $cf->id
               && $attr->Content->{CF} == $cf->id
-              && $attr->Content->{val}
-              && $attr->Content->{val} eq $value) {
+              && $attr->Content->{vals}
+              && arrays_identical($attr->Content->{vals}, \@values)) {
         return (1, $self->loc('ConditionedBy unchanged'));
     }
 
-    if ($cf->id && $value) {
+    if ($cf->id && @values) {
         return (0, "Permission Denied")
             unless $cf->CurrentUserHasRight('SeeCustomField');
 
         my ($ret, $msg) = $self->SetAttribute(
             Name    => 'ConditionedBy',
-            Content => {CF => $cf->id, val => $value},
+            Content => {CF => $cf->id, vals => \@values},
         );
         if ($ret) {
-            return ($ret, $self->loc('ConditionedBy changed to CustomField #[_1], value [_2]', $cf->id, $value));
+            return ($ret, $self->loc('ConditionedBy changed to CustomField #[_1], values [_2]', $cf->id, join(', ', @values)));
         }
         else {
-            return ($ret, $self->loc( "Can't change ConditionedBy to CustomField #[_1], value [_2]: [_3]", $cf->id, $value, $msg));
+            return ($ret, $self->loc( "Can't change ConditionedBy to CustomField #[_1], values [_2]: [_3]", $cf->id, join(', ', @values), $msg));
         }
     } elsif ($attr) {
         my ($ret, $msg) = $attr->Delete;
@@ -145,6 +158,7 @@ Returns the current C<ConditionedBy> property for this L<CustomField|RT::CustomF
 sub ConditionedBy {
     my $self = shift;
 
+    $self->ClearAttributes;
     my $attr = $self->FirstAttribute('ConditionedBy');
     unless ($attr && $attr->Content) {
         # Recurse on ancestor category

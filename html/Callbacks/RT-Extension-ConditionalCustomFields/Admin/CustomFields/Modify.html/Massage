@@ -1,10 +1,7 @@
 <%INIT>
 my $conditioned_by = $CustomField->ConditionedBy;
-if (       (($conditioned_by->{CF}||0) != ($ARGSRef->{ConditionalCF}||0))
-        || (($conditioned_by->{val}||'') ne ($ARGSRef->{ConditionedBy}||''))) {
-    my ($good, $msg) = $CustomField->SetConditionedBy($ARGSRef->{ConditionalCF}, $ARGSRef->{ConditionedBy});
-    push @$Results, $msg;
-}
+my ($good, $msg) = $CustomField->SetConditionedBy($ARGSRef->{ConditionalCF}, $ARGSRef->{ConditionedBy});
+push @$Results, $msg;
 </%INIT>
 <%ARGS>
 $CustomField
