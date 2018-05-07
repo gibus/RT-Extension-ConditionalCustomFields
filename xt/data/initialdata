@@ -8,6 +8,7 @@
         Values => [
             { Name => 'Passed', SortOrder => 0 },
             { Name => 'Failed', SortOrder => 1 },
+            { Name => 'Schrödingerized', SortOrder => 2 },
         ],
         Pattern => '(?#Mandatory).',
         DefaultValues => [ 'Failed' ],
@@ -27,5 +28,13 @@
         LookupType => 'RT::Queue-RT::Ticket',
         ConditionedByCF => 3,
         ConditionedBy => 'Passed',
+    },
+    {
+        Name => 'Conditioned with multiple values',
+        Type => 'FreeformSingle',
+        Queue => [ 'General' ],
+        LookupType => 'RT::Queue-RT::Ticket',
+        ConditionedByCF => 'Condition',
+        ConditionedBy => ['Passed', 'Schrödingerized'],
     },
 );
