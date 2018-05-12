@@ -8,7 +8,7 @@
 %           if ($conditioned_by_cf->RenderType eq 'List') {
 %               $Grouping =~ s/\W//g if $Grouping;
 %               my $cf_id = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField, Grouping => $Grouping );
-%               my @conditioned_by_groupings = $conditioned_by_cf->Groupings;
+%               my @conditioned_by_groupings = $conditioned_by_cf->_findGrouping($Object);
 %               my $conditioned_by_grouping = @conditioned_by_groupings ? $conditioned_by_groupings[0] : undef;
 %               $conditioned_by_grouping =~ s/\W//g if $conditioned_by_grouping;
 %               my $conditionedby_name = GetCustomFieldInputName(Object => $Object, CustomField => $conditioned_by_cf, Grouping => $conditioned_by_grouping );
@@ -40,7 +40,7 @@ jQuery(function() {
 %           else {
 %               $Grouping =~ s/\W//g if $Grouping;
 %               my $cf_id = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField, Grouping => $Grouping );
-%               my @conditioned_by_groupings = $conditioned_by_cf->Groupings;
+%               my @conditioned_by_groupings = $conditioned_by_cf->_findGrouping($Object);
 %               my $conditioned_by_grouping = @conditioned_by_groupings ? $conditioned_by_groupings[0] : undef;
 %               $conditioned_by_grouping =~ s/\W//g if $conditioned_by_grouping;
 %               my $conditionedby_id = GetCustomFieldInputName(Object => $Object, CustomField => $conditioned_by_cf, Grouping => $conditioned_by_grouping );

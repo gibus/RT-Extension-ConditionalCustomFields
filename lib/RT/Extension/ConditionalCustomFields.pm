@@ -178,6 +178,21 @@ sub ConditionedBy {
     return $attr->Content;
 }
 
+sub _findGrouping {
+    my $self = shift;
+    my $record_class = $self->_GroupingClass(shift);
+    my $config = RT->Config->Get('CustomFieldGroupings');
+       $config = {} unless ref($config) eq 'HASH';
+    if ($record_class && (ref($config->{$record_class} ||= []) eq "ARRAY")) {
+        my $config_hash = {@{$config->{$record_class}}};
+        while (my ($group, $cfs) = each %$config_hash) {
+            return $group
+                if grep {$_ eq $self->Name} @$cfs;
+        }
+    }
+    return undef;
+}
+
 =head1 INITIALDATA
 
 Also, ConditionalCustomFields allows to set the ConditionedBy property when creating CustomFields from an F<initialdata> file, with one of the following syntaxes:
