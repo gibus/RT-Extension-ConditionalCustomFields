@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 10;
+use RT::Extension::ConditionalCustomFields::Test tests => 11;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -28,7 +28,7 @@ $mjs->get($m->rt_base_url . '?user=root;pass=password');
 
 my $ticket = RT::Ticket->new(RT->SystemUser);
 $ticket->Create(Queue => 'General', Subject => 'Test Ticket ConditionalCF');
-$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 'Passed');
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[0]);
 $ticket->AddCustomFieldValue(Field => $cf_conditioned_by->id , Value => 'See me?');
 
 $cf_conditioned_by->SetConditionedBy($cf_condition->id, [$cf_values->[0]->Name, $cf_values->[2]->Name]);
@@ -42,6 +42,11 @@ $ticket->DeleteCustomFieldValue(Field => $cf_conditioned_by->id , Value => 'See 
 is($ticket->FirstCustomFieldValue($cf_conditioned_by->Name), undef, 'ConditionedBy not mandatory value can be deleted when condition is met');
 
 $cf_conditioned_by->SetPattern('(?#Mandatory).');
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[1]);
+$ticket->AddCustomFieldValue(Field => $cf_conditioned_by->id , Value => 'See me?');
+$ticket->DeleteCustomFieldValue(Field => $cf_conditioned_by->id , Value => 'See me?');
+is($ticket->FirstCustomFieldValue($cf_conditioned_by->Name), undef, 'ConditionedBy mandatory value can be deleted when condition is not met');
+
 $mjs->get($m->rt_base_url . 'Ticket/Modify.html?id=' . $ticket->id);
 my $ticket_cf_condition = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Values', single => 1);
 $mjs->field($ticket_cf_condition, $cf_values->[2]->Name);
@@ -53,4 +58,4 @@ $ticket_cf_condition = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-Custom
 $mjs->field($ticket_cf_condition, $cf_values->[1]->Name);
 $mjs->eval_in_page("jQuery('#Object-RT\\\\:\\\\:Ticket-" . $ticket->id . "-CustomField\\\\:Groupone-" . $cf_condition->id . "-Values').trigger('change');");
 $mjs->click('SubmitTicket');
-ok($mjs->content !~ /ConditionedBy: Input must match \[Mandatory\]/, 'Raise error for ConditionedBy mandatory CF when condition is met');
+ok($mjs->content !~ /ConditionedBy: Input must match \[Mandatory\]/, 'Do not raise error for ConditionedBy mandatory CF when condition is not met');
