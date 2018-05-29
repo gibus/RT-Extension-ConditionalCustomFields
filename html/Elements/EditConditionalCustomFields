@@ -50,11 +50,23 @@ jQuery(function() {
         var cf_id = <% "$cf_id" |h,n,j%>;
         cf_id = cf_id.replace(/:/g,'\\:');
         var conditionedby_vals = ["<% join('", "', @conditioned_by_vals) |n%>"];
-        if (jQuery.inArray(jQuery(this).val(), conditionedby_vals) == -1) {
-            jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+        var condition_met = false;
+        var condition_vals = jQuery(this).val();
+        if (jQuery.isArray(condition_vals)) {
+            jQuery.each(condition_vals, function(i, condition_val) {
+                if (jQuery.inArray(condition_val, conditionedby_vals) != -1) {
+                    condition_met = true;
+                    return false;
+                }
+            });
+        } else {
+            condition_met = (jQuery.inArray(condition_vals, conditionedby_vals) != -1);
+        }
+        if (condition_met) {
+            jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
         }
         else {
-            jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+            jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
         }
     });
     jQuery('#'+conditionedby_id).trigger('change');
