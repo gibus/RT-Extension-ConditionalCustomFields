@@ -196,7 +196,7 @@ sub _findGrouping {
 my $old_MatchPattern = RT::CustomField->can("MatchPattern");
 *RT::CustomField::MatchPattern = sub {
     my $self = shift;
-    my $match = $old_MatchPattern->($self);
+    my $match = $old_MatchPattern->($self, @_);
     my $conditioned_by = $self->ConditionedBy;
 
     unless (!$conditioned_by || $match) {
