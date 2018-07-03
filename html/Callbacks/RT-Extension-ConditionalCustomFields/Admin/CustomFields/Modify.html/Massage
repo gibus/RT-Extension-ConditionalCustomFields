@@ -1,9 +1,9 @@
 <%INIT>
 if ($ARGSRef->{ConditionedBy}) {
-    my @conditioned_by = @{$ARGSRef->{ConditionedBy}};
+    my @conditioned_by = ref($ARGSRef->{ConditionedBy}) eq 'ARRAY' ? @{$ARGSRef->{ConditionedBy}} : ($ARGSRef->{ConditionedBy});
 
     if ($ARGSRef->{ConditionalOp} eq 'between') {
-        if ($conditioned_by[0] gt $conditioned_by[1]) {
+        if (scalar(@conditioned_by) == 2 && $conditioned_by[0] gt $conditioned_by[1]) {
             my @sorted_conditioned_by = reverse @conditioned_by;
             $ARGSRef->{ConditionedBy} = \@sorted_conditioned_by;
         }
@@ -21,6 +21,10 @@ if ($ARGSRef->{ConditionedBy}) {
                 }
             }
         }
+    } else {
+        $ARGSRef->{ConditionalCF} = undef;
+        $ARGSRef->{ConditionalOp} = undef;
+        $ARGSRef->{ConditionedBy} = ();
     }
 }
 
