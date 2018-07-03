@@ -32,7 +32,7 @@ $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[
 $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[1]->Name);
 $ticket->AddCustomFieldValue(Field => $cf_conditioned_by->id , Value => 'See me?');
 
-$cf_conditioned_by->SetConditionedBy($cf_condition->id, [$cf_values->[0]->Name, $cf_values->[2]->Name]);
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, 'is', [$cf_values->[0]->Name, $cf_values->[2]->Name]);
 
 $cf_conditioned_by->SetPattern('(?#Mandatory).');
 my ($ok, $msg) = $ticket->DeleteCustomFieldValue(Field => $cf_conditioned_by->id , Value => 'See me?');

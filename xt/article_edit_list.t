@@ -49,7 +49,7 @@ $mjs->click($article_cf_condition_failed);
 ok($article_cf_conditioned_by->is_displayed, "Show ConditionalCF when Condition is changed to be not met but no condition is set");
 ok($article_cf_conditioned_by_child->is_displayed, "Show Child when Condition is changed to be not met but no condition is set");
 
-$cf_conditioned_by->SetConditionedBy($cf_condition->id, [$cf_values->[0]->Name, $cf_values->[2]->Name]);
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, 'is', [$cf_values->[0]->Name, $cf_values->[2]->Name]);
 
 $mjs->get($m->rt_base_url . 'Articles/Article/Edit.html?id=' . $article->id);
 $article_cf_conditioned_by = $mjs->by_id('Object-RT::Article-' . $article->id . '-CustomField-' . $cf_conditioned_by->id . '-Value', single => 1);

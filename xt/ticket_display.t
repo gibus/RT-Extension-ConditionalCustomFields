@@ -41,7 +41,7 @@ ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when no conditio
 my $ticket_cf_conditioned_by_child = $mjs->selector('#CF-'. $cf_conditioned_by_child->id . '-ShowRow', single => 1);
 ok($ticket_cf_conditioned_by_child->is_displayed, 'Show Child when no condition is set');
 
-$cf_conditioned_by->SetConditionedBy($cf_condition->id, [$cf_values->[0]->Name, $cf_values->[2]->Name]);
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, 'is', [$cf_values->[0]->Name, $cf_values->[2]->Name]);
 $mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
 $ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
 ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when first condition val is met');

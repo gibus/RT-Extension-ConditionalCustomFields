@@ -51,7 +51,7 @@ $mjs->click($ticket_cf_condition_passed);
 ok($ticket_cf_conditioned_by->is_displayed, "Show ConditionalCF when Condition is changed to be not met but no condition is set");
 ok($ticket_cf_conditioned_by_child->is_displayed, "Show Child when Condition is changed to be not met but no condition is set");
 
-$cf_conditioned_by->SetConditionedBy($cf_condition->id, [$cf_values->[0]->Name, $cf_values->[2]->Name]);
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, 'is', [$cf_values->[0]->Name, $cf_values->[2]->Name]);
 $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[0]->Name);
 $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[1]->Name);
 

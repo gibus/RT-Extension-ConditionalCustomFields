@@ -5,6 +5,7 @@ use RT::Extension::ConditionalCustomFields::Test tests => 14;
 
 use WWW::Mechanize::PhantomJS;
 
+RT->Config->Set('JSFiles', qw/conditional-customfields.js/);
 my $cf_condition = RT::CustomField->new(RT->SystemUser);
 $cf_condition->Create(Name => 'Condition', LookupType => 'RT::Class-RT::Article', Type => 'Select', MaxValues => 1);
 $cf_condition->AddValue(Name => 'Passed', SortOder => 0);
@@ -39,7 +40,7 @@ ok($article_cf_conditioned_by->is_displayed, 'Show ConditionalCF when no conditi
 my $article_cf_conditioned_by_child = $mjs->selector('#CF-'. $cf_conditioned_by_child->id . '-ShowRow', single => 1);
 ok($article_cf_conditioned_by_child->is_displayed, 'Show Child when no condition is set');
 
-$cf_conditioned_by->SetConditionedBy($cf_condition->id, [$cf_values->[0]->Name, $cf_values->[2]->Name]);
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, 'is', [$cf_values->[0]->Name, $cf_values->[2]->Name]);
 $mjs->get($m->rt_base_url . 'Articles/Article/Display.html?id=' . $article->id);
 $article_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
 ok($article_cf_conditioned_by->is_displayed, 'Show ConditionalCF when condition is met by first val');
@@ -49,6 +50,7 @@ ok($article_cf_conditioned_by_child->is_displayed, 'Show Child when condition is
 $article->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[1]->Name);
 $mjs->get($m->rt_base_url . 'Articles/Article/Display.html?id=' . $article->id);
 $article_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+
 ok($article_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when condition is not met');
 $article_cf_conditioned_by_child = $mjs->selector('#CF-'. $cf_conditioned_by_child->id . '-ShowRow', single => 1);
 ok($article_cf_conditioned_by_child->is_hidden, 'Hide Child when condition is not met');
