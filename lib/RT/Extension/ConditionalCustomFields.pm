@@ -134,12 +134,12 @@ sub SetConditionedBy {
               && $attr->Content->{CF}
               && $cf->id
               && $attr->Content->{CF} == $cf->id
-              && $attr->Content->{op}
-              && $attr->Content->{op} eq $op
               && $attr->Content->{vals}
               && arrays_identical($attr->Content->{vals}, \@values)) {
         return (1, $self->loc('ConditionedBy unchanged'));
     }
+
+    my $op = $attr->Content->{op} || 'is';
 
     if ($cf->id && @values) {
         return (0, "Permission Denied")
