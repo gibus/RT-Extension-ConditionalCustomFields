@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 72;
+use RT::Extension::ConditionalCustomFields::Test tests => 96;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -128,47 +128,93 @@ my $cf_conditioned_by_op_freeform_single = $mjs->xpath('//select[@name="Conditio
 is($cf_conditioned_by_op_freeform_single->get_value, "matches", "Matches operation selected for conditioned by ConditionFreeformSingle");
 my @cf_conditioned_by_value_freeform_single = $mjs->xpath('//input[@name="ConditionedBy"]');
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by matches ConditionFreeformSingle");
+$mjs->field($cf_conditioned_by_value_freeform_single[0], "more");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
+is($conditioned_by->{op}, "matches", "ConditionedBy ConditionFreeformSingle CF and matches operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformSingle one val');
+is($conditioned_by->{vals}->[0], 'more', 'ConditionedBy ConditionFreeformSingle val');
 
+$cf_conditioned_by_op_freeform_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_freeform_single, "doesn't match");
 $mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
 is($cf_conditioned_by_op_freeform_single->get_value, "doesn't match", "Doesn't match operation selected for conditioned by ConditionFreeformSingle");
 @cf_conditioned_by_value_freeform_single = $mjs->xpath('//input[@name="ConditionedBy"]');
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by doesn't match ConditionFreeformSingle");
+$mjs->field($cf_conditioned_by_value_freeform_single[0], "no issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
+is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionFreeformSingle CF and doesn't match operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformSingle one val');
+is($conditioned_by->{vals}->[0], 'no issue', 'ConditionedBy ConditionFreeformSingle val');
 
+$cf_conditioned_by_op_freeform_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_freeform_single, "is");
 $mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
 is($cf_conditioned_by_op_freeform_single->get_value, "is", "Is operation selected for conditioned by ConditionFreeformSingle");
 @cf_conditioned_by_value_freeform_single = $mjs->xpath('//input[@name="ConditionedBy"]');
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by is ConditionFreeformSingle");
+$mjs->field($cf_conditioned_by_value_freeform_single[0], "More info");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
+is($conditioned_by->{op}, "is", "ConditionedBy ConditionFreeformSingle CF and is operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformSingle one val');
+is($conditioned_by->{vals}->[0], 'More info', 'ConditionedBy ConditionFreeformSingle val');
 
+$cf_conditioned_by_op_freeform_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_freeform_single, "isn't");
 $mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
 is($cf_conditioned_by_op_freeform_single->get_value, "isn't", "Isn't operation selected for conditioned by ConditionFreeformSingle");
 @cf_conditioned_by_value_freeform_single = $mjs->xpath('//input[@name="ConditionedBy"]');
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by isn't ConditionFreeformSingle");
+$mjs->field($cf_conditioned_by_value_freeform_single[0], "No issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
+is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionFreeformSingle CF and isn't operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformSingle one val');
+is($conditioned_by->{vals}->[0], 'No issue', 'ConditionedBy ConditionFreeformSingle val');
 
+$cf_conditioned_by_op_freeform_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_freeform_single, "less than");
 $mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
 is($cf_conditioned_by_op_freeform_single->get_value, "less than", "Less than operation selected for conditioned by ConditionFreeformSingle");
 @cf_conditioned_by_value_freeform_single = $mjs->xpath('//input[@name="ConditionedBy"]');
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by less than ConditionFreeformSingle");
+$mjs->field($cf_conditioned_by_value_freeform_single[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
+is($conditioned_by->{op}, "less than", "ConditionedBy ConditionFreeformSingle CF and less than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformSingle one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionFreeformSingle val');
 
+$cf_conditioned_by_op_freeform_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_freeform_single, "greater than");
 $mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
 is($cf_conditioned_by_op_freeform_single->get_value, "greater than", "Greater than operation selected for conditioned by ConditionFreeformSingle");
 @cf_conditioned_by_value_freeform_single = $mjs->xpath('//input[@name="ConditionedBy"]');
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by greater than ConditionFreeformSingle");
+$mjs->field($cf_conditioned_by_value_freeform_single[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
+is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionFreeformSingle CF and greater than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformSingle one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionFreeformSingle val');
 
+$cf_conditioned_by_op_freeform_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_freeform_single, "between");
 $mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
 is($cf_conditioned_by_op_freeform_single->get_value, "between", "Between operation selected for conditioned by ConditionFreeformSingle");
 @cf_conditioned_by_value_freeform_single = $mjs->xpath('//input[@name="ConditionedBy"]');
 is(scalar(@cf_conditioned_by_value_freeform_single), 2, "Two possible values for conditioned by between ConditionFreeformSingle");
-
 $mjs->field($cf_conditioned_by_value_freeform_single[0], "you");
 $mjs->field($cf_conditioned_by_value_freeform_single[1], "me");
 $mjs->click('Update');
-
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformSingle CF and between operation');
