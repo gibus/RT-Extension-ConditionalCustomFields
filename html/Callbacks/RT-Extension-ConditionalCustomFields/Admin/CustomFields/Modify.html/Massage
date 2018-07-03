@@ -1,6 +1,31 @@
 <%INIT>
-my $conditioned_by = $CustomField->ConditionedBy;
-my ($good, $msg) = $CustomField->SetConditionedBy($ARGSRef->{ConditionalCF}, $ARGSRef->{ConditionedBy});
+if ($ARGSRef->{ConditionedBy}) {
+    my @conditioned_by = @{$ARGSRef->{ConditionedBy}};
+
+    if ($ARGSRef->{ConditionalOp} eq 'between') {
+        if ($conditioned_by[0] gt $conditioned_by[1]) {
+            my @sorted_conditioned_by = reverse @conditioned_by;
+            $ARGSRef->{ConditionedBy} = \@sorted_conditioned_by;
+        }
+    }
+
+    if ($ARGSRef->{ConditionalCF}) {
+        my $cf = RT::CustomField->new($session{CurrentUser});
+        $cf->Load($ARGSRef->{ConditionalCF});
+        if ($cf->id) {
+            if ($cf->Type =~ /^Date(Time)?$/) {
+                for (my $i=0; $i < scalar(@conditioned_by); $i++) {
+                    my $DateObj = RT::Date->new($session{'CurrentUser'});
+                    $DateObj->Set(Format => 'unknown', Value => $conditioned_by[$i]);
+                    $ARGSRef->{ConditionedBy}->[$i] = $DateObj->ISO;
+                }
+            }
+        }
+    }
+}
+
+my ($good, $msg) = $CustomField->SetConditionedBy($ARGSRef->{ConditionalCF}, $ARGSRef->{ConditionalOp}, $ARGSRef->{ConditionedBy});
+
 push @$Results, $msg;
 </%INIT>
 <%ARGS>
