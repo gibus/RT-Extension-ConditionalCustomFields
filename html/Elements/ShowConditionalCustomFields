@@ -4,72 +4,41 @@
 %       my @conditioned_by_vals = ref($conditioned_by_val) eq 'ARRAY' ? @$conditioned_by_val : ($conditioned_by_val);
 <script type="text/javascript">
 jQuery(function() {
-%       if ($ParentSelector eq 'id') {
-    var conditionedby_id = <% 'CF-' . $conditioned_by->{CF} . '-ShowRow' |h,n,j%>;
-    conditionedby_id = conditionedby_id.replace(/:/g,'\\:');
-    var cf_id = <% 'CF-' . $CustomField->id . '-ShowRow' |h,n,j%>;
-    cf_id = cf_id.replace(/:/g,'\\:');
-    var conditionedby_vals = ["<% join('", "', @conditioned_by_vals) |n%>"];
-    var condition_met = false;
-    var condition_vals = jQuery('#'+conditionedby_id+' td.value li');
-    if (condition_vals.length) {
-        jQuery.each(condition_vals, function(i, condition_val) {
-            if (jQuery.inArray(jQuery.trim(condition_val.text()), conditionedby_vals) != -1) {
-                condition_met = true;
-                return false;
-            }
-        });
-    } else {
-        var condition_val = jQuery('#'+conditionedby_id+' td.value');
-        if (condition_val.length) {
-            if (jQuery.inArray(jQuery.trim(condition_val.text()), conditionedby_vals) != -1) {
-                condition_met = true;
-            }
-        } else {
-            condition_met = true;
-        }
-    }
-    if (condition_met) {
-        jQuery('#'+cf_id).show();
-    }
-    else {
-        jQuery('#'+cf_id).hide();
-    }
-%       } else {
-%           my $conditioned_by_cf = RT::CustomField->new($session{CurrentUser});
-%           $conditioned_by_cf->Load($conditioned_by->{CF});
-%           if ($conditioned_by_cf->id) {
-    var conditionedby_class = <% '.record-field.CustomField__' . $conditioned_by_cf->Name . '_' |h,n,j%>;
-    conditionedby_class = conditionedby_class.replace(/:/g,'\\:');
-    var cf_class = <% '.record-field.CustomField__' . $CustomField->Name . '_' |h,n,j%>;
-    cf_class = cf_class.replace(/:/g,'\\:');
-    var conditionedby_vals = ["<% join('", "', @conditioned_by_vals) |n%>"];
-    var condition_met = false;
-    var condition_vals = jQuery(conditionedby_class+' .value li');
-    if (condition_vals.length) {
-        jQuery.each(condition_vals, function(i, condition_val) {
-            if (jQuery.inArray(jQuery.trim(condition_val.text()), conditionedby_vals) != -1) {
-                condition_met = true;
-                return false;
-            }
-        });
-    } else {
-        if (jQuery.inArray(jQuery.trim(jQuery(conditionedby_class+' .value').text()), conditionedby_vals) != -1) {
-            condition_met = true;
-        }
-    }
-    if (condition_met) {
-        jQuery(cf_class).show();
-    }
-    else {
-        jQuery(cf_class).hide();
-    }
+%       my $conditioned_by_cf = RT::CustomField->new($session{CurrentUser});
+%       $conditioned_by_cf->Load($conditioned_by->{CF});
+%       if ($conditioned_by_cf->id) {
+%           if ($ParentSelector eq 'id') {
+    var cf_selector = <% '#CF-' . $CustomField->id . '-ShowRow' |h,n,j%>;
+%           } else {
+    var conditionedby_selector = <% '.record-field.CustomField__' . $conditioned_by_cf->Name . '_' |h,n,j%>;
+    var cf_selector = <% '.record-field.CustomField__' . $CustomField->Name . '_' |h,n,j%>;
 %           }
+%           my $condition_vals_str = $Object->CustomFieldValuesAsString($conditioned_by_cf->id);
+%           my @condition_vals = split(/\n/, $condition_vals_str);
+%           if ($conditioned_by_cf->Type =~ /^Date(Time)?$/) {
+%               @condition_vals = map {my $DateObj = RT::Date->new($session{'CurrentUser'}); $DateObj->Set(Format => 'ISO', Value => $_, Timezone => 'utc'); $DateObj->ISO;} @condition_vals;
+%           }
+    cf_selector = cf_selector.replace(/:/g,'\\:');
+    var conditionedby_vals = ["<% join('", "', @conditioned_by_vals) |n%>"];
+    var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
+%           if ($conditioned_by_cf->IsAdded($Object->id)) {
+    var condition_met = condition_is_met(conditionedby_vals, condition_vals, "<% $conditioned_by->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
+%           } else {
+    var condition_met = true;
+%           }
+
+    if (condition_met) {
+        jQuery(cf_selector).show();
+    }
+    else {
+        jQuery(cf_selector).hide();
+    }
 %       }
 });
 </script>
 %   }
 <%ARGS>
 $CustomField
+$Object
 $ParentSelector => 'id'
 </%ARGS>
