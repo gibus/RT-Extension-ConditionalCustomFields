@@ -4,7 +4,12 @@ jQuery(function() {
     select.change(function() {
         var cf_id = jQuery(this).find('option:selected').val();
         if (cf_id) {
-            jQuery.getJSON('/Helpers/SelectCondition', {CustomFieldId: cf_id}, function(res) {
+            jQuery.ajax({
+                dataType: "json",
+                url: '/Helpers/SelectCondition',
+                async: false,
+                data:  {CustomFieldId: cf_id},
+                success: function(res) {
                 if (res) {
                     jQuery('select[name=ConditionalOp]').remove();
                     jQuery('.conditioned-by-admin-op').append(res['op']);
@@ -50,7 +55,7 @@ jQuery(function() {
                     }
                 }
                 jQuery('.conditional-field-condition').show();
-            });
+            }});
         } else {
             jQuery('span input[name=ConditionedBy]').each(function() {
                 if (jQuery(this).val()) {
