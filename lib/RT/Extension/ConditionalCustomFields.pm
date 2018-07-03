@@ -81,6 +81,8 @@ or add C<RT::Extension::ConditionalCustomFields> to your existing C<@Plugins> li
 
 =cut
 
+RT->AddJavaScript('conditional-customfields.js');
+
 package
     RT::CustomField;
 
