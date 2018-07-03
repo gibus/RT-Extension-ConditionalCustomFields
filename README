@@ -81,7 +81,7 @@ METHODS
     CustomField and a value, along with the following methods, to
     RT::CustomField objets:
 
-  SetConditionedBy CF, VALUE
+  SetConditionedBy CF, OP, VALUE
     Set the ConditionedBy property for this CustomField object to
     CustomFieldValue CF with value set to VALUE. CF should be an existing
     CustomField object or the id of an existing CustomField object, or the

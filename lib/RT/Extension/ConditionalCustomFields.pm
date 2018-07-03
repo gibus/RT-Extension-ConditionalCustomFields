@@ -88,7 +88,7 @@ package
 
 ConditionalCustomFields adds a ConditionedBy property, that is a L<CustomField|RT::CustomField> and a value, along with the following methods, to L<RT::CustomField> objets:
 
-=head2 SetConditionedBy CF, VALUE
+=head2 SetConditionedBy CF, OP, VALUE
 
 Set the ConditionedBy property for this L<CustomField|RT::CustomField> object to L<CustomFieldValue|RT::CustomField> C<CF> with value set to C<VALUE>. C<CF> should be an existing L<CustomField|RT::CustomField> object or the id of an existing L<CustomField|RT::CustomField> object, or the name of an unambiguous existing L<CustomField|RT::CustomField> object. C<VALUE> should be a string. Current user should have C<SeeCustomField> and C<ModifyCustomField> rights for this L<CustomField|RT::CustomField> and C<SeeCustomField> right for the L<CustomField|RT::CustomField> which this L<CustomField|RT::CustomField> is conditionned by. Returns (1, 'Status message') on success and (0, 'Error Message') on failure.
 
@@ -97,6 +97,7 @@ Set the ConditionedBy property for this L<CustomField|RT::CustomField> object to
 sub SetConditionedBy {
     my $self = shift;
     my $cf = shift;
+    my $op = shift;
     my $value = shift;
 
     return (0, $self->loc('CF parametrer is mandatory')) if (!$cf && $value);
@@ -131,6 +132,8 @@ sub SetConditionedBy {
               && $attr->Content->{CF}
               && $cf->id
               && $attr->Content->{CF} == $cf->id
+              && $attr->Content->{op}
+              && $attr->Content->{op} eq $op
               && $attr->Content->{vals}
               && arrays_identical($attr->Content->{vals}, \@values)) {
         return (1, $self->loc('ConditionedBy unchanged'));
@@ -142,13 +145,13 @@ sub SetConditionedBy {
 
         my ($ret, $msg) = $self->SetAttribute(
             Name    => 'ConditionedBy',
-            Content => {CF => $cf->id, vals => \@values},
+            Content => {CF => $cf->id, op => $op, vals => \@values},
         );
         if ($ret) {
-            return ($ret, $self->loc('ConditionedBy changed to CustomField #[_1], values [_2]', $cf->id, join(', ', @values)));
+            return ($ret, $self->loc('ConditionedBy changed to CustomField #[_1], op:[_2], values [_3]', $cf->id, $op, join(', ', @values)));
         }
         else {
-            return ($ret, $self->loc( "Can't change ConditionedBy to CustomField #[_1], values [_2]: [_3]", $cf->id, join(', ', @values), $msg));
+            return ($ret, $self->loc( "Can't change ConditionedBy to CustomField #[_1], op: [_2], values [_3]: [_4]", $cf->id, $op, join(', ', @values), $msg));
         }
     } elsif ($attr) {
         my ($ret, $msg) = $attr->Delete;
@@ -324,9 +327,11 @@ The value as a C<string> of the L<CustomField|RT::CustomField> defined by the C<
                 next unless $conditional_cf->id;
 
                 my $conditioned_by_cfid;
+                my $conditioned_by_op;
                 my $conditioned_by_value;
                 if ($item->{'ConditionedBy'}) {
                     $conditioned_by_value = $item->{'ConditionedBy'};
+                    $conditioned_by_op = $item->{'ConditionedByOp'} || 'is';
                     if ($item->{'ConditionedByCF'} ) {
                         if ($item->{'ConditionedByCF'} =~ /^\d+$/) {
                             # Already have a cf ID
@@ -351,7 +356,7 @@ The value as a C<string> of the L<CustomField|RT::CustomField> defined by the C<
                 }
 
                 if ($conditioned_by_value) {
-                    my ($ret, $msg) = $conditional_cf->SetConditionedBy($conditioned_by_cfid, $conditioned_by_value);
+                    my ($ret, $msg) = $conditional_cf->SetConditionedBy($conditioned_by_cfid, $conditioned_by_op, $conditioned_by_value);
                     unless($ret) {
                         $RT::Logger->error($msg);
                         next;

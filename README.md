@@ -67,7 +67,7 @@ Works with RT 4.2 or greater
 
 ConditionalCustomFields adds a ConditionedBy property, that is a [CustomField](https://metacpan.org/pod/RT::CustomField) and a value, along with the following methods, to [RT::CustomField](https://metacpan.org/pod/RT::CustomField) objets:
 
-## SetConditionedBy CF, VALUE
+## SetConditionedBy CF, OP, VALUE
 
 Set the ConditionedBy property for this [CustomField](https://metacpan.org/pod/RT::CustomField) object to [CustomFieldValue](https://metacpan.org/pod/RT::CustomField) `CF` with value set to `VALUE`. `CF` should be an existing [CustomField](https://metacpan.org/pod/RT::CustomField) object or the id of an existing [CustomField](https://metacpan.org/pod/RT::CustomField) object, or the name of an unambiguous existing [CustomField](https://metacpan.org/pod/RT::CustomField) object. `VALUE` should be a string. Current user should have `SeeCustomField` and `ModifyCustomField` rights for this [CustomField](https://metacpan.org/pod/RT::CustomField) and `SeeCustomField` right for the [CustomField](https://metacpan.org/pod/RT::CustomField) which this [CustomField](https://metacpan.org/pod/RT::CustomField) is conditionned by. Returns (1, 'Status message') on success and (0, 'Error Message') on failure.
 
