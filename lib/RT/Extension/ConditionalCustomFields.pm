@@ -139,7 +139,7 @@ sub SetConditionedBy {
         return (1, $self->loc('ConditionedBy unchanged'));
     }
 
-    my $op = $attr->Content->{op} || 'is';
+    $op = 'is' unless $op;
 
     if ($cf->id && @values) {
         return (0, "Permission Denied")
