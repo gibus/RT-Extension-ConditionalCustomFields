@@ -129,17 +129,19 @@ sub SetConditionedBy {
         return scalar keys %hash == scalar @leftary;
     }
 
+    $op = 'is' unless $op;
+
     my $attr = $self->FirstAttribute('ConditionedBy');
     if ($attr && $attr->Content
               && $attr->Content->{CF}
               && $cf->id
               && $attr->Content->{CF} == $cf->id
+              && $attr->Content->{op}
+              && $attr->Content->{op} eq $op
               && $attr->Content->{vals}
               && arrays_identical($attr->Content->{vals}, \@values)) {
         return (1, $self->loc('ConditionedBy unchanged'));
     }
-
-    $op = 'is' unless $op;
 
     if ($cf->id && @values) {
         return (0, "Permission Denied")
