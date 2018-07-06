@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 96;
+use RT::Extension::ConditionalCustomFields::Test tests => 101;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -221,6 +221,17 @@ is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformSingle CF a
 is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionFreeformSingle two vals');
 is($conditioned_by->{vals}->[0], 'me', 'ConditionedBy ConditionFreeformSingle first val');
 is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionFreeformSingle second val');
+
+@cf_conditioned_by_value_freeform_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+$mjs->field($cf_conditioned_by_value_freeform_single[0], "10");
+$mjs->field($cf_conditioned_by_value_freeform_single[1], "1");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformSingle CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionFreeformSingle two vals');
+is($conditioned_by->{vals}->[0], '1', 'ConditionedBy ConditionFreeformSingle first val');
+is($conditioned_by->{vals}->[1], '10', 'ConditionedBy ConditionFreeformSingle second val');
 
 # Delete conditioned by
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
