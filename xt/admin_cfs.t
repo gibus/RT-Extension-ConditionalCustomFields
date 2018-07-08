@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 101;
+use RT::Extension::ConditionalCustomFields::Test tests => 159;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -22,6 +22,9 @@ my $cf_values_select_multiple = $cf_condition_select_multiple->Values->ItemsArra
 my $cf_condition_freeform_single = RT::CustomField->new(RT->SystemUser);
 $cf_condition_freeform_single->Create(Name => 'ConditionFreeformSingle', Type => 'Freeform', MaxValues => 1, Queue => 'General');
 
+my $cf_condition_freeform_multiple = RT::CustomField->new(RT->SystemUser);
+$cf_condition_freeform_multiple->Create(Name => 'ConditionFreeformMultiple', Type => 'Freeform', MaxValues => 0, Queue => 'General');
+
 my $cf_conditioned_by = RT::CustomField->new(RT->SystemUser);
 $cf_conditioned_by->Create(Name => 'ConditionedBy', Type => 'Freeform', MaxValues => 1, Queue => 'General');
 
@@ -35,11 +38,12 @@ $m->get_ok($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_conditio
 my $cf_conditioned_by_form = $m->form_name('ModifyCustomField');
 my $cf_conditioned_by_CF = $cf_conditioned_by_form->find_input('ConditionalCF');
 my @cf_conditioned_by_CF_options = $cf_conditioned_by_CF->possible_values;
-is(scalar(@cf_conditioned_by_CF_options), 4, 'Can be conditioned by 4 CFs');
+is(scalar(@cf_conditioned_by_CF_options), 5, 'Can be conditioned by 5 CFs');
 is($cf_conditioned_by_CF_options[0], '', 'Can be conditioned by nothing');
-is($cf_conditioned_by_CF_options[1], $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF');
-is($cf_conditioned_by_CF_options[2], $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF');
-is($cf_conditioned_by_CF_options[3], $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF');
+is($cf_conditioned_by_CF_options[1], $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF');
+is($cf_conditioned_by_CF_options[2], $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF');
+is($cf_conditioned_by_CF_options[3], $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF');
+is($cf_conditioned_by_CF_options[4], $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF');
 
 my $mjs = WWW::Mechanize::PhantomJS->new();
 $mjs->get($m->rt_base_url . '?user=root;pass=password');
@@ -47,11 +51,12 @@ $mjs->get($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_condition
 ok($mjs->content =~ /Customfield is conditioned by/, 'Can be conditioned by (with js)');
 
 @cf_conditioned_by_CF_options = $mjs->xpath('//select[@name="ConditionalCF"]/option');
-is(scalar(@cf_conditioned_by_CF_options), 4, 'Can be conditioned by 4 CFs (with js)');
+is(scalar(@cf_conditioned_by_CF_options), 5, 'Can be conditioned by 5 CFs (with js)');
 is($cf_conditioned_by_CF_options[0]->get_value, '', 'Can be conditioned by nothing (with js)');
-is($cf_conditioned_by_CF_options[1]->get_value, $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF (with js)');
-is($cf_conditioned_by_CF_options[2]->get_value, $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF (with js)');
-is($cf_conditioned_by_CF_options[3]->get_value, $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF (with js)');
+is($cf_conditioned_by_CF_options[1]->get_value, $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[2]->get_value, $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF (with js)');
+is($cf_conditioned_by_CF_options[3]->get_value, $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[4]->get_value, $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF (with js)');
 
 # Conditioned by Select Single CF
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
@@ -232,6 +237,130 @@ is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformSingle CF a
 is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionFreeformSingle two vals');
 is($conditioned_by->{vals}->[0], '1', 'ConditionedBy ConditionFreeformSingle first val');
 is($conditioned_by->{vals}->[1], '10', 'ConditionedBy ConditionFreeformSingle second val');
+
+# Conditioned by Freeform Multiple
+$cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
+$mjs->field($cf_conditioned_by_CF, $cf_condition_freeform_multiple->id);
+$mjs->eval_in_page("jQuery('select[name=ConditionalCF]').trigger('change');");
+
+my @cf_conditioned_by_op_options_freeform_multiple = $mjs->xpath('//select[@name="ConditionalOp"]/option');
+is(scalar(@cf_conditioned_by_op_options_freeform_multiple), 7, 'Can be conditioned with 7 operations by ConditionFreeformMultiple');
+is($cf_conditioned_by_op_options_freeform_multiple[0]->get_value, "matches", "Matches operation for conditioned by ConditionFreeformMultiple");
+is($cf_conditioned_by_op_options_freeform_multiple[1]->get_value, "doesn't match", "Doesn't match operation for conditioned by ConditionFreeformMultiple");
+is($cf_conditioned_by_op_options_freeform_multiple[2]->get_value, "is", "Is operation for conditioned by ConditionFreeformMultiple");
+is($cf_conditioned_by_op_options_freeform_multiple[3]->get_value, "isn't", "Isn't operation for conditioned by ConditionFreeformMultiple");
+is($cf_conditioned_by_op_options_freeform_multiple[4]->get_value, "less than", "Less than operation for conditioned by ConditionFreeformMultiple");
+is($cf_conditioned_by_op_options_freeform_multiple[5]->get_value, "greater than", "Greater than operation for conditioned by ConditionFreeformMultiple");
+is($cf_conditioned_by_op_options_freeform_multiple[6]->get_value, "between", "Between operation for conditioned by ConditionFreeformMultiple");
+
+my $cf_conditioned_by_op_freeform_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+is($cf_conditioned_by_op_freeform_multiple->get_value, "matches", "Matches operation selected for conditioned by ConditionFreeformMultiple");
+my @cf_conditioned_by_value_freeform_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by matches ConditionFreeformMultiple");
+$mjs->field($cf_conditioned_by_value_freeform_multiple[0], "more");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
+is($conditioned_by->{op}, "matches", "ConditionedBy ConditionFreeformMultiple CF and matches operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformMultiple one val');
+is($conditioned_by->{vals}->[0], 'more', 'ConditionedBy ConditionFreeformMultiple val');
+
+$cf_conditioned_by_op_freeform_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_freeform_multiple, "doesn't match");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_freeform_multiple->get_value, "doesn't match", "Doesn't match operation selected for conditioned by ConditionFreeformMultiple");
+@cf_conditioned_by_value_freeform_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by doesn't match ConditionFreeformMultiple");
+$mjs->field($cf_conditioned_by_value_freeform_multiple[0], "no issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
+is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionFreeformMultiple CF and doesn't match operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformMultiple one val');
+is($conditioned_by->{vals}->[0], 'no issue', 'ConditionedBy ConditionFreeformMultiple val');
+
+$cf_conditioned_by_op_freeform_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_freeform_multiple, "is");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_freeform_multiple->get_value, "is", "Is operation selected for conditioned by ConditionFreeformMultiple");
+@cf_conditioned_by_value_freeform_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by is ConditionFreeformMultiple");
+$mjs->field($cf_conditioned_by_value_freeform_multiple[0], "More info");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
+is($conditioned_by->{op}, "is", "ConditionedBy ConditionFreeformMultiple CF and is operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformMultiple one val');
+is($conditioned_by->{vals}->[0], 'More info', 'ConditionedBy ConditionFreeformMultiple val');
+
+$cf_conditioned_by_op_freeform_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_freeform_multiple, "isn't");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_freeform_multiple->get_value, "isn't", "Isn't operation selected for conditioned by ConditionFreeformMultiple");
+@cf_conditioned_by_value_freeform_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by isn't ConditionFreeformMultiple");
+$mjs->field($cf_conditioned_by_value_freeform_multiple[0], "No issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
+is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionFreeformMultiple CF and isn't operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformMultiple one val');
+is($conditioned_by->{vals}->[0], 'No issue', 'ConditionedBy ConditionFreeformMultiple val');
+
+$cf_conditioned_by_op_freeform_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_freeform_multiple, "less than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_freeform_multiple->get_value, "less than", "Less than operation selected for conditioned by ConditionFreeformMultiple");
+@cf_conditioned_by_value_freeform_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by less than ConditionFreeformMultiple");
+$mjs->field($cf_conditioned_by_value_freeform_multiple[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
+is($conditioned_by->{op}, "less than", "ConditionedBy ConditionFreeformMultiple CF and less than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformMultiple one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionFreeformMultiple val');
+
+$cf_conditioned_by_op_freeform_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_freeform_multiple, "greater than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_freeform_multiple->get_value, "greater than", "Greater than operation selected for conditioned by ConditionFreeformMultiple");
+@cf_conditioned_by_value_freeform_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by greater than ConditionFreeformMultiple");
+$mjs->field($cf_conditioned_by_value_freeform_multiple[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
+is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionFreeformMultiple CF and greater than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionFreeformMultiple one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionFreeformMultiple val');
+
+$cf_conditioned_by_op_freeform_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_freeform_multiple, "between");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_freeform_multiple->get_value, "between", "Between operation selected for conditioned by ConditionFreeformMultiple");
+@cf_conditioned_by_value_freeform_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_freeform_multiple), 2, "Two possible values for conditioned by between ConditionFreeformMultiple");
+$mjs->field($cf_conditioned_by_value_freeform_multiple[0], "you");
+$mjs->field($cf_conditioned_by_value_freeform_multiple[1], "me");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformMultiple CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionFreeformMultiple two vals');
+is($conditioned_by->{vals}->[0], 'me', 'ConditionedBy ConditionFreeformMultiple first val');
+is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionFreeformMultiple second val');
+
+@cf_conditioned_by_value_freeform_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+$mjs->field($cf_conditioned_by_value_freeform_multiple[0], "10");
+$mjs->field($cf_conditioned_by_value_freeform_multiple[1], "1");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformMultiple CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionFreeformMultiple two vals');
+is($conditioned_by->{vals}->[0], '1', 'ConditionedBy ConditionFreeformMultiple first val');
+is($conditioned_by->{vals}->[1], '10', 'ConditionedBy ConditionFreeformMultiple second val');
 
 # Delete conditioned by
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
