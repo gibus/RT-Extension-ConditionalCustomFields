@@ -66,7 +66,8 @@ function condition_is_met(conditionedby_vals, condition_vals, condition_op, lang
                         return !condition_met;
                     }
                 } else if (condition_op == "matches" || condition_op == "doesn't match") {
-                    if (condition_vals[i].indexOf(conditionedby_vals[j]) != -1) {
+                    var regex = RegExp(conditionedby_vals[j].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "i");
+                    if (!condition_vals[i].search(regexp)) {
                         return !condition_met;
                     }
                 } else if (condition_op == "less than") {
