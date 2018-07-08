@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 391;
+use RT::Extension::ConditionalCustomFields::Test tests => 507;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -37,6 +37,12 @@ $cf_condition_image_single->Create(Name => 'ConditionImageSingle', Type => 'Imag
 my $cf_condition_image_multiple = RT::CustomField->new(RT->SystemUser);
 $cf_condition_image_multiple->Create(Name => 'ConditionImageMultiple', Type => 'Image', MaxValues => 0, Queue => 'General');
 
+my $cf_condition_binary_single = RT::CustomField->new(RT->SystemUser);
+$cf_condition_binary_single->Create(Name => 'ConditionBinarySingle', Type => 'Binary', MaxValues => 1, Queue => 'General');
+
+my $cf_condition_binary_multiple = RT::CustomField->new(RT->SystemUser);
+$cf_condition_binary_multiple->Create(Name => 'ConditionBinaryMultiple', Type => 'Binary', MaxValues => 1, Queue => 'General');
+
 my $cf_conditioned_by = RT::CustomField->new(RT->SystemUser);
 $cf_conditioned_by->Create(Name => 'ConditionedBy', Type => 'Freeform', MaxValues => 1, Queue => 'General');
 
@@ -50,16 +56,18 @@ $m->get_ok($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_conditio
 my $cf_conditioned_by_form = $m->form_name('ModifyCustomField');
 my $cf_conditioned_by_CF = $cf_conditioned_by_form->find_input('ConditionalCF');
 my @cf_conditioned_by_CF_options = $cf_conditioned_by_CF->possible_values;
-is(scalar(@cf_conditioned_by_CF_options), 9, 'Can be conditioned by 9 CFs');
+is(scalar(@cf_conditioned_by_CF_options), 11, 'Can be conditioned by 11 CFs');
 is($cf_conditioned_by_CF_options[0], '', 'Can be conditioned by nothing');
-is($cf_conditioned_by_CF_options[1], $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF');
-is($cf_conditioned_by_CF_options[2], $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF');
-is($cf_conditioned_by_CF_options[3], $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF');
-is($cf_conditioned_by_CF_options[4], $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF');
-is($cf_conditioned_by_CF_options[5], $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF');
-is($cf_conditioned_by_CF_options[6], $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF');
-is($cf_conditioned_by_CF_options[7], $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF');
-is($cf_conditioned_by_CF_options[8], $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF');
+is($cf_conditioned_by_CF_options[1], $cf_condition_binary_multiple->id, 'Can be conditioned by ConditionBinaryMultiple CF');
+is($cf_conditioned_by_CF_options[2], $cf_condition_binary_single->id, 'Can be conditioned by ConditionBinarySingle CF');
+is($cf_conditioned_by_CF_options[3], $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF');
+is($cf_conditioned_by_CF_options[4], $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF');
+is($cf_conditioned_by_CF_options[5], $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF');
+is($cf_conditioned_by_CF_options[6], $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF');
+is($cf_conditioned_by_CF_options[7], $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF');
+is($cf_conditioned_by_CF_options[8], $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF');
+is($cf_conditioned_by_CF_options[9], $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF');
+is($cf_conditioned_by_CF_options[10], $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF');
 
 my $mjs = WWW::Mechanize::PhantomJS->new();
 $mjs->get($m->rt_base_url . '?user=root;pass=password');
@@ -67,16 +75,18 @@ $mjs->get($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_condition
 ok($mjs->content =~ /Customfield is conditioned by/, 'Can be conditioned by (with js)');
 
 @cf_conditioned_by_CF_options = $mjs->xpath('//select[@name="ConditionalCF"]/option');
-is(scalar(@cf_conditioned_by_CF_options), 9, 'Can be conditioned by 9 CFs (with js)');
+is(scalar(@cf_conditioned_by_CF_options), 11, 'Can be conditioned by 11 CFs (with js)');
 is($cf_conditioned_by_CF_options[0]->get_value, '', 'Can be conditioned by nothing (with js)');
-is($cf_conditioned_by_CF_options[1]->get_value, $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF (with js)');
-is($cf_conditioned_by_CF_options[2]->get_value, $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF (with js)');
-is($cf_conditioned_by_CF_options[3]->get_value, $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF (with js)');
-is($cf_conditioned_by_CF_options[4]->get_value, $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF (with js)');
-is($cf_conditioned_by_CF_options[5]->get_value, $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF (with js)');
-is($cf_conditioned_by_CF_options[6]->get_value, $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF (with js)');
-is($cf_conditioned_by_CF_options[7]->get_value, $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF (with js)');
-is($cf_conditioned_by_CF_options[8]->get_value, $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF (with js)');
+is($cf_conditioned_by_CF_options[1]->get_value, $cf_condition_binary_multiple->id, 'Can be conditioned by ConditionBinaryMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[2]->get_value, $cf_condition_binary_single->id, 'Can be conditioned by ConditionBinarySingle CF (with js)');
+is($cf_conditioned_by_CF_options[3]->get_value, $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[4]->get_value, $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF (with js)');
+is($cf_conditioned_by_CF_options[5]->get_value, $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[6]->get_value, $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF (with js)');
+is($cf_conditioned_by_CF_options[7]->get_value, $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[8]->get_value, $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF (with js)');
+is($cf_conditioned_by_CF_options[9]->get_value, $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF (with js)');
+is($cf_conditioned_by_CF_options[10]->get_value, $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF (with js)');
 
 # Conditioned by Select Single CF
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
@@ -877,6 +887,254 @@ is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionImageMultiple CF an
 is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionImageMultiple two vals');
 is($conditioned_by->{vals}->[0], '1', 'ConditionedBy ConditionImageMultiple first val');
 is($conditioned_by->{vals}->[1], '10', 'ConditionedBy ConditionImageMultiple second val');
+
+# Conditioned by Binary Single
+$cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
+$mjs->field($cf_conditioned_by_CF, $cf_condition_binary_single->id);
+$mjs->eval_in_page("jQuery('select[name=ConditionalCF]').trigger('change');");
+
+my @cf_conditioned_by_op_options_binary_single = $mjs->xpath('//select[@name="ConditionalOp"]/option');
+is(scalar(@cf_conditioned_by_op_options_binary_single), 7, 'Can be conditioned with 7 operations by ConditionBinarySingle');
+is($cf_conditioned_by_op_options_binary_single[0]->get_value, "matches", "Matches operation for conditioned by ConditionBinarySingle");
+is($cf_conditioned_by_op_options_binary_single[1]->get_value, "doesn't match", "Doesn't match operation for conditioned by ConditionBinarySingle");
+is($cf_conditioned_by_op_options_binary_single[2]->get_value, "is", "Is operation for conditioned by ConditionBinarySingle");
+is($cf_conditioned_by_op_options_binary_single[3]->get_value, "isn't", "Isn't operation for conditioned by ConditionBinarySingle");
+is($cf_conditioned_by_op_options_binary_single[4]->get_value, "less than", "Less than operation for conditioned by ConditionBinarySingle");
+is($cf_conditioned_by_op_options_binary_single[5]->get_value, "greater than", "Greater than operation for conditioned by ConditionBinarySingle");
+is($cf_conditioned_by_op_options_binary_single[6]->get_value, "between", "Between operation for conditioned by ConditionBinarySingle");
+
+my $cf_conditioned_by_op_binary_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+is($cf_conditioned_by_op_binary_single->get_value, "matches", "Matches operation selected for conditioned by ConditionBinarySingle");
+my @cf_conditioned_by_value_binary_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by matches ConditionBinarySingle");
+$mjs->field($cf_conditioned_by_value_binary_single[0], "more");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
+is($conditioned_by->{op}, "matches", "ConditionedBy ConditionBinarySingle CF and matches operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinarySingle one val');
+is($conditioned_by->{vals}->[0], 'more', 'ConditionedBy ConditionBinarySingle val');
+
+$cf_conditioned_by_op_binary_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_single, "doesn't match");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_single->get_value, "doesn't match", "Doesn't match operation selected for conditioned by ConditionBinarySingle");
+@cf_conditioned_by_value_binary_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by doesn't match ConditionBinarySingle");
+$mjs->field($cf_conditioned_by_value_binary_single[0], "no issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
+is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionBinarySingle CF and doesn't match operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinarySingle one val');
+is($conditioned_by->{vals}->[0], 'no issue', 'ConditionedBy ConditionBinarySingle val');
+
+$cf_conditioned_by_op_binary_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_single, "is");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_single->get_value, "is", "Is operation selected for conditioned by ConditionBinarySingle");
+@cf_conditioned_by_value_binary_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by is ConditionBinarySingle");
+$mjs->field($cf_conditioned_by_value_binary_single[0], "More info");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
+is($conditioned_by->{op}, "is", "ConditionedBy ConditionBinarySingle CF and is operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinarySingle one val');
+is($conditioned_by->{vals}->[0], 'More info', 'ConditionedBy ConditionBinarySingle val');
+
+$cf_conditioned_by_op_binary_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_single, "isn't");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_single->get_value, "isn't", "Isn't operation selected for conditioned by ConditionBinarySingle");
+@cf_conditioned_by_value_binary_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by isn't ConditionBinarySingle");
+$mjs->field($cf_conditioned_by_value_binary_single[0], "No issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
+is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionBinarySingle CF and isn't operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinarySingle one val');
+is($conditioned_by->{vals}->[0], 'No issue', 'ConditionedBy ConditionBinarySingle val');
+
+$cf_conditioned_by_op_binary_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_single, "less than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_single->get_value, "less than", "Less than operation selected for conditioned by ConditionBinarySingle");
+@cf_conditioned_by_value_binary_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by less than ConditionBinarySingle");
+$mjs->field($cf_conditioned_by_value_binary_single[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
+is($conditioned_by->{op}, "less than", "ConditionedBy ConditionBinarySingle CF and less than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinarySingle one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionBinarySingle val');
+
+$cf_conditioned_by_op_binary_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_single, "greater than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_single->get_value, "greater than", "Greater than operation selected for conditioned by ConditionBinarySingle");
+@cf_conditioned_by_value_binary_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by greater than ConditionBinarySingle");
+$mjs->field($cf_conditioned_by_value_binary_single[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
+is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionBinarySingle CF and greater than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinarySingle one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionBinarySingle val');
+
+$cf_conditioned_by_op_binary_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_single, "between");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_single->get_value, "between", "Between operation selected for conditioned by ConditionBinarySingle");
+@cf_conditioned_by_value_binary_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_single), 2, "Two possible values for conditioned by between ConditionBinarySingle");
+$mjs->field($cf_conditioned_by_value_binary_single[0], "you");
+$mjs->field($cf_conditioned_by_value_binary_single[1], "me");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionBinarySingle CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionBinarySingle two vals');
+is($conditioned_by->{vals}->[0], 'me', 'ConditionedBy ConditionBinarySingle first val');
+is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionBinarySingle second val');
+
+@cf_conditioned_by_value_binary_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+$mjs->field($cf_conditioned_by_value_binary_single[0], "10");
+$mjs->field($cf_conditioned_by_value_binary_single[1], "1");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionBinarySingle CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionBinarySingle two vals');
+is($conditioned_by->{vals}->[0], '1', 'ConditionedBy ConditionBinarySingle first val');
+is($conditioned_by->{vals}->[1], '10', 'ConditionedBy ConditionBinarySingle second val');
+
+# Conditioned by Binary Multiple
+$cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
+$mjs->field($cf_conditioned_by_CF, $cf_condition_binary_multiple->id);
+$mjs->eval_in_page("jQuery('select[name=ConditionalCF]').trigger('change');");
+
+my @cf_conditioned_by_op_options_binary_multiple = $mjs->xpath('//select[@name="ConditionalOp"]/option');
+is(scalar(@cf_conditioned_by_op_options_binary_multiple), 7, 'Can be conditioned with 7 operations by ConditionBinaryMultiple');
+is($cf_conditioned_by_op_options_binary_multiple[0]->get_value, "matches", "Matches operation for conditioned by ConditionBinaryMultiple");
+is($cf_conditioned_by_op_options_binary_multiple[1]->get_value, "doesn't match", "Doesn't match operation for conditioned by ConditionBinaryMultiple");
+is($cf_conditioned_by_op_options_binary_multiple[2]->get_value, "is", "Is operation for conditioned by ConditionBinaryMultiple");
+is($cf_conditioned_by_op_options_binary_multiple[3]->get_value, "isn't", "Isn't operation for conditioned by ConditionBinaryMultiple");
+is($cf_conditioned_by_op_options_binary_multiple[4]->get_value, "less than", "Less than operation for conditioned by ConditionBinaryMultiple");
+is($cf_conditioned_by_op_options_binary_multiple[5]->get_value, "greater than", "Greater than operation for conditioned by ConditionBinaryMultiple");
+is($cf_conditioned_by_op_options_binary_multiple[6]->get_value, "between", "Between operation for conditioned by ConditionBinaryMultiple");
+
+my $cf_conditioned_by_op_binary_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+is($cf_conditioned_by_op_binary_multiple->get_value, "matches", "Matches operation selected for conditioned by ConditionBinaryMultiple");
+my @cf_conditioned_by_value_binary_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by matches ConditionBinaryMultiple");
+$mjs->field($cf_conditioned_by_value_binary_multiple[0], "more");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
+is($conditioned_by->{op}, "matches", "ConditionedBy ConditionBinaryMultiple CF and matches operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinaryMultiple one val');
+is($conditioned_by->{vals}->[0], 'more', 'ConditionedBy ConditionBinaryMultiple val');
+
+$cf_conditioned_by_op_binary_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_multiple, "doesn't match");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_multiple->get_value, "doesn't match", "Doesn't match operation selected for conditioned by ConditionBinaryMultiple");
+@cf_conditioned_by_value_binary_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by doesn't match ConditionBinaryMultiple");
+$mjs->field($cf_conditioned_by_value_binary_multiple[0], "no issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
+is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionBinaryMultiple CF and doesn't match operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinaryMultiple one val');
+is($conditioned_by->{vals}->[0], 'no issue', 'ConditionedBy ConditionBinaryMultiple val');
+
+$cf_conditioned_by_op_binary_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_multiple, "is");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_multiple->get_value, "is", "Is operation selected for conditioned by ConditionBinaryMultiple");
+@cf_conditioned_by_value_binary_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by is ConditionBinaryMultiple");
+$mjs->field($cf_conditioned_by_value_binary_multiple[0], "More info");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
+is($conditioned_by->{op}, "is", "ConditionedBy ConditionBinaryMultiple CF and is operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinaryMultiple one val');
+is($conditioned_by->{vals}->[0], 'More info', 'ConditionedBy ConditionBinaryMultiple val');
+
+$cf_conditioned_by_op_binary_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_multiple, "isn't");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_multiple->get_value, "isn't", "Isn't operation selected for conditioned by ConditionBinaryMultiple");
+@cf_conditioned_by_value_binary_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by isn't ConditionBinaryMultiple");
+$mjs->field($cf_conditioned_by_value_binary_multiple[0], "No issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
+is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionBinaryMultiple CF and isn't operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinaryMultiple one val');
+is($conditioned_by->{vals}->[0], 'No issue', 'ConditionedBy ConditionBinaryMultiple val');
+
+$cf_conditioned_by_op_binary_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_multiple, "less than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_multiple->get_value, "less than", "Less than operation selected for conditioned by ConditionBinaryMultiple");
+@cf_conditioned_by_value_binary_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by less than ConditionBinaryMultiple");
+$mjs->field($cf_conditioned_by_value_binary_multiple[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
+is($conditioned_by->{op}, "less than", "ConditionedBy ConditionBinaryMultiple CF and less than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinaryMultiple one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionBinaryMultiple val');
+
+$cf_conditioned_by_op_binary_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_multiple, "greater than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_multiple->get_value, "greater than", "Greater than operation selected for conditioned by ConditionBinaryMultiple");
+@cf_conditioned_by_value_binary_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by greater than ConditionBinaryMultiple");
+$mjs->field($cf_conditioned_by_value_binary_multiple[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
+is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionBinaryMultiple CF and greater than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionBinaryMultiple one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionBinaryMultiple val');
+
+$cf_conditioned_by_op_binary_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_binary_multiple, "between");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_binary_multiple->get_value, "between", "Between operation selected for conditioned by ConditionBinaryMultiple");
+@cf_conditioned_by_value_binary_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_binary_multiple), 2, "Two possible values for conditioned by between ConditionBinaryMultiple");
+$mjs->field($cf_conditioned_by_value_binary_multiple[0], "you");
+$mjs->field($cf_conditioned_by_value_binary_multiple[1], "me");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionBinaryMultiple CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionBinaryMultiple two vals');
+is($conditioned_by->{vals}->[0], 'me', 'ConditionedBy ConditionBinaryMultiple first val');
+is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionBinaryMultiple second val');
+
+@cf_conditioned_by_value_binary_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+$mjs->field($cf_conditioned_by_value_binary_multiple[0], "10");
+$mjs->field($cf_conditioned_by_value_binary_multiple[1], "1");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionBinaryMultiple CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionBinaryMultiple two vals');
+is($conditioned_by->{vals}->[0], '1', 'ConditionedBy ConditionBinaryMultiple first val');
+is($conditioned_by->{vals}->[1], '10', 'ConditionedBy ConditionBinaryMultiple second val');
 
 # Delete conditioned by
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
