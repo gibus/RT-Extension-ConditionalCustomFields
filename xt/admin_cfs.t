@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 159;
+use RT::Extension::ConditionalCustomFields::Test tests => 275;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -25,6 +25,12 @@ $cf_condition_freeform_single->Create(Name => 'ConditionFreeformSingle', Type =>
 my $cf_condition_freeform_multiple = RT::CustomField->new(RT->SystemUser);
 $cf_condition_freeform_multiple->Create(Name => 'ConditionFreeformMultiple', Type => 'Freeform', MaxValues => 0, Queue => 'General');
 
+my $cf_condition_text_single = RT::CustomField->new(RT->SystemUser);
+$cf_condition_text_single->Create(Name => 'ConditionTextSingle', Type => 'Text', MaxValues => 1, Queue => 'General');
+
+my $cf_condition_wikitext_single = RT::CustomField->new(RT->SystemUser);
+$cf_condition_wikitext_single->Create(Name => 'ConditionWikitextSingle', Type => 'Wikitext', MaxValues => 1, Queue => 'General');
+
 my $cf_conditioned_by = RT::CustomField->new(RT->SystemUser);
 $cf_conditioned_by->Create(Name => 'ConditionedBy', Type => 'Freeform', MaxValues => 1, Queue => 'General');
 
@@ -38,12 +44,14 @@ $m->get_ok($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_conditio
 my $cf_conditioned_by_form = $m->form_name('ModifyCustomField');
 my $cf_conditioned_by_CF = $cf_conditioned_by_form->find_input('ConditionalCF');
 my @cf_conditioned_by_CF_options = $cf_conditioned_by_CF->possible_values;
-is(scalar(@cf_conditioned_by_CF_options), 5, 'Can be conditioned by 5 CFs');
+is(scalar(@cf_conditioned_by_CF_options), 7, 'Can be conditioned by 7 CFs');
 is($cf_conditioned_by_CF_options[0], '', 'Can be conditioned by nothing');
 is($cf_conditioned_by_CF_options[1], $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF');
 is($cf_conditioned_by_CF_options[2], $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF');
 is($cf_conditioned_by_CF_options[3], $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF');
 is($cf_conditioned_by_CF_options[4], $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF');
+is($cf_conditioned_by_CF_options[5], $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF');
+is($cf_conditioned_by_CF_options[6], $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF');
 
 my $mjs = WWW::Mechanize::PhantomJS->new();
 $mjs->get($m->rt_base_url . '?user=root;pass=password');
@@ -51,12 +59,14 @@ $mjs->get($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_condition
 ok($mjs->content =~ /Customfield is conditioned by/, 'Can be conditioned by (with js)');
 
 @cf_conditioned_by_CF_options = $mjs->xpath('//select[@name="ConditionalCF"]/option');
-is(scalar(@cf_conditioned_by_CF_options), 5, 'Can be conditioned by 5 CFs (with js)');
+is(scalar(@cf_conditioned_by_CF_options), 7, 'Can be conditioned by 7 CFs (with js)');
 is($cf_conditioned_by_CF_options[0]->get_value, '', 'Can be conditioned by nothing (with js)');
 is($cf_conditioned_by_CF_options[1]->get_value, $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF (with js)');
 is($cf_conditioned_by_CF_options[2]->get_value, $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF (with js)');
 is($cf_conditioned_by_CF_options[3]->get_value, $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF (with js)');
 is($cf_conditioned_by_CF_options[4]->get_value, $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF (with js)');
+is($cf_conditioned_by_CF_options[5]->get_value, $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF (with js)');
+is($cf_conditioned_by_CF_options[6]->get_value, $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF (with js)');
 
 # Conditioned by Select Single CF
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
@@ -361,6 +371,254 @@ is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformMultiple CF
 is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionFreeformMultiple two vals');
 is($conditioned_by->{vals}->[0], '1', 'ConditionedBy ConditionFreeformMultiple first val');
 is($conditioned_by->{vals}->[1], '10', 'ConditionedBy ConditionFreeformMultiple second val');
+
+# Conditioned by Text Single
+$cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
+$mjs->field($cf_conditioned_by_CF, $cf_condition_text_single->id);
+$mjs->eval_in_page("jQuery('select[name=ConditionalCF]').trigger('change');");
+
+my @cf_conditioned_by_op_options_text_single = $mjs->xpath('//select[@name="ConditionalOp"]/option');
+is(scalar(@cf_conditioned_by_op_options_text_single), 7, 'Can be conditioned with 7 operations by ConditionTextSingle');
+is($cf_conditioned_by_op_options_text_single[0]->get_value, "matches", "Matches operation for conditioned by ConditionTextSingle");
+is($cf_conditioned_by_op_options_text_single[1]->get_value, "doesn't match", "Doesn't match operation for conditioned by ConditionTextSingle");
+is($cf_conditioned_by_op_options_text_single[2]->get_value, "is", "Is operation for conditioned by ConditionTextSingle");
+is($cf_conditioned_by_op_options_text_single[3]->get_value, "isn't", "Isn't operation for conditioned by ConditionTextSingle");
+is($cf_conditioned_by_op_options_text_single[4]->get_value, "less than", "Less than operation for conditioned by ConditionTextSingle");
+is($cf_conditioned_by_op_options_text_single[5]->get_value, "greater than", "Greater than operation for conditioned by ConditionTextSingle");
+is($cf_conditioned_by_op_options_text_single[6]->get_value, "between", "Between operation for conditioned by ConditionTextSingle");
+
+my $cf_conditioned_by_op_text_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+is($cf_conditioned_by_op_text_single->get_value, "matches", "Matches operation selected for conditioned by ConditionTextSingle");
+my @cf_conditioned_by_value_text_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by matches ConditionTextSingle");
+$mjs->field($cf_conditioned_by_value_text_single[0], "more");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
+is($conditioned_by->{op}, "matches", "ConditionedBy ConditionTextSingle CF and matches operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionTextSingle one val');
+is($conditioned_by->{vals}->[0], 'more', 'ConditionedBy ConditionTextSingle val');
+
+$cf_conditioned_by_op_text_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_text_single, "doesn't match");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_text_single->get_value, "doesn't match", "Doesn't match operation selected for conditioned by ConditionTextSingle");
+@cf_conditioned_by_value_text_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by doesn't match ConditionTextSingle");
+$mjs->field($cf_conditioned_by_value_text_single[0], "no issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
+is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionTextSingle CF and doesn't match operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionTextSingle one val');
+is($conditioned_by->{vals}->[0], 'no issue', 'ConditionedBy ConditionTextSingle val');
+
+$cf_conditioned_by_op_text_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_text_single, "is");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_text_single->get_value, "is", "Is operation selected for conditioned by ConditionTextSingle");
+@cf_conditioned_by_value_text_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by is ConditionTextSingle");
+$mjs->field($cf_conditioned_by_value_text_single[0], "More info");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
+is($conditioned_by->{op}, "is", "ConditionedBy ConditionTextSingle CF and is operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionTextSingle one val');
+is($conditioned_by->{vals}->[0], 'More info', 'ConditionedBy ConditionTextSingle val');
+
+$cf_conditioned_by_op_text_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_text_single, "isn't");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_text_single->get_value, "isn't", "Isn't operation selected for conditioned by ConditionTextSingle");
+@cf_conditioned_by_value_text_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by isn't ConditionTextSingle");
+$mjs->field($cf_conditioned_by_value_text_single[0], "No issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
+is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionTextSingle CF and isn't operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionTextSingle one val');
+is($conditioned_by->{vals}->[0], 'No issue', 'ConditionedBy ConditionTextSingle val');
+
+$cf_conditioned_by_op_text_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_text_single, "less than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_text_single->get_value, "less than", "Less than operation selected for conditioned by ConditionTextSingle");
+@cf_conditioned_by_value_text_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by less than ConditionTextSingle");
+$mjs->field($cf_conditioned_by_value_text_single[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
+is($conditioned_by->{op}, "less than", "ConditionedBy ConditionTextSingle CF and less than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionTextSingle one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionTextSingle val');
+
+$cf_conditioned_by_op_text_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_text_single, "greater than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_text_single->get_value, "greater than", "Greater than operation selected for conditioned by ConditionTextSingle");
+@cf_conditioned_by_value_text_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by greater than ConditionTextSingle");
+$mjs->field($cf_conditioned_by_value_text_single[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
+is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionTextSingle CF and greater than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionTextSingle one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionTextSingle val');
+
+$cf_conditioned_by_op_text_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_text_single, "between");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_text_single->get_value, "between", "Between operation selected for conditioned by ConditionTextSingle");
+@cf_conditioned_by_value_text_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_text_single), 2, "Two possible values for conditioned by between ConditionTextSingle");
+$mjs->field($cf_conditioned_by_value_text_single[0], "you");
+$mjs->field($cf_conditioned_by_value_text_single[1], "me");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionTextSingle CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionTextSingle two vals');
+is($conditioned_by->{vals}->[0], 'me', 'ConditionedBy ConditionTextSingle first val');
+is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionTextSingle second val');
+
+@cf_conditioned_by_value_text_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+$mjs->field($cf_conditioned_by_value_text_single[0], "10");
+$mjs->field($cf_conditioned_by_value_text_single[1], "1");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionTextSingle CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionTextSingle two vals');
+is($conditioned_by->{vals}->[0], '1', 'ConditionedBy ConditionTextSingle first val');
+is($conditioned_by->{vals}->[1], '10', 'ConditionedBy ConditionTextSingle second val');
+
+# Conditioned by Wikitext Single
+$cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
+$mjs->field($cf_conditioned_by_CF, $cf_condition_wikitext_single->id);
+$mjs->eval_in_page("jQuery('select[name=ConditionalCF]').trigger('change');");
+
+my @cf_conditioned_by_op_options_wikitext_single = $mjs->xpath('//select[@name="ConditionalOp"]/option');
+is(scalar(@cf_conditioned_by_op_options_wikitext_single), 7, 'Can be conditioned with 7 operations by ConditionWikitextSingle');
+is($cf_conditioned_by_op_options_wikitext_single[0]->get_value, "matches", "Matches operation for conditioned by ConditionWikitextSingle");
+is($cf_conditioned_by_op_options_wikitext_single[1]->get_value, "doesn't match", "Doesn't match operation for conditioned by ConditionWikitextSingle");
+is($cf_conditioned_by_op_options_wikitext_single[2]->get_value, "is", "Is operation for conditioned by ConditionWikitextSingle");
+is($cf_conditioned_by_op_options_wikitext_single[3]->get_value, "isn't", "Isn't operation for conditioned by ConditionWikitextSingle");
+is($cf_conditioned_by_op_options_wikitext_single[4]->get_value, "less than", "Less than operation for conditioned by ConditionWikitextSingle");
+is($cf_conditioned_by_op_options_wikitext_single[5]->get_value, "greater than", "Greater than operation for conditioned by ConditionWikitextSingle");
+is($cf_conditioned_by_op_options_wikitext_single[6]->get_value, "between", "Between operation for conditioned by ConditionWikitextSingle");
+
+my $cf_conditioned_by_op_wikitext_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+is($cf_conditioned_by_op_wikitext_single->get_value, "matches", "Matches operation selected for conditioned by ConditionWikitextSingle");
+my @cf_conditioned_by_value_wikitext_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by matches ConditionWikitextSingle");
+$mjs->field($cf_conditioned_by_value_wikitext_single[0], "more");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
+is($conditioned_by->{op}, "matches", "ConditionedBy ConditionWikitextSingle CF and matches operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionWikitextSingle one val');
+is($conditioned_by->{vals}->[0], 'more', 'ConditionedBy ConditionWikitextSingle val');
+
+$cf_conditioned_by_op_wikitext_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_wikitext_single, "doesn't match");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_wikitext_single->get_value, "doesn't match", "Doesn't match operation selected for conditioned by ConditionWikitextSingle");
+@cf_conditioned_by_value_wikitext_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by doesn't match ConditionWikitextSingle");
+$mjs->field($cf_conditioned_by_value_wikitext_single[0], "no issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
+is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionWikitextSingle CF and doesn't match operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionWikitextSingle one val');
+is($conditioned_by->{vals}->[0], 'no issue', 'ConditionedBy ConditionWikitextSingle val');
+
+$cf_conditioned_by_op_wikitext_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_wikitext_single, "is");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_wikitext_single->get_value, "is", "Is operation selected for conditioned by ConditionWikitextSingle");
+@cf_conditioned_by_value_wikitext_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by is ConditionWikitextSingle");
+$mjs->field($cf_conditioned_by_value_wikitext_single[0], "More info");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
+is($conditioned_by->{op}, "is", "ConditionedBy ConditionWikitextSingle CF and is operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionWikitextSingle one val');
+is($conditioned_by->{vals}->[0], 'More info', 'ConditionedBy ConditionWikitextSingle val');
+
+$cf_conditioned_by_op_wikitext_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_wikitext_single, "isn't");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_wikitext_single->get_value, "isn't", "Isn't operation selected for conditioned by ConditionWikitextSingle");
+@cf_conditioned_by_value_wikitext_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by isn't ConditionWikitextSingle");
+$mjs->field($cf_conditioned_by_value_wikitext_single[0], "No issue");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
+is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionWikitextSingle CF and isn't operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionWikitextSingle one val');
+is($conditioned_by->{vals}->[0], 'No issue', 'ConditionedBy ConditionWikitextSingle val');
+
+$cf_conditioned_by_op_wikitext_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_wikitext_single, "less than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_wikitext_single->get_value, "less than", "Less than operation selected for conditioned by ConditionWikitextSingle");
+@cf_conditioned_by_value_wikitext_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by less than ConditionWikitextSingle");
+$mjs->field($cf_conditioned_by_value_wikitext_single[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
+is($conditioned_by->{op}, "less than", "ConditionedBy ConditionWikitextSingle CF and less than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionWikitextSingle one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionWikitextSingle val');
+
+$cf_conditioned_by_op_wikitext_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_wikitext_single, "greater than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_wikitext_single->get_value, "greater than", "Greater than operation selected for conditioned by ConditionWikitextSingle");
+@cf_conditioned_by_value_wikitext_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by greater than ConditionWikitextSingle");
+$mjs->field($cf_conditioned_by_value_wikitext_single[0], "216");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
+is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionWikitextSingle CF and greater than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionWikitextSingle one val');
+is($conditioned_by->{vals}->[0], '216', 'ConditionedBy ConditionWikitextSingle val');
+
+$cf_conditioned_by_op_wikitext_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_wikitext_single, "between");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_wikitext_single->get_value, "between", "Between operation selected for conditioned by ConditionWikitextSingle");
+@cf_conditioned_by_value_wikitext_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_wikitext_single), 2, "Two possible values for conditioned by between ConditionWikitextSingle");
+$mjs->field($cf_conditioned_by_value_wikitext_single[0], "you");
+$mjs->field($cf_conditioned_by_value_wikitext_single[1], "me");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionWikitextSingle CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionWikitextSingle two vals');
+is($conditioned_by->{vals}->[0], 'me', 'ConditionedBy ConditionWikitextSingle first val');
+is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionWikitextSingle second val');
+
+@cf_conditioned_by_value_wikitext_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+$mjs->field($cf_conditioned_by_value_wikitext_single[0], "10");
+$mjs->field($cf_conditioned_by_value_wikitext_single[1], "1");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionWikitextSingle CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionWikitextSingle two vals');
+is($conditioned_by->{vals}->[0], '1', 'ConditionedBy ConditionWikitextSingle first val');
+is($conditioned_by->{vals}->[1], '10', 'ConditionedBy ConditionWikitextSingle second val');
 
 # Delete conditioned by
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
