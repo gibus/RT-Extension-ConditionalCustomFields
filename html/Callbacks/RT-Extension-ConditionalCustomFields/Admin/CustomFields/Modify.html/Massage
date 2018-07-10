@@ -13,15 +13,15 @@ if ($ARGSRef->{ConditionedBy}) {
         my $cf = RT::CustomField->new($session{CurrentUser});
         $cf->Load($ARGSRef->{ConditionalCF});
         if ($cf->id) {
-            if ($cf->Type =~ /^Date(Time)?$/) {
-                my $datetime_type = $1 ? 1 : 0;
+            if ($cf->Type eq 'DateTime') {
+                # We need to convert from Current User Timezone to UTC
                 for (my $i=0; $i < scalar(@conditioned_by); $i++) {
                     my $DateObj = RT::Date->new($session{'CurrentUser'});
                     $DateObj->Set(Format => 'unknown', Value => $conditioned_by[$i]);
                     if (ref($ARGSRef->{ConditionedBy}) eq 'ARRAY') {
-                        $ARGSRef->{ConditionedBy}->[$i] = $DateObj->ISO(Time => $datetime_type);
+                        $ARGSRef->{ConditionedBy}->[$i] = $DateObj->ISO(Time => 1);
                     } else {
-                        $ARGSRef->{ConditionedBy} = $DateObj->ISO(Time => $datetime_type);
+                        $ARGSRef->{ConditionedBy} = $DateObj->ISO(Time => 1);
                     }
                 }
             }
