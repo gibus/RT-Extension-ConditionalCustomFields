@@ -70,7 +70,12 @@ jQuery(function() {
         jQuery('select[name=ConditionalOp]').change(function() {
             if (jQuery('.conditioned-by-admin-op select').val() == 'between') {
 %   if ($cf->id && $cf->Type =~ /^Date(Time)?$/)  {
-                jQuery('.conditioned-by-admin-vals').append('<span class="ConditionedByValue" style="display: block;"><input type="text" size="16" class="datepicker' + (res['type'] == 'DateTime' ? ' withtime' : '') + '" name="ConditionedBy" value="<% (scalar(@ConditionedByAry) == 2 && $ConditionedByAry[1] !~ /[a-z]/i) ? $ConditionedByAry[1] : '' %>" /></span>');
+%       if ($cf->Type eq 'DateTime') {
+                var withtime_class = ' withtime';
+%       } else {
+                var withtime_class = '';
+%       }
+                jQuery('.conditioned-by-admin-vals').append('<span class="ConditionedByValue" style="display: block;"><input type="text" size="16" class="datepicker' + withtime_class + '" name="ConditionedBy" value="<% (scalar(@ConditionedByAry) == 2 && $ConditionedByAry[1] !~ /[a-z]/i) ? $ConditionedByAry[1] : '' %>" /></span>');
                 activate_datepicker();
 %   } else {
                 jQuery('.conditioned-by-admin-vals').append('<span class="ConditionedByValue" style="display: block;"><input type="text" size="20" name="ConditionedBy" value="<% scalar(@ConditionedByAry) == 2 ? $ConditionedByAry[1] : '' %>" /></span>');
