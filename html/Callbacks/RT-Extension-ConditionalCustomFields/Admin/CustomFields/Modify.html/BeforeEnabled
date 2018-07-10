@@ -108,17 +108,16 @@ jQuery(function() {
         <span class="ConditionedByValue" style="display: block;"><input type="checkbox" name="ConditionedBy" value="<% $cf_value->Name %>"<% (grep {$_ eq $cf_value->Name} @ConditionedByAry) ? qq[ checked="checked"] : '' |n%> /><% $cf_value->Name %></span>
 %           }
 %       } elsif ($cf->Type =~ /^Date(Time)?$/) {
-%       my $datetime_type = $1;
+%       my $datetime_type = $1 || '';
 %       my @conditioned_by_vals = @ConditionedByAry;
 %       for (my $i=0; $i < scalar(@conditioned_by_vals); $i++) {
 %           my $DateObj = RT::Date->new($session{'CurrentUser'});
 %           $DateObj->Set(Format => 'unknown', Value => $conditioned_by_vals[$i], Timezone => 'utc');
-%           $conditioned_by_vals[$i] = $DateObj->Strftime("%F %T");
-%           $RT::Logger->debug("BLUP BEFORE !".$ConditionedByAry[$i]."! AFTER=!".$conditioned_by_vals[$i]."!");
+%           $conditioned_by_vals[$i] = $datetime_type ? $DateObj->Strftime("%F %T") : $DateObj->Strftime("%F");
 %       }
-        <span class="ConditionedByValue" style="display: block;"><input type="text" size="16" class="datepicker<% ($datetime_type eq 'DateTime' ? ' withtime' : '') %>" name="ConditionedBy" value="<% (scalar(@conditioned_by_vals) >= 1 && $conditioned_by_vals[0] !~ /[a-z]/i) ? $conditioned_by_vals[0] : '' %>" /></span>
+        <span class="ConditionedByValue" style="display: block;"><input type="text" size="16" class="datepicker<% ($datetime_type ? ' withtime' : '') %>" name="ConditionedBy" value="<% (scalar(@conditioned_by_vals) >= 1 && $conditioned_by_vals[0] !~ /[a-z]/i) ? $conditioned_by_vals[0] : '' %>" /></span>
 %           if ($conditioned_by->{op} && $conditioned_by->{op} eq 'between') {
-                <span class="ConditionedByValue" style="display: block;"><input type="text" size="16" class="datepicker<% ($datetime_type eq 'DateTime' ? ' withtime' : '') %>" name="ConditionedBy" value="<% (scalar(@conditioned_by_vals) == 2 && $conditioned_by_vals[1] !~ /[a-z]/i) ? $conditioned_by_vals[1] : '' %>" /></span>
+                <span class="ConditionedByValue" style="display: block;"><input type="text" size="16" class="datepicker<% ($datetime_type ? ' withtime' : '') %>" name="ConditionedBy" value="<% (scalar(@conditioned_by_vals) == 2 && $conditioned_by_vals[1] !~ /[a-z]/i) ? $conditioned_by_vals[1] : '' %>" /></span>
 %           }
 %       } else {
         <span class="ConditionedByValue" style="display: block;"><input type="text" size="20 "name="ConditionedBy" value="<% scalar(@ConditionedByAry) >= 1 ? $ConditionedByAry[0] : '' %>" /></span>

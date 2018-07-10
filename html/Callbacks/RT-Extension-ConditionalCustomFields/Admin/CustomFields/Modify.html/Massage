@@ -14,10 +14,15 @@ if ($ARGSRef->{ConditionedBy}) {
         $cf->Load($ARGSRef->{ConditionalCF});
         if ($cf->id) {
             if ($cf->Type =~ /^Date(Time)?$/) {
+                my $datetime_type = $1 ? 1 : 0;
                 for (my $i=0; $i < scalar(@conditioned_by); $i++) {
                     my $DateObj = RT::Date->new($session{'CurrentUser'});
                     $DateObj->Set(Format => 'unknown', Value => $conditioned_by[$i]);
-                    $ARGSRef->{ConditionedBy}->[$i] = $DateObj->ISO;
+                    if (ref($ARGSRef->{ConditionedBy}) eq 'ARRAY') {
+                        $ARGSRef->{ConditionedBy}->[$i] = $DateObj->ISO(Time => $datetime_type);
+                    } else {
+                        $ARGSRef->{ConditionedBy} = $DateObj->ISO(Time => $datetime_type);
+                    }
                 }
             }
         }
