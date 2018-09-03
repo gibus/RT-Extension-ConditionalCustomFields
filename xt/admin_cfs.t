@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 593;
+use RT::Extension::ConditionalCustomFields::Test tests => 612;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -67,6 +67,9 @@ my $cf_values_autocomplete_multiple = $cf_condition_autocomplete_multiple->Value
 my $cf_condition_date_single = RT::CustomField->new(RT->SystemUser);
 $cf_condition_date_single->Create(Name => 'ConditionDateSingle', Type => 'Date', MaxValues => 1, Queue => 'General');
 
+my $cf_condition_datetime_single = RT::CustomField->new(RT->SystemUser);
+$cf_condition_datetime_single->Create(Name => 'ConditionDateTimeSingle', Type => 'DateTime', MaxValues => 1, Queue => 'General');
+
 my $cf_conditioned_by = RT::CustomField->new(RT->SystemUser);
 $cf_conditioned_by->Create(Name => 'ConditionedBy', Type => 'Freeform', MaxValues => 1, Queue => 'General');
 
@@ -80,7 +83,7 @@ $m->get_ok($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_conditio
 my $cf_conditioned_by_form = $m->form_name('ModifyCustomField');
 my $cf_conditioned_by_CF = $cf_conditioned_by_form->find_input('ConditionalCF');
 my @cf_conditioned_by_CF_options = $cf_conditioned_by_CF->possible_values;
-is(scalar(@cf_conditioned_by_CF_options), 15, 'Can be conditioned by 15 CFs');
+is(scalar(@cf_conditioned_by_CF_options), 16, 'Can be conditioned by 15 CFs');
 is($cf_conditioned_by_CF_options[0], '', 'Can be conditioned by nothing');
 is($cf_conditioned_by_CF_options[1], $cf_condition_autocomplete_multiple->id, 'Can be conditioned by ConditionAutocompleteMultiple CF');
 is($cf_conditioned_by_CF_options[2], $cf_condition_autocomplete_single->id, 'Can be conditioned by ConditionAutocompleteSingle CF');
@@ -88,14 +91,15 @@ is($cf_conditioned_by_CF_options[3], $cf_condition_binary_multiple->id, 'Can be 
 is($cf_conditioned_by_CF_options[4], $cf_condition_binary_single->id, 'Can be conditioned by ConditionBinarySingle CF');
 is($cf_conditioned_by_CF_options[5], $cf_condition_combobox_single->id, 'Can be conditioned by ConditionComboboxSingle CF');
 is($cf_conditioned_by_CF_options[6], $cf_condition_date_single->id, 'Can be conditioned by ConditionDateSingle CF');
-is($cf_conditioned_by_CF_options[7], $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF');
-is($cf_conditioned_by_CF_options[8], $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF');
-is($cf_conditioned_by_CF_options[9], $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF');
-is($cf_conditioned_by_CF_options[10], $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF');
-is($cf_conditioned_by_CF_options[11], $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF');
-is($cf_conditioned_by_CF_options[12], $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF');
-is($cf_conditioned_by_CF_options[13], $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF');
-is($cf_conditioned_by_CF_options[14], $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF');
+is($cf_conditioned_by_CF_options[7], $cf_condition_datetime_single->id, 'Can be conditioned by ConditionDateTimeSingle CF');
+is($cf_conditioned_by_CF_options[8], $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF');
+is($cf_conditioned_by_CF_options[9], $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF');
+is($cf_conditioned_by_CF_options[10], $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF');
+is($cf_conditioned_by_CF_options[11], $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF');
+is($cf_conditioned_by_CF_options[12], $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF');
+is($cf_conditioned_by_CF_options[13], $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF');
+is($cf_conditioned_by_CF_options[14], $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF');
+is($cf_conditioned_by_CF_options[15], $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF');
 
 my $mjs = WWW::Mechanize::PhantomJS->new();
 $mjs->get($m->rt_base_url . '?user=root;pass=password');
@@ -103,7 +107,7 @@ $mjs->get($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_condition
 ok($mjs->content =~ /Customfield is conditioned by/, 'Can be conditioned by (with js)');
 
 @cf_conditioned_by_CF_options = $mjs->xpath('//select[@name="ConditionalCF"]/option');
-is(scalar(@cf_conditioned_by_CF_options), 15, 'Can be conditioned by 15 CFs (with js)');
+is(scalar(@cf_conditioned_by_CF_options), 16, 'Can be conditioned by 15 CFs (with js)');
 is($cf_conditioned_by_CF_options[0]->get_value, '', 'Can be conditioned by nothing (with js)');
 is($cf_conditioned_by_CF_options[1]->get_value, $cf_condition_autocomplete_multiple->id, 'Can be conditioned by ConditionAutocompleteMultiple CF (with js)');
 is($cf_conditioned_by_CF_options[2]->get_value, $cf_condition_autocomplete_single->id, 'Can be conditioned by ConditionAutocompleteSingle CF (with js)');
@@ -111,14 +115,15 @@ is($cf_conditioned_by_CF_options[3]->get_value, $cf_condition_binary_multiple->i
 is($cf_conditioned_by_CF_options[4]->get_value, $cf_condition_binary_single->id, 'Can be conditioned by ConditionBinarySingle CF (with js)');
 is($cf_conditioned_by_CF_options[5]->get_value, $cf_condition_combobox_single->id, 'Can be conditioned by ConditionComboboxSingle CF (with js)');
 is($cf_conditioned_by_CF_options[6]->get_value, $cf_condition_date_single->id, 'Can be conditioned by ConditionDateSingle CF (with js)');
-is($cf_conditioned_by_CF_options[7]->get_value, $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF (with js)');
-is($cf_conditioned_by_CF_options[8]->get_value, $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF (with js)');
-is($cf_conditioned_by_CF_options[9]->get_value, $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF (with js)');
-is($cf_conditioned_by_CF_options[10]->get_value, $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF (with js)');
-is($cf_conditioned_by_CF_options[11]->get_value, $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF (with js)');
-is($cf_conditioned_by_CF_options[12]->get_value, $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF (with js)');
-is($cf_conditioned_by_CF_options[13]->get_value, $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF (with js)');
-is($cf_conditioned_by_CF_options[14]->get_value, $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF (with js)');
+is($cf_conditioned_by_CF_options[7]->get_value, $cf_condition_datetime_single->id, 'Can be conditioned by ConditionDateTimeSingle CF (with js)');
+is($cf_conditioned_by_CF_options[8]->get_value, $cf_condition_freeform_multiple->id, 'Can be conditioned by ConditionFreeformMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[9]->get_value, $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF (with js)');
+is($cf_conditioned_by_CF_options[10]->get_value, $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[11]->get_value, $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF (with js)');
+is($cf_conditioned_by_CF_options[12]->get_value, $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[13]->get_value, $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF (with js)');
+is($cf_conditioned_by_CF_options[14]->get_value, $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF (with js)');
+is($cf_conditioned_by_CF_options[15]->get_value, $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF (with js)');
 
 # Conditioned by Select Single CF
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
@@ -1377,6 +1382,46 @@ is($conditioned_by->{op}, "between", "ConditionedBy ConditionDateSingle CF and b
 is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionDateSingle two vals');
 is($conditioned_by->{vals}->[0], '2021-03-21', 'ConditionedBy ConditionDateSingle first val');
 is($conditioned_by->{vals}->[1], '2021-06-21', 'ConditionedBy ConditionDateSingle second val');
+
+# Conditioned by DateTime Single
+$cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
+$mjs->field($cf_conditioned_by_CF, $cf_condition_datetime_single->id);
+$mjs->eval_in_page("jQuery('select[name=ConditionalCF]').trigger('change');");
+
+my @cf_conditioned_by_op_options_datetime_single = $mjs->xpath('//select[@name="ConditionalOp"]/option');
+is(scalar(@cf_conditioned_by_op_options_datetime_single), 4, 'Can be conditioned with 4 operations by ConditionDateTimeSingle');
+is($cf_conditioned_by_op_options_datetime_single[0]->get_value, "less than", "Less than operation for conditioned by ConditionDateTimeSingle");
+is($cf_conditioned_by_op_options_datetime_single[1]->get_value, "is", "Is operation for conditioned by ConditionDateTimeSingle");
+is($cf_conditioned_by_op_options_datetime_single[2]->get_value, "greater than", "Greater than operation for conditioned by ConditionDateTimeSingle");
+is($cf_conditioned_by_op_options_datetime_single[3]->get_value, "between", "Between operation for conditioned by ConditionDateTimeSingle");
+
+# Set user TZ to play with datetime
+my $user = RT::Test->load_or_create_user(Name => 'root', Password => 'password');
+$user->SetTimezone('Europe/Paris');
+
+my $cf_conditioned_by_op_datetime_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+is($cf_conditioned_by_op_datetime_single->get_value, "less than", "Less than operation selected for conditioned by ConditionDateTimeSingle");
+my @cf_conditioned_by_value_datetime_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_datetime_single), 1, "One possible value for conditioned by less than ConditionDateTimeSingle");
+$mjs->field($cf_conditioned_by_value_datetime_single[0], "2021-06-21 00:42:00");
+my $calendar_time = $mjs->xpath('//div[@id="ui-datepicker-div"]', single => 1);
+ok($calendar_time->is_hidden, 'Hide Calendar/Time before clicking on date field');
+$mjs->click($cf_conditioned_by_value_datetime_single[0]);
+ok($calendar_time->is_displayed, 'Show Calendar/Time before clicking on date field');
+my $calendar_time_year = $mjs->xpath('//select[@class="ui-datepicker-year"]/option[@value="2021"]', single => 1);
+ok($calendar_time_year->is_selected, 'Chosen year in calendar');
+my $calendar_time_month = $mjs->xpath('//select[@class="ui-datepicker-month"]/option[@value="5"]', single => 1);
+ok($calendar_time_month->is_selected, 'Chosen month in calendar');
+my $calendar_time_day = $mjs->xpath('//td[contains(@class, "ui-datepicker-current-day")]/a', single => 1);
+is($calendar_time_day->get_text, '21', 'Chosen day in calendar');
+my $calendar_time_time = $mjs->xpath('//dd[@class="ui_tpicker_time"]', single => 1);
+is($calendar_time_time->get_text, '00:42:00', 'Chosen time in calendar');
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
+is($conditioned_by->{op}, "less than", "ConditionedBy ConditionDateTimeSingle CF and doesn't match operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionDateTimeSingle one val');
+is($conditioned_by->{vals}->[0], '2021-06-20 22:42:00', 'ConditionedBy ConditionFreeformSingle val');
 
 # Delete conditioned by
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
