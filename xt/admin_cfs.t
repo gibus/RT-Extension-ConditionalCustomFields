@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 692;
+use RT::Extension::ConditionalCustomFields::Test tests => 731;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -73,6 +73,9 @@ $cf_condition_datetime_single->Create(Name => 'ConditionDateTimeSingle', Type =>
 my $cf_condition_ipaddress_single = RT::CustomField->new(RT->SystemUser);
 $cf_condition_ipaddress_single->Create(Name => 'ConditionIPAddressSingle', Type => 'IPAddress', MaxValues => 1, Queue => 'General');
 
+my $cf_condition_ipaddress_multiple = RT::CustomField->new(RT->SystemUser);
+$cf_condition_ipaddress_multiple->Create(Name => 'ConditionIPAddressMultiple', Type => 'IPAddress', MaxValues => 1, Queue => 'General');
+
 my $cf_conditioned_by = RT::CustomField->new(RT->SystemUser);
 $cf_conditioned_by->Create(Name => 'ConditionedBy', Type => 'Freeform', MaxValues => 1, Queue => 'General');
 
@@ -86,7 +89,7 @@ $m->get_ok($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_conditio
 my $cf_conditioned_by_form = $m->form_name('ModifyCustomField');
 my $cf_conditioned_by_CF = $cf_conditioned_by_form->find_input('ConditionalCF');
 my @cf_conditioned_by_CF_options = $cf_conditioned_by_CF->possible_values;
-is(scalar(@cf_conditioned_by_CF_options), 17, 'Can be conditioned by 17 CFs');
+is(scalar(@cf_conditioned_by_CF_options), 18, 'Can be conditioned by 18 CFs');
 is($cf_conditioned_by_CF_options[0], '', 'Can be conditioned by nothing');
 is($cf_conditioned_by_CF_options[1], $cf_condition_autocomplete_multiple->id, 'Can be conditioned by ConditionAutocompleteMultiple CF');
 is($cf_conditioned_by_CF_options[2], $cf_condition_autocomplete_single->id, 'Can be conditioned by ConditionAutocompleteSingle CF');
@@ -99,11 +102,12 @@ is($cf_conditioned_by_CF_options[8], $cf_condition_freeform_multiple->id, 'Can b
 is($cf_conditioned_by_CF_options[9], $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF');
 is($cf_conditioned_by_CF_options[10], $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF');
 is($cf_conditioned_by_CF_options[11], $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF');
-is($cf_conditioned_by_CF_options[12], $cf_condition_ipaddress_single->id, 'Can be conditioned by ConditionIPAddressSingle CF');
-is($cf_conditioned_by_CF_options[13], $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF');
-is($cf_conditioned_by_CF_options[14], $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF');
-is($cf_conditioned_by_CF_options[15], $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF');
-is($cf_conditioned_by_CF_options[16], $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF');
+is($cf_conditioned_by_CF_options[12], $cf_condition_ipaddress_multiple->id, 'Can be conditioned by ConditionIPAddressMultiple CF');
+is($cf_conditioned_by_CF_options[13], $cf_condition_ipaddress_single->id, 'Can be conditioned by ConditionIPAddressSingle CF');
+is($cf_conditioned_by_CF_options[14], $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF');
+is($cf_conditioned_by_CF_options[15], $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF');
+is($cf_conditioned_by_CF_options[16], $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF');
+is($cf_conditioned_by_CF_options[17], $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF');
 
 my $mjs = WWW::Mechanize::PhantomJS->new();
 $mjs->get($m->rt_base_url . '?user=root;pass=password');
@@ -111,7 +115,7 @@ $mjs->get($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_condition
 ok($mjs->content =~ /Customfield is conditioned by/, 'Can be conditioned by (with js)');
 
 @cf_conditioned_by_CF_options = $mjs->xpath('//select[@name="ConditionalCF"]/option');
-is(scalar(@cf_conditioned_by_CF_options), 17, 'Can be conditioned by 17 CFs (with js)');
+is(scalar(@cf_conditioned_by_CF_options), 18, 'Can be conditioned by 18 CFs (with js)');
 is($cf_conditioned_by_CF_options[0]->get_value, '', 'Can be conditioned by nothing (with js)');
 is($cf_conditioned_by_CF_options[1]->get_value, $cf_condition_autocomplete_multiple->id, 'Can be conditioned by ConditionAutocompleteMultiple CF (with js)');
 is($cf_conditioned_by_CF_options[2]->get_value, $cf_condition_autocomplete_single->id, 'Can be conditioned by ConditionAutocompleteSingle CF (with js)');
@@ -124,11 +128,12 @@ is($cf_conditioned_by_CF_options[8]->get_value, $cf_condition_freeform_multiple-
 is($cf_conditioned_by_CF_options[9]->get_value, $cf_condition_freeform_single->id, 'Can be conditioned by ConditionFreeformSingle CF (with js)');
 is($cf_conditioned_by_CF_options[10]->get_value, $cf_condition_image_multiple->id, 'Can be conditioned by ConditionImageMultiple CF (with js)');
 is($cf_conditioned_by_CF_options[11]->get_value, $cf_condition_image_single->id, 'Can be conditioned by ConditionImageSingle CF (with js)');
-is($cf_conditioned_by_CF_options[12]->get_value, $cf_condition_ipaddress_single->id, 'Can be conditioned by ConditionIPAddressSingle CF (with js)');
-is($cf_conditioned_by_CF_options[13]->get_value, $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF (with js)');
-is($cf_conditioned_by_CF_options[14]->get_value, $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF (with js)');
-is($cf_conditioned_by_CF_options[15]->get_value, $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF (with js)');
-is($cf_conditioned_by_CF_options[16]->get_value, $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF (with js)');
+is($cf_conditioned_by_CF_options[12]->get_value, $cf_condition_ipaddress_multiple->id, 'Can be conditioned by ConditionIPAddressMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[13]->get_value, $cf_condition_ipaddress_single->id, 'Can be conditioned by ConditionIPAddressSingle CF (with js)');
+is($cf_conditioned_by_CF_options[14]->get_value, $cf_condition_select_multiple->id, 'Can be conditioned by ConditionSelectMultiple CF (with js)');
+is($cf_conditioned_by_CF_options[15]->get_value, $cf_condition_select_single->id, 'Can be conditioned by ConditionSelectSingle CF (with js)');
+is($cf_conditioned_by_CF_options[16]->get_value, $cf_condition_text_single->id, 'Can be conditioned by ConditionTextSingle CF (with js)');
+is($cf_conditioned_by_CF_options[17]->get_value, $cf_condition_wikitext_single->id, 'Can be conditioned by ConditionWikitextSingle CF (with js)');
 
 # Conditioned by Select Single CF
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
@@ -1599,6 +1604,89 @@ is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionIPAddressSingle CF 
 is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionIPAddressSingle two vals');
 is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressSingle first val');
 is($conditioned_by->{vals}->[1], '192.168.1.21', 'ConditionedBy ConditionIPAddressSingle second val');
+
+# Conditioned by IPAddress Multiple
+$cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
+$mjs->field($cf_conditioned_by_CF, $cf_condition_ipaddress_multiple->id);
+$mjs->eval_in_page("jQuery('select[name=ConditionalCF]').trigger('change');");
+
+my @cf_conditioned_by_op_options_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]/option');
+is(scalar(@cf_conditioned_by_op_options_ipaddress_multiple), 5, 'Can be conditioned with 5 operations by ConditionIPAddressMultiple');
+is($cf_conditioned_by_op_options_ipaddress_multiple[0]->get_value, "is", "Is operation for conditioned by ConditionIPAddressMultiple");
+is($cf_conditioned_by_op_options_ipaddress_multiple[1]->get_value, "isn't", "Isn't operation for conditioned by ConditionIPAddressMultiple");
+is($cf_conditioned_by_op_options_ipaddress_multiple[2]->get_value, "less than", "Less than operation for conditioned by ConditionIPAddressMultiple");
+is($cf_conditioned_by_op_options_ipaddress_multiple[3]->get_value, "greater than", "Greater than operation for conditioned by ConditionIPAddressMultiple");
+is($cf_conditioned_by_op_options_ipaddress_multiple[4]->get_value, "between", "Between operation for conditioned by ConditionIPAddressMultiple");
+
+my $cf_conditioned_by_op_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+is($cf_conditioned_by_op_ipaddress_multiple->get_value, "is", "Is operation selected for conditioned by ConditionIPAddressMultiple");
+my @cf_conditioned_by_value_ipaddress_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 1, "One possible value for conditioned by is ConditionIPAddressMultiple");
+$mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.6");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
+is($conditioned_by->{op}, "is", "ConditionedBy ConditionIPAddressMultiple CF and is operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressMultiple one val');
+is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple val');
+
+$cf_conditioned_by_op_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_ipaddress_multiple, "isn't");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_ipaddress_multiple->get_value, "isn't", "Isn't operation selected for conditioned by ConditionIPAddressMultiple");
+@cf_conditioned_by_value_ipaddress_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 1, "One possible value for conditioned by isn't ConditionIPAddressMultiple");
+$mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.6");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
+is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionIPAddressMultiple CF and isn't operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressMultiple one val');
+is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple val');
+
+$cf_conditioned_by_op_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_ipaddress_multiple, "less than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_ipaddress_multiple->get_value, "less than", "Less than operation selected for conditioned by ConditionIPAddressMultiple");
+@cf_conditioned_by_value_ipaddress_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 1, "One possible value for conditioned by less than ConditionIPAddressMultiple");
+$mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.6");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
+is($conditioned_by->{op}, "less than", "ConditionedBy ConditionIPAddressMultiple CF and less than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressMultiple one val');
+is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple val');
+
+$cf_conditioned_by_op_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_ipaddress_multiple, "greater than");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_ipaddress_multiple->get_value, "greater than", "Greater than operation selected for conditioned by ConditionIPAddressMultiple");
+@cf_conditioned_by_value_ipaddress_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 1, "One possible value for conditioned by greater than ConditionIPAddressMultiple");
+$mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.6");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
+is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionIPAddressMultiple CF and greater than operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressMultiple one val');
+is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple val');
+
+$cf_conditioned_by_op_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_ipaddress_multiple, "between");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_ipaddress_multiple->get_value, "between", "Between operation selected for conditioned by ConditionIPAddressMultiple");
+@cf_conditioned_by_value_ipaddress_multiple = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 2, "Two possible values for conditioned by between ConditionIPAddressMultiple");
+$mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.21");
+$mjs->field($cf_conditioned_by_value_ipaddress_multiple[1], "192.168.1.6");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
+is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionIPAddressMultiple CF and between operation');
+is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionIPAddressMultiple two vals');
+is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple first val');
+is($conditioned_by->{vals}->[1], '192.168.1.21', 'ConditionedBy ConditionIPAddressMultiple second val');
 
 # Delete conditioned by
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
