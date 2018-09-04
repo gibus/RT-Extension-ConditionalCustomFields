@@ -2,17 +2,26 @@
 if ($ARGSRef->{ConditionedBy}) {
     my @conditioned_by = ref($ARGSRef->{ConditionedBy}) eq 'ARRAY' ? @{$ARGSRef->{ConditionedBy}} : ($ARGSRef->{ConditionedBy});
 
-    if ($ARGSRef->{ConditionalOp} eq 'between') {
-        if (scalar(@conditioned_by) == 2 && $conditioned_by[0] gt $conditioned_by[1]) {
-            my @sorted_conditioned_by = reverse @conditioned_by;
-            $ARGSRef->{ConditionedBy} = \@sorted_conditioned_by;
-        }
-    }
-
     if ($ARGSRef->{ConditionalCF}) {
         my $cf = RT::CustomField->new($session{CurrentUser});
         $cf->Load($ARGSRef->{ConditionalCF});
         if ($cf->id) {
+            # Normalize IpAddresses to sort them as strings
+            if ($cf->Type =~ /^IPAddress(Range)?$/ && ref($ARGSRef->{ConditionedBy}) eq 'ARRAY') {
+                for (my $i=0; $i < scalar(@conditioned_by); $i++) {
+                    $ARGSRef->{ConditionedBy}->[$i] = join('.', map {sprintf("%03d", $_)} split(/\./, $conditioned_by[$i]));
+                }
+                @conditioned_by = @{$ARGSRef->{ConditionedBy}};
+            }
+
+            if ($ARGSRef->{ConditionalOp} eq 'between') {
+                if (scalar(@conditioned_by) == 2 && $conditioned_by[0] gt $conditioned_by[1]) {
+                    my @sorted_conditioned_by = reverse @conditioned_by;
+                    $ARGSRef->{ConditionedBy} = \@sorted_conditioned_by;
+                    @conditioned_by = @sorted_conditioned_by;
+                }
+            }
+
             if ($cf->Type eq 'DateTime') {
                 # We need to convert from Current User Timezone to UTC
                 for (my $i=0; $i < scalar(@conditioned_by); $i++) {
@@ -22,6 +31,15 @@ if ($ARGSRef->{ConditionedBy}) {
                         $ARGSRef->{ConditionedBy}->[$i] = $DateObj->ISO(Time => 1);
                     } else {
                         $ARGSRef->{ConditionedBy} = $DateObj->ISO(Time => 1);
+                    }
+                }
+            } elsif ($cf->Type =~ /^IPAddress(Range)?$/) {
+                # Remove leading zeros in IPAddress parts
+                for (my $i=0; $i < scalar(@conditioned_by); $i++) {
+                    if (ref($ARGSRef->{ConditionedBy}) eq 'ARRAY') {
+                        $ARGSRef->{ConditionedBy}->[$i] = join('.', map {sprintf("%d", $_)} split(/\./, $conditioned_by[$i]));
+                    } else {
+                        $ARGSRef->{ConditionedBy} = join('.', map {sprintf("%d", $_)} split(/\./, $conditioned_by[$i]));
                     }
                 }
             }
