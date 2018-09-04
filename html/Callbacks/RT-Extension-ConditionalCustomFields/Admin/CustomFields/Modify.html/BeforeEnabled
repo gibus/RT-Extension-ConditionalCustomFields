@@ -92,7 +92,7 @@ jQuery(function() {
 <tr class="conditionedby"><td class="label"><&|/l&>Customfield is conditioned by</&></td><td>
 <table class="conditioned-by-admin"><tr>
     <td class="conditioned-by-admin-cf">
-        <& /Admin/Elements/SelectCustomField,
+        <& /Elements/SelectConditionalCustomField,
                             Name => "ConditionalCF",
                             LookupType => $CustomField->LookupType,
                             Default => $default,
