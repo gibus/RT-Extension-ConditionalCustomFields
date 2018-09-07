@@ -1625,7 +1625,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionIPAddressSingle CF and is operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressSingle one val');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressSingle val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressSingle val');
 
 $cf_conditioned_by_op_ipaddress_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_ipaddress_single, "isn't");
@@ -1640,7 +1640,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionIPAddressSingle CF and isn't operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressSingle one val');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressSingle val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressSingle val');
 
 $cf_conditioned_by_op_ipaddress_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_ipaddress_single, "less than");
@@ -1655,7 +1655,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionIPAddressSingle CF and less than operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressSingle one val');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressSingle val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressSingle val');
 
 $cf_conditioned_by_op_ipaddress_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_ipaddress_single, "greater than");
@@ -1670,7 +1670,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionIPAddressSingle CF and greater than operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressSingle one val');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressSingle val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressSingle val');
 
 $cf_conditioned_by_op_ipaddress_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_ipaddress_single, "between");
@@ -1686,8 +1686,8 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionIPAddressSingle CF and between operation');
 is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionIPAddressSingle two vals');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressSingle first val');
-is($conditioned_by->{vals}->[1], '192.168.1.21', 'ConditionedBy ConditionIPAddressSingle second val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressSingle first val');
+is($conditioned_by->{vals}->[1], '192.168.001.021', 'ConditionedBy ConditionIPAddressSingle second val');
 
 # Conditioned by IPAddress Multiple
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
@@ -1713,7 +1713,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionIPAddressMultiple CF and is operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressMultiple one val');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressMultiple val');
 
 $cf_conditioned_by_op_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_ipaddress_multiple, "isn't");
@@ -1728,7 +1728,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionIPAddressMultiple CF and isn't operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressMultiple one val');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressMultiple val');
 
 $cf_conditioned_by_op_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_ipaddress_multiple, "less than");
@@ -1743,7 +1743,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionIPAddressMultiple CF and less than operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressMultiple one val');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressMultiple val');
 
 $cf_conditioned_by_op_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_ipaddress_multiple, "greater than");
@@ -1758,7 +1758,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionIPAddressMultiple CF and greater than operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionIPAddressMultiple one val');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressMultiple val');
 
 $cf_conditioned_by_op_ipaddress_multiple = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_ipaddress_multiple, "between");
@@ -1774,8 +1774,8 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionIPAddressMultiple CF and between operation');
 is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionIPAddressMultiple two vals');
-is($conditioned_by->{vals}->[0], '192.168.1.6', 'ConditionedBy ConditionIPAddressMultiple first val');
-is($conditioned_by->{vals}->[1], '192.168.1.21', 'ConditionedBy ConditionIPAddressMultiple second val');
+is($conditioned_by->{vals}->[0], '192.168.001.006', 'ConditionedBy ConditionIPAddressMultiple first val');
+is($conditioned_by->{vals}->[1], '192.168.001.021', 'ConditionedBy ConditionIPAddressMultiple second val');
 
 # Delete conditioned by
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);

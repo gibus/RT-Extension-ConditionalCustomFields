@@ -7,11 +7,16 @@ if ($ARGSRef->{ConditionedBy}) {
         $cf->Load($ARGSRef->{ConditionalCF});
         if ($cf->id) {
             # Normalize IpAddresses to sort them as strings
-            if ($cf->Type =~ /^IPAddress(Range)?$/ && ref($ARGSRef->{ConditionedBy}) eq 'ARRAY') {
+            if ($cf->Type =~ /^IPAddress(Range)?$/) {
                 for (my $i=0; $i < scalar(@conditioned_by); $i++) {
-                    $ARGSRef->{ConditionedBy}->[$i] = join('.', map {sprintf("%03d", $_)} split(/\./, $conditioned_by[$i]));
+                    if (ref($ARGSRef->{ConditionedBy}) eq 'ARRAY') {
+                        $ARGSRef->{ConditionedBy}->[$i] = RT::ObjectCustomFieldValue->ParseIP($conditioned_by[$i]);
+                        @conditioned_by = @{$ARGSRef->{ConditionedBy}};
+                    } else {
+                        $ARGSRef->{ConditionedBy} = RT::ObjectCustomFieldValue->ParseIP($conditioned_by[$i]);
+                        @conditioned_by = ($ARGSRef->{ConditionedBy});
+                    }
                 }
-                @conditioned_by = @{$ARGSRef->{ConditionedBy}};
             }
 
             if ($ARGSRef->{ConditionalOp} eq 'between') {
@@ -31,15 +36,6 @@ if ($ARGSRef->{ConditionedBy}) {
                         $ARGSRef->{ConditionedBy}->[$i] = $DateObj->ISO(Time => 1);
                     } else {
                         $ARGSRef->{ConditionedBy} = $DateObj->ISO(Time => 1);
-                    }
-                }
-            } elsif ($cf->Type =~ /^IPAddress(Range)?$/) {
-                # Remove leading zeros in IPAddress parts
-                for (my $i=0; $i < scalar(@conditioned_by); $i++) {
-                    if (ref($ARGSRef->{ConditionedBy}) eq 'ARRAY') {
-                        $ARGSRef->{ConditionedBy}->[$i] = join('.', map {sprintf("%d", $_)} split(/\./, $conditioned_by[$i]));
-                    } else {
-                        $ARGSRef->{ConditionedBy} = join('.', map {sprintf("%d", $_)} split(/\./, $conditioned_by[$i]));
                     }
                 }
             }
