@@ -111,9 +111,7 @@ is($cf_conditioned_by_CF_options[17], $cf_condition_wikitext_single->id, 'Can be
 
 my $mjs = WWW::Mechanize::PhantomJS->new(phantomjs_arg => ["--ssl-protocol=any"]);
 $mjs->get($m->rt_base_url . '?user=root;pass=password');
-sleep 1;
 $mjs->get($m->rt_base_url . 'Admin/CustomFields/Modify.html?id=' . $cf_conditioned_by->id);
-sleep 1;
 ok($mjs->content =~ /Customfield is conditioned by/, 'Can be conditioned by (with js)');
 
 @cf_conditioned_by_CF_options = $mjs->xpath('//select[@name="ConditionalCF"]/option');
@@ -158,7 +156,6 @@ $cf_conditioned_by_CFV_1->click;
 my $cf_conditioned_by_CFV_2 = $mjs->xpath('//input[@value="' . $cf_values_select_single->[2]->Name . '"]', single => 1);
 $cf_conditioned_by_CFV_2->click;
 $mjs->click('Update');
-sleep 1;
 
 my $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_select_single->id, 'ConditionedBy ConditionSelectSingle CF');
@@ -187,7 +184,6 @@ $cf_conditioned_by_CFV_1->click;
 $cf_conditioned_by_CFV_2 = $mjs->xpath('//input[@value="' . $cf_values_select_multiple->[2]->Name . '"]', single => 1);
 $cf_conditioned_by_CFV_2->click;
 $mjs->click('Update');
-sleep 1;
 
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_select_multiple->id, 'ConditionedBy ConditionSelectMultiple CF');
@@ -216,7 +212,6 @@ my @cf_conditioned_by_value_freeform_single = $mjs->xpath('//input[@name="Condit
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by matches ConditionFreeformSingle");
 $mjs->field($cf_conditioned_by_value_freeform_single[0], "more");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
 is($conditioned_by->{op}, "matches", "ConditionedBy ConditionFreeformSingle CF and matches operation");
@@ -231,7 +226,6 @@ is($cf_conditioned_by_op_freeform_single->get_value, "doesn't match", "Doesn't m
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by doesn't match ConditionFreeformSingle");
 $mjs->field($cf_conditioned_by_value_freeform_single[0], "no issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
 is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionFreeformSingle CF and doesn't match operation");
@@ -246,7 +240,6 @@ is($cf_conditioned_by_op_freeform_single->get_value, "is", "Is operation selecte
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by is ConditionFreeformSingle");
 $mjs->field($cf_conditioned_by_value_freeform_single[0], "More info");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionFreeformSingle CF and is operation");
@@ -261,7 +254,6 @@ is($cf_conditioned_by_op_freeform_single->get_value, "isn't", "Isn't operation s
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by isn't ConditionFreeformSingle");
 $mjs->field($cf_conditioned_by_value_freeform_single[0], "No issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionFreeformSingle CF and isn't operation");
@@ -276,7 +268,6 @@ is($cf_conditioned_by_op_freeform_single->get_value, "less than", "Less than ope
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by less than ConditionFreeformSingle");
 $mjs->field($cf_conditioned_by_value_freeform_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionFreeformSingle CF and less than operation");
@@ -291,7 +282,6 @@ is($cf_conditioned_by_op_freeform_single->get_value, "greater than", "Greater th
 is(scalar(@cf_conditioned_by_value_freeform_single), 1, "One possible value for conditioned by greater than ConditionFreeformSingle");
 $mjs->field($cf_conditioned_by_value_freeform_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionFreeformSingle CF and greater than operation");
@@ -307,7 +297,6 @@ is(scalar(@cf_conditioned_by_value_freeform_single), 2, "Two possible values for
 $mjs->field($cf_conditioned_by_value_freeform_single[0], "you");
 $mjs->field($cf_conditioned_by_value_freeform_single[1], "me");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformSingle CF and between operation');
@@ -319,7 +308,6 @@ is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionFreeformSingle s
 $mjs->field($cf_conditioned_by_value_freeform_single[0], "10");
 $mjs->field($cf_conditioned_by_value_freeform_single[1], "1");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_single->id, 'ConditionedBy ConditionFreeformSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformSingle CF and between operation');
@@ -348,7 +336,6 @@ my @cf_conditioned_by_value_freeform_multiple = $mjs->xpath('//input[@name="Cond
 is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by matches ConditionFreeformMultiple");
 $mjs->field($cf_conditioned_by_value_freeform_multiple[0], "more");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
 is($conditioned_by->{op}, "matches", "ConditionedBy ConditionFreeformMultiple CF and matches operation");
@@ -363,7 +350,6 @@ is($cf_conditioned_by_op_freeform_multiple->get_value, "doesn't match", "Doesn't
 is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by doesn't match ConditionFreeformMultiple");
 $mjs->field($cf_conditioned_by_value_freeform_multiple[0], "no issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
 is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionFreeformMultiple CF and doesn't match operation");
@@ -378,7 +364,6 @@ is($cf_conditioned_by_op_freeform_multiple->get_value, "is", "Is operation selec
 is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by is ConditionFreeformMultiple");
 $mjs->field($cf_conditioned_by_value_freeform_multiple[0], "More info");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionFreeformMultiple CF and is operation");
@@ -393,7 +378,6 @@ is($cf_conditioned_by_op_freeform_multiple->get_value, "isn't", "Isn't operation
 is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by isn't ConditionFreeformMultiple");
 $mjs->field($cf_conditioned_by_value_freeform_multiple[0], "No issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionFreeformMultiple CF and isn't operation");
@@ -408,7 +392,6 @@ is($cf_conditioned_by_op_freeform_multiple->get_value, "less than", "Less than o
 is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by less than ConditionFreeformMultiple");
 $mjs->field($cf_conditioned_by_value_freeform_multiple[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionFreeformMultiple CF and less than operation");
@@ -423,7 +406,6 @@ is($cf_conditioned_by_op_freeform_multiple->get_value, "greater than", "Greater 
 is(scalar(@cf_conditioned_by_value_freeform_multiple), 1, "One possible value for conditioned by greater than ConditionFreeformMultiple");
 $mjs->field($cf_conditioned_by_value_freeform_multiple[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionFreeformMultiple CF and greater than operation");
@@ -439,7 +421,6 @@ is(scalar(@cf_conditioned_by_value_freeform_multiple), 2, "Two possible values f
 $mjs->field($cf_conditioned_by_value_freeform_multiple[0], "you");
 $mjs->field($cf_conditioned_by_value_freeform_multiple[1], "me");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformMultiple CF and between operation');
@@ -451,7 +432,6 @@ is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionFreeformMultiple
 $mjs->field($cf_conditioned_by_value_freeform_multiple[0], "10");
 $mjs->field($cf_conditioned_by_value_freeform_multiple[1], "1");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_freeform_multiple->id, 'ConditionedBy ConditionFreeformMultiple CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionFreeformMultiple CF and between operation');
@@ -480,7 +460,6 @@ my @cf_conditioned_by_value_text_single = $mjs->xpath('//input[@name="Conditione
 is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by matches ConditionTextSingle");
 $mjs->field($cf_conditioned_by_value_text_single[0], "more");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
 is($conditioned_by->{op}, "matches", "ConditionedBy ConditionTextSingle CF and matches operation");
@@ -495,7 +474,6 @@ is($cf_conditioned_by_op_text_single->get_value, "doesn't match", "Doesn't match
 is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by doesn't match ConditionTextSingle");
 $mjs->field($cf_conditioned_by_value_text_single[0], "no issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
 is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionTextSingle CF and doesn't match operation");
@@ -510,7 +488,6 @@ is($cf_conditioned_by_op_text_single->get_value, "is", "Is operation selected fo
 is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by is ConditionTextSingle");
 $mjs->field($cf_conditioned_by_value_text_single[0], "More info");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionTextSingle CF and is operation");
@@ -525,7 +502,6 @@ is($cf_conditioned_by_op_text_single->get_value, "isn't", "Isn't operation selec
 is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by isn't ConditionTextSingle");
 $mjs->field($cf_conditioned_by_value_text_single[0], "No issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionTextSingle CF and isn't operation");
@@ -540,7 +516,6 @@ is($cf_conditioned_by_op_text_single->get_value, "less than", "Less than operati
 is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by less than ConditionTextSingle");
 $mjs->field($cf_conditioned_by_value_text_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionTextSingle CF and less than operation");
@@ -555,7 +530,6 @@ is($cf_conditioned_by_op_text_single->get_value, "greater than", "Greater than o
 is(scalar(@cf_conditioned_by_value_text_single), 1, "One possible value for conditioned by greater than ConditionTextSingle");
 $mjs->field($cf_conditioned_by_value_text_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionTextSingle CF and greater than operation");
@@ -571,7 +545,6 @@ is(scalar(@cf_conditioned_by_value_text_single), 2, "Two possible values for con
 $mjs->field($cf_conditioned_by_value_text_single[0], "you");
 $mjs->field($cf_conditioned_by_value_text_single[1], "me");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionTextSingle CF and between operation');
@@ -583,7 +556,6 @@ is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionTextSingle secon
 $mjs->field($cf_conditioned_by_value_text_single[0], "10");
 $mjs->field($cf_conditioned_by_value_text_single[1], "1");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_text_single->id, 'ConditionedBy ConditionTextSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionTextSingle CF and between operation');
@@ -612,7 +584,6 @@ my @cf_conditioned_by_value_wikitext_single = $mjs->xpath('//input[@name="Condit
 is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by matches ConditionWikitextSingle");
 $mjs->field($cf_conditioned_by_value_wikitext_single[0], "more");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
 is($conditioned_by->{op}, "matches", "ConditionedBy ConditionWikitextSingle CF and matches operation");
@@ -627,7 +598,6 @@ is($cf_conditioned_by_op_wikitext_single->get_value, "doesn't match", "Doesn't m
 is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by doesn't match ConditionWikitextSingle");
 $mjs->field($cf_conditioned_by_value_wikitext_single[0], "no issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
 is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionWikitextSingle CF and doesn't match operation");
@@ -642,7 +612,6 @@ is($cf_conditioned_by_op_wikitext_single->get_value, "is", "Is operation selecte
 is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by is ConditionWikitextSingle");
 $mjs->field($cf_conditioned_by_value_wikitext_single[0], "More info");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionWikitextSingle CF and is operation");
@@ -657,7 +626,6 @@ is($cf_conditioned_by_op_wikitext_single->get_value, "isn't", "Isn't operation s
 is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by isn't ConditionWikitextSingle");
 $mjs->field($cf_conditioned_by_value_wikitext_single[0], "No issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionWikitextSingle CF and isn't operation");
@@ -672,7 +640,6 @@ is($cf_conditioned_by_op_wikitext_single->get_value, "less than", "Less than ope
 is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by less than ConditionWikitextSingle");
 $mjs->field($cf_conditioned_by_value_wikitext_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionWikitextSingle CF and less than operation");
@@ -687,7 +654,6 @@ is($cf_conditioned_by_op_wikitext_single->get_value, "greater than", "Greater th
 is(scalar(@cf_conditioned_by_value_wikitext_single), 1, "One possible value for conditioned by greater than ConditionWikitextSingle");
 $mjs->field($cf_conditioned_by_value_wikitext_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionWikitextSingle CF and greater than operation");
@@ -703,7 +669,6 @@ is(scalar(@cf_conditioned_by_value_wikitext_single), 2, "Two possible values for
 $mjs->field($cf_conditioned_by_value_wikitext_single[0], "you");
 $mjs->field($cf_conditioned_by_value_wikitext_single[1], "me");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionWikitextSingle CF and between operation');
@@ -715,7 +680,6 @@ is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionWikitextSingle s
 $mjs->field($cf_conditioned_by_value_wikitext_single[0], "10");
 $mjs->field($cf_conditioned_by_value_wikitext_single[1], "1");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_wikitext_single->id, 'ConditionedBy ConditionWikitextSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionWikitextSingle CF and between operation');
@@ -744,7 +708,6 @@ my @cf_conditioned_by_value_image_single = $mjs->xpath('//input[@name="Condition
 is(scalar(@cf_conditioned_by_value_image_single), 1, "One possible value for conditioned by matches ConditionImageSingle");
 $mjs->field($cf_conditioned_by_value_image_single[0], "more");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_single->id, 'ConditionedBy ConditionImageSingle CF');
 is($conditioned_by->{op}, "matches", "ConditionedBy ConditionImageSingle CF and matches operation");
@@ -759,7 +722,6 @@ is($cf_conditioned_by_op_image_single->get_value, "doesn't match", "Doesn't matc
 is(scalar(@cf_conditioned_by_value_image_single), 1, "One possible value for conditioned by doesn't match ConditionImageSingle");
 $mjs->field($cf_conditioned_by_value_image_single[0], "no issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_single->id, 'ConditionedBy ConditionImageSingle CF');
 is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionImageSingle CF and doesn't match operation");
@@ -774,7 +736,6 @@ is($cf_conditioned_by_op_image_single->get_value, "is", "Is operation selected f
 is(scalar(@cf_conditioned_by_value_image_single), 1, "One possible value for conditioned by is ConditionImageSingle");
 $mjs->field($cf_conditioned_by_value_image_single[0], "More info");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_single->id, 'ConditionedBy ConditionImageSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionImageSingle CF and is operation");
@@ -789,7 +750,6 @@ is($cf_conditioned_by_op_image_single->get_value, "isn't", "Isn't operation sele
 is(scalar(@cf_conditioned_by_value_image_single), 1, "One possible value for conditioned by isn't ConditionImageSingle");
 $mjs->field($cf_conditioned_by_value_image_single[0], "No issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_single->id, 'ConditionedBy ConditionImageSingle CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionImageSingle CF and isn't operation");
@@ -804,7 +764,6 @@ is($cf_conditioned_by_op_image_single->get_value, "less than", "Less than operat
 is(scalar(@cf_conditioned_by_value_image_single), 1, "One possible value for conditioned by less than ConditionImageSingle");
 $mjs->field($cf_conditioned_by_value_image_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_single->id, 'ConditionedBy ConditionImageSingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionImageSingle CF and less than operation");
@@ -819,7 +778,6 @@ is($cf_conditioned_by_op_image_single->get_value, "greater than", "Greater than 
 is(scalar(@cf_conditioned_by_value_image_single), 1, "One possible value for conditioned by greater than ConditionImageSingle");
 $mjs->field($cf_conditioned_by_value_image_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_single->id, 'ConditionedBy ConditionImageSingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionImageSingle CF and greater than operation");
@@ -835,7 +793,6 @@ is(scalar(@cf_conditioned_by_value_image_single), 2, "Two possible values for co
 $mjs->field($cf_conditioned_by_value_image_single[0], "you");
 $mjs->field($cf_conditioned_by_value_image_single[1], "me");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_single->id, 'ConditionedBy ConditionImageSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionImageSingle CF and between operation');
@@ -847,7 +804,6 @@ is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionImageSingle seco
 $mjs->field($cf_conditioned_by_value_image_single[0], "10");
 $mjs->field($cf_conditioned_by_value_image_single[1], "1");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_single->id, 'ConditionedBy ConditionImageSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionImageSingle CF and between operation');
@@ -876,7 +832,6 @@ my @cf_conditioned_by_value_image_multiple = $mjs->xpath('//input[@name="Conditi
 is(scalar(@cf_conditioned_by_value_image_multiple), 1, "One possible value for conditioned by matches ConditionImageMultiple");
 $mjs->field($cf_conditioned_by_value_image_multiple[0], "more");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_multiple->id, 'ConditionedBy ConditionImageMultiple CF');
 is($conditioned_by->{op}, "matches", "ConditionedBy ConditionImageMultiple CF and matches operation");
@@ -891,7 +846,6 @@ is($cf_conditioned_by_op_image_multiple->get_value, "doesn't match", "Doesn't ma
 is(scalar(@cf_conditioned_by_value_image_multiple), 1, "One possible value for conditioned by doesn't match ConditionImageMultiple");
 $mjs->field($cf_conditioned_by_value_image_multiple[0], "no issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_multiple->id, 'ConditionedBy ConditionImageMultiple CF');
 is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionImageMultiple CF and doesn't match operation");
@@ -906,7 +860,6 @@ is($cf_conditioned_by_op_image_multiple->get_value, "is", "Is operation selected
 is(scalar(@cf_conditioned_by_value_image_multiple), 1, "One possible value for conditioned by is ConditionImageMultiple");
 $mjs->field($cf_conditioned_by_value_image_multiple[0], "More info");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_multiple->id, 'ConditionedBy ConditionImageMultiple CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionImageMultiple CF and is operation");
@@ -921,7 +874,6 @@ is($cf_conditioned_by_op_image_multiple->get_value, "isn't", "Isn't operation se
 is(scalar(@cf_conditioned_by_value_image_multiple), 1, "One possible value for conditioned by isn't ConditionImageMultiple");
 $mjs->field($cf_conditioned_by_value_image_multiple[0], "No issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_multiple->id, 'ConditionedBy ConditionImageMultiple CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionImageMultiple CF and isn't operation");
@@ -936,7 +888,6 @@ is($cf_conditioned_by_op_image_multiple->get_value, "less than", "Less than oper
 is(scalar(@cf_conditioned_by_value_image_multiple), 1, "One possible value for conditioned by less than ConditionImageMultiple");
 $mjs->field($cf_conditioned_by_value_image_multiple[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_multiple->id, 'ConditionedBy ConditionImageMultiple CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionImageMultiple CF and less than operation");
@@ -951,7 +902,6 @@ is($cf_conditioned_by_op_image_multiple->get_value, "greater than", "Greater tha
 is(scalar(@cf_conditioned_by_value_image_multiple), 1, "One possible value for conditioned by greater than ConditionImageMultiple");
 $mjs->field($cf_conditioned_by_value_image_multiple[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_multiple->id, 'ConditionedBy ConditionImageMultiple CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionImageMultiple CF and greater than operation");
@@ -967,7 +917,6 @@ is(scalar(@cf_conditioned_by_value_image_multiple), 2, "Two possible values for 
 $mjs->field($cf_conditioned_by_value_image_multiple[0], "you");
 $mjs->field($cf_conditioned_by_value_image_multiple[1], "me");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_multiple->id, 'ConditionedBy ConditionImageMultiple CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionImageMultiple CF and between operation');
@@ -979,7 +928,6 @@ is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionImageMultiple se
 $mjs->field($cf_conditioned_by_value_image_multiple[0], "10");
 $mjs->field($cf_conditioned_by_value_image_multiple[1], "1");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_image_multiple->id, 'ConditionedBy ConditionImageMultiple CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionImageMultiple CF and between operation');
@@ -1008,7 +956,6 @@ my @cf_conditioned_by_value_binary_single = $mjs->xpath('//input[@name="Conditio
 is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by matches ConditionBinarySingle");
 $mjs->field($cf_conditioned_by_value_binary_single[0], "more");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
 is($conditioned_by->{op}, "matches", "ConditionedBy ConditionBinarySingle CF and matches operation");
@@ -1023,7 +970,6 @@ is($cf_conditioned_by_op_binary_single->get_value, "doesn't match", "Doesn't mat
 is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by doesn't match ConditionBinarySingle");
 $mjs->field($cf_conditioned_by_value_binary_single[0], "no issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
 is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionBinarySingle CF and doesn't match operation");
@@ -1038,7 +984,6 @@ is($cf_conditioned_by_op_binary_single->get_value, "is", "Is operation selected 
 is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by is ConditionBinarySingle");
 $mjs->field($cf_conditioned_by_value_binary_single[0], "More info");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionBinarySingle CF and is operation");
@@ -1053,7 +998,6 @@ is($cf_conditioned_by_op_binary_single->get_value, "isn't", "Isn't operation sel
 is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by isn't ConditionBinarySingle");
 $mjs->field($cf_conditioned_by_value_binary_single[0], "No issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionBinarySingle CF and isn't operation");
@@ -1068,7 +1012,6 @@ is($cf_conditioned_by_op_binary_single->get_value, "less than", "Less than opera
 is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by less than ConditionBinarySingle");
 $mjs->field($cf_conditioned_by_value_binary_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionBinarySingle CF and less than operation");
@@ -1083,7 +1026,6 @@ is($cf_conditioned_by_op_binary_single->get_value, "greater than", "Greater than
 is(scalar(@cf_conditioned_by_value_binary_single), 1, "One possible value for conditioned by greater than ConditionBinarySingle");
 $mjs->field($cf_conditioned_by_value_binary_single[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionBinarySingle CF and greater than operation");
@@ -1099,7 +1041,6 @@ is(scalar(@cf_conditioned_by_value_binary_single), 2, "Two possible values for c
 $mjs->field($cf_conditioned_by_value_binary_single[0], "you");
 $mjs->field($cf_conditioned_by_value_binary_single[1], "me");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionBinarySingle CF and between operation');
@@ -1111,7 +1052,6 @@ is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionBinarySingle sec
 $mjs->field($cf_conditioned_by_value_binary_single[0], "10");
 $mjs->field($cf_conditioned_by_value_binary_single[1], "1");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_single->id, 'ConditionedBy ConditionBinarySingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionBinarySingle CF and between operation');
@@ -1140,7 +1080,6 @@ my @cf_conditioned_by_value_binary_multiple = $mjs->xpath('//input[@name="Condit
 is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by matches ConditionBinaryMultiple");
 $mjs->field($cf_conditioned_by_value_binary_multiple[0], "more");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
 is($conditioned_by->{op}, "matches", "ConditionedBy ConditionBinaryMultiple CF and matches operation");
@@ -1155,7 +1094,6 @@ is($cf_conditioned_by_op_binary_multiple->get_value, "doesn't match", "Doesn't m
 is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by doesn't match ConditionBinaryMultiple");
 $mjs->field($cf_conditioned_by_value_binary_multiple[0], "no issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
 is($conditioned_by->{op}, "doesn't match", "ConditionedBy ConditionBinaryMultiple CF and doesn't match operation");
@@ -1170,7 +1108,6 @@ is($cf_conditioned_by_op_binary_multiple->get_value, "is", "Is operation selecte
 is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by is ConditionBinaryMultiple");
 $mjs->field($cf_conditioned_by_value_binary_multiple[0], "More info");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionBinaryMultiple CF and is operation");
@@ -1185,7 +1122,6 @@ is($cf_conditioned_by_op_binary_multiple->get_value, "isn't", "Isn't operation s
 is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by isn't ConditionBinaryMultiple");
 $mjs->field($cf_conditioned_by_value_binary_multiple[0], "No issue");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionBinaryMultiple CF and isn't operation");
@@ -1200,7 +1136,6 @@ is($cf_conditioned_by_op_binary_multiple->get_value, "less than", "Less than ope
 is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by less than ConditionBinaryMultiple");
 $mjs->field($cf_conditioned_by_value_binary_multiple[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionBinaryMultiple CF and less than operation");
@@ -1215,7 +1150,6 @@ is($cf_conditioned_by_op_binary_multiple->get_value, "greater than", "Greater th
 is(scalar(@cf_conditioned_by_value_binary_multiple), 1, "One possible value for conditioned by greater than ConditionBinaryMultiple");
 $mjs->field($cf_conditioned_by_value_binary_multiple[0], "216");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionBinaryMultiple CF and greater than operation");
@@ -1231,7 +1165,6 @@ is(scalar(@cf_conditioned_by_value_binary_multiple), 2, "Two possible values for
 $mjs->field($cf_conditioned_by_value_binary_multiple[0], "you");
 $mjs->field($cf_conditioned_by_value_binary_multiple[1], "me");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionBinaryMultiple CF and between operation');
@@ -1243,7 +1176,6 @@ is($conditioned_by->{vals}->[1], 'you', 'ConditionedBy ConditionBinaryMultiple s
 $mjs->field($cf_conditioned_by_value_binary_multiple[0], "10");
 $mjs->field($cf_conditioned_by_value_binary_multiple[1], "1");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_binary_multiple->id, 'ConditionedBy ConditionBinaryMultiple CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionBinaryMultiple CF and between operation');
@@ -1272,7 +1204,6 @@ $cf_conditioned_by_CFV_1->click;
 $cf_conditioned_by_CFV_2 = $mjs->xpath('//input[@value="' . $cf_values_combobox_single->[2]->Name . '"]', single => 1);
 $cf_conditioned_by_CFV_2->click;
 $mjs->click('Update');
-sleep 1;
 
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_combobox_single->id, 'ConditionedBy ConditionComboboxSingle CF');
@@ -1301,7 +1232,6 @@ $cf_conditioned_by_CFV_1->click;
 $cf_conditioned_by_CFV_2 = $mjs->xpath('//input[@value="' . $cf_values_autocomplete_single->[2]->Name . '"]', single => 1);
 $cf_conditioned_by_CFV_2->click;
 $mjs->click('Update');
-sleep 1;
 
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_autocomplete_single->id, 'ConditionedBy ConditionAutocompleteSingle CF');
@@ -1330,7 +1260,6 @@ $cf_conditioned_by_CFV_1->click;
 $cf_conditioned_by_CFV_2 = $mjs->xpath('//input[@value="' . $cf_values_autocomplete_multiple->[2]->Name . '"]', single => 1);
 $cf_conditioned_by_CFV_2->click;
 $mjs->click('Update');
-sleep 1;
 
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_autocomplete_multiple->id, 'ConditionedBy ConditionAutocompleteMultiple CF');
@@ -1371,7 +1300,6 @@ my $calendar_done = $mjs->xpath('//button[@data-handler="hide"]', single => 1);
 $mjs->click($calendar_done);
 is($cf_conditioned_by_value_date_single[0]->get_value, "2021-06-21", "Value set with datepicker for less than ConditionalDateSingle");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_date_single->id, 'ConditionedBy ConditionDateSingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionDateSingle CF and matches operation");
@@ -1401,7 +1329,6 @@ $calendar_done = $mjs->xpath('//button[@data-handler="hide"]', single => 1);
 $mjs->click($calendar_done);
 is($cf_conditioned_by_value_date_single[0]->get_value, "2021-03-21", "Value set with datepicker for is ConditionalDateSingle");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_date_single->id, 'ConditionedBy ConditionDateSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionDateSingle CF and is operation");
@@ -1416,7 +1343,6 @@ is($cf_conditioned_by_op_date_single->get_value, "greater than", "Greater than o
 is(scalar(@cf_conditioned_by_value_date_single), 1, "One possible value for conditioned by greater than ConditionDateSingle");
 is($cf_conditioned_by_value_date_single[0]->get_value, "2021-03-21", "Value set with datepicker for greater than ConditionalDateSingle");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_date_single->id, 'ConditionedBy ConditionDateSingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionDateSingle CF and greater than operation");
@@ -1460,7 +1386,6 @@ $calendar_done = $mjs->xpath('//button[@data-handler="hide"]', single => 1);
 $mjs->click($calendar_done);
 is($cf_conditioned_by_value_date_single[0]->get_value, "2021-06-21", "First value set with datepicker for between ConditionalDateSingle");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_date_single->id, 'ConditionedBy ConditionDateSingle CF');
 is($conditioned_by->{op}, "between", "ConditionedBy ConditionDateSingle CF and between operation");
@@ -1502,7 +1427,6 @@ is($calendar_time_day->get_text, '21', 'Chosen day in calendar');
 my $calendar_time_time = $mjs->xpath('//dd[@class="ui_tpicker_time"]', single => 1);
 is($calendar_time_time->get_text, '00:42:00', 'Chosen time in calendar');
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionDateTimeSingle CF and less than operation");
@@ -1529,7 +1453,6 @@ is($calendar_time_day->get_text, '21', 'Chosen day in calendar');
 $calendar_time_time = $mjs->xpath('//dd[@class="ui_tpicker_time"]', single => 1);
 is($calendar_time_time->get_text, '00:42:00', 'Chosen time in calendar');
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionDateTimeSingle CF and is operation");
@@ -1556,7 +1479,6 @@ is($calendar_time_day->get_text, '21', 'Chosen day in calendar');
 $calendar_time_time = $mjs->xpath('//dd[@class="ui_tpicker_time"]', single => 1);
 is($calendar_time_time->get_text, '00:42:00', 'Chosen time in calendar');
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionDateTimeSingle CF and greater than operation");
@@ -1593,7 +1515,6 @@ is($calendar_time_day->get_text, '21', 'Chosen day in calendar');
 $calendar_time_time = $mjs->xpath('//dd[@class="ui_tpicker_time"]', single => 1);
 is($calendar_time_time->get_text, '00:42:00', 'Chosen time in calendar');
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
 is($conditioned_by->{op}, "between", "ConditionedBy ConditionDateTimeSingle CF and between operation");
@@ -1620,7 +1541,6 @@ my @cf_conditioned_by_value_ipaddress_single = $mjs->xpath('//input[@name="Condi
 is(scalar(@cf_conditioned_by_value_ipaddress_single), 1, "One possible value for conditioned by is ConditionIPAddressSingle");
 $mjs->field($cf_conditioned_by_value_ipaddress_single[0], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionIPAddressSingle CF and is operation");
@@ -1635,7 +1555,6 @@ is($cf_conditioned_by_op_ipaddress_single->get_value, "isn't", "Isn't operation 
 is(scalar(@cf_conditioned_by_value_ipaddress_single), 1, "One possible value for conditioned by isn't ConditionIPAddressSingle");
 $mjs->field($cf_conditioned_by_value_ipaddress_single[0], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionIPAddressSingle CF and isn't operation");
@@ -1650,7 +1569,6 @@ is($cf_conditioned_by_op_ipaddress_single->get_value, "less than", "Less than op
 is(scalar(@cf_conditioned_by_value_ipaddress_single), 1, "One possible value for conditioned by less than ConditionIPAddressSingle");
 $mjs->field($cf_conditioned_by_value_ipaddress_single[0], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionIPAddressSingle CF and less than operation");
@@ -1665,7 +1583,6 @@ is($cf_conditioned_by_op_ipaddress_single->get_value, "greater than", "Greater t
 is(scalar(@cf_conditioned_by_value_ipaddress_single), 1, "One possible value for conditioned by greater than ConditionIPAddressSingle");
 $mjs->field($cf_conditioned_by_value_ipaddress_single[0], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionIPAddressSingle CF and greater than operation");
@@ -1681,7 +1598,6 @@ is(scalar(@cf_conditioned_by_value_ipaddress_single), 2, "Two possible values fo
 $mjs->field($cf_conditioned_by_value_ipaddress_single[0], "192.168.1.21");
 $mjs->field($cf_conditioned_by_value_ipaddress_single[1], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_single->id, 'ConditionedBy ConditionIPAddressSingle CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionIPAddressSingle CF and between operation');
@@ -1708,7 +1624,6 @@ my @cf_conditioned_by_value_ipaddress_multiple = $mjs->xpath('//input[@name="Con
 is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 1, "One possible value for conditioned by is ConditionIPAddressMultiple");
 $mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionIPAddressMultiple CF and is operation");
@@ -1723,7 +1638,6 @@ is($cf_conditioned_by_op_ipaddress_multiple->get_value, "isn't", "Isn't operatio
 is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 1, "One possible value for conditioned by isn't ConditionIPAddressMultiple");
 $mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionIPAddressMultiple CF and isn't operation");
@@ -1738,7 +1652,6 @@ is($cf_conditioned_by_op_ipaddress_multiple->get_value, "less than", "Less than 
 is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 1, "One possible value for conditioned by less than ConditionIPAddressMultiple");
 $mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionIPAddressMultiple CF and less than operation");
@@ -1753,7 +1666,6 @@ is($cf_conditioned_by_op_ipaddress_multiple->get_value, "greater than", "Greater
 is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 1, "One possible value for conditioned by greater than ConditionIPAddressMultiple");
 $mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionIPAddressMultiple CF and greater than operation");
@@ -1769,7 +1681,6 @@ is(scalar(@cf_conditioned_by_value_ipaddress_multiple), 2, "Two possible values 
 $mjs->field($cf_conditioned_by_value_ipaddress_multiple[0], "192.168.1.21");
 $mjs->field($cf_conditioned_by_value_ipaddress_multiple[1], "192.168.1.6");
 $mjs->click('Update');
-sleep 1;
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_ipaddress_multiple->id, 'ConditionedBy ConditionIPAddressMultiple CF');
 is($conditioned_by->{op}, 'between', 'ConditionedBy ConditionIPAddressMultiple CF and between operation');
@@ -1782,7 +1693,6 @@ $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single =>
 $mjs->field($cf_conditioned_by_CF, 0);
 $mjs->eval_in_page("jQuery('.conditionedby select').trigger('change');");
 $mjs->click('Update');
-sleep 1;
 ok($mjs->content =~ /ConditionedBy deleted/, 'ConditionedBy deleted');
 is($cf_conditioned_by->ConditionedBy, undef, 'Attribute deleted');
 
