@@ -26,10 +26,18 @@ jQuery(function() {
             }
         });
         if (condition_met) {
-            jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+            if (jQuery('#'+cf_id).length) {
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+            } else {
+                jQuery('input[name="'+cf_id+'"]').closest('<% $ParentSelector %>').show();
+            }
         }
         else {
-            jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+            if (jQuery('#'+cf_id).length) {
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+            } else {
+                jQuery('input[name="'+cf_id+'"]').closest('<% $ParentSelector %>').hide();
+            }
         }
     });
     jQuery('input[name="'+conditionedby_name+'"]').first().trigger('change');
@@ -63,10 +71,18 @@ jQuery(function() {
             condition_met = (jQuery.inArray(condition_vals, conditionedby_vals) != -1);
         }
         if (condition_met) {
-            jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+            if (jQuery('#'+cf_id).length) {
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+            } else {
+                jQuery('input[name="'+cf_id+'"]').closest('<% $ParentSelector %>').show();
+            }
         }
         else {
-            jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+            if (jQuery('#'+cf_id).length) {
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+            } else {
+                jQuery('input[name="'+cf_id+'"]').closest('<% $ParentSelector %>').hide();
+            }
         }
     });
     jQuery('#'+conditionedby_id).trigger('change');
