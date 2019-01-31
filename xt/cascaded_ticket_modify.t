@@ -65,8 +65,9 @@ ok($ticket_cf_conditioned_by_child->is_hidden, 'Hide Child when parent condition
 
 $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[1]->Name);
 
+$mjs->get($m->rt_base_url . 'Ticket/Modify.html?id=' . $ticket->id);
 $ticket_cf_conditioned_by = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Grouptwo-' . $cf_conditioned_by->id . '-Value', single => 1);
-ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when parent condition is failed');
+ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when parent condition is failed and child condition is passed');
 $ticket_cf_conditioned_by_child = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField-' . $cf_conditioned_by_child->id . '-Value', single => 1);
-ok($ticket_cf_conditioned_by_child->is_hidden, 'Hide Child when parent condition is failed');
+ok($ticket_cf_conditioned_by_child->is_hidden, 'Hide Child when parent condition is failed and child condition is passed');
 
