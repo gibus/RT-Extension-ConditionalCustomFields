@@ -13,7 +13,7 @@
 <script type="text/javascript">
 jQuery(function() {
 %           if ($conditioned_by_cf->RenderType eq 'List') {
-    var conditionedby_selector = 'input[name="'+<% $conditionedby_name |h,n,j%>+'"]';
+    var conditionedby_selector = 'input[name="'+<% $conditionedby_name |h,n,j%>+'"], textarea[name="'+<% $conditionedby_name |h,n,j%>+'"]';
 %           } else {
     var conditionedby_selector = '#'+<% $conditionedby_name |h,n,j%>;
 %           }
@@ -47,10 +47,18 @@ jQuery(function() {
         var condition_met = condition_is_met(conditionedby_vals, condition_vals, "<% $conditioned_by->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
 
         if (condition_met) {
-            jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+            if (jQuery('#'+cf_id).length) {
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+            } else {
+                jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').show();
+            }
         }
         else {
-            jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+            if (jQuery('#'+cf_id).length) {
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+            } else {
+                jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').hide();
+            }
         }
     });
 %           if ($conditioned_by_cf->RenderType eq 'List') {
