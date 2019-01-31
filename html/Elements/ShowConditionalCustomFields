@@ -8,6 +8,7 @@ jQuery(function() {
 %       $conditioned_by_cf->Load($conditioned_by->{CF});
 %       if ($conditioned_by_cf->id) {
 %           if ($ParentSelector eq 'id') {
+    var conditionedby_selector = <% '#CF-' . $conditioned_by_cf->id . '-ShowRow' |h,n,j%>;
     var cf_selector = <% '#CF-' . $CustomField->id . '-ShowRow' |h,n,j%>;
 %           } else {
     var conditionedby_selector = <% '.record-field.CustomField__' . $conditioned_by_cf->Name . '_' |h,n,j%>;
@@ -21,10 +22,13 @@ jQuery(function() {
     cf_selector = cf_selector.replace(/:/g,'\\:');
     var conditionedby_vals = ["<% join('", "', @conditioned_by_vals) |n%>"];
     var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
+    var condition_met = false;
 %           if ($conditioned_by_cf->IsAdded($Object->id)) {
-    var condition_met = condition_is_met(conditionedby_vals, condition_vals, "<% $conditioned_by->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
+    if (jQuery(conditionedby_selector).is(':visible')) {
+        condition_met = condition_is_met(conditionedby_vals, condition_vals, "<% $conditioned_by->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
+    }
 %           } else {
-    var condition_met = true;
+    condition_met = true;
 %           }
 
     if (condition_met) {
