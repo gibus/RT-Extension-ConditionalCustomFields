@@ -19,14 +19,6 @@ if ($ARGSRef->{ConditionedBy}) {
                 }
             }
 
-            if ($ARGSRef->{ConditionalOp} eq 'between') {
-                if (scalar(@conditioned_by) == 2 && $conditioned_by[0] gt $conditioned_by[1]) {
-                    my @sorted_conditioned_by = reverse @conditioned_by;
-                    $ARGSRef->{ConditionedBy} = \@sorted_conditioned_by;
-                    @conditioned_by = @sorted_conditioned_by;
-                }
-            }
-
             if ($cf->Type eq 'DateTime') {
                 # We need to convert from Current User Timezone to UTC
                 for (my $i=0; $i < scalar(@conditioned_by); $i++) {

@@ -131,6 +131,13 @@ sub SetConditionedBy {
 
     $op = 'is' unless $op;
 
+    if ($op eq 'between') {
+        if (scalar(@values) == 2 && $values[0] gt $values[1]) {
+            my @sorted_values = reverse @values;
+            @values = @sorted_values;
+        }
+    }
+
     my $attr = $self->FirstAttribute('ConditionedBy');
     if ($attr && $attr->Content
               && $attr->Content->{CF}
