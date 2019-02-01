@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 16;
+use RT::Extension::ConditionalCustomFields::Test tests => 22;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -81,7 +81,7 @@ ok($ticket_cf_conditioned_by->is_hidden, "Hide ConditionalCF when Freeform condi
 
 # Operator: less than, numerical condition met
 $cf_conditioned_by->SetConditionedBy($cf_condition->id, 'less than', 216);
-$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 171);
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 71);
 $mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
 $ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
 ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Freeform condition numerical val with less than operator is met');
@@ -91,3 +91,46 @@ $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 666);
 $mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
 $ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Freeform condition numerical val with less than operator is not met');
+
+# Operator: less than, alphabetical condition met
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, 'less than', 'g');
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 'a tiny string');
+$mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Freeform condition alphabetical val with less than operator is met');
+
+# Operator: less than, alphabetical condition not met
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 'this is a large string');
+$mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Freeform condition alphabetical val with less than operator is not met');
+
+# Operator: greater than, numerical condition met
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, 'greater than', 216);
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 666);
+$mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Freeform condition numerical val with greater than operator is met');
+
+# Operator: greater than, numerical condition not met
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 71);
+$mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Freeform condition numerical val with greater than operator is not met');
+
+# Operator: between, alphabetical condition met
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, 'between', ['m', 'g']);
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 'i am between');
+$mjs->clear_js_alerts;
+$mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
+foreach my $a ($mjs->js_alerts) {
+    warn "BLUP=!$a!\n";
+}
+$ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Freeform condition alphabetical val with between operator is met');
+
+# Operator: between, alphabetical condition not met
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 'outside');
+$mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Freeform condition alphabetical val with between operator is not met');
