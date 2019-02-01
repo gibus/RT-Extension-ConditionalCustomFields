@@ -44,21 +44,21 @@ my $cf_condition_binary_multiple = RT::CustomField->new(RT->SystemUser);
 $cf_condition_binary_multiple->Create(Name => 'ConditionBinaryMultiple', Type => 'Binary', MaxValues => 0, Queue => 'General');
 
 my $cf_condition_combobox_single = RT::CustomField->new(RT->SystemUser);
-$cf_condition_combobox_single->Create(Name => 'ConditionComboboxSingle', Type => 'Select', MaxValues => 1, RenderType => 'Dropdown', Queue => 'General');
+$cf_condition_combobox_single->Create(Name => 'ConditionComboboxSingle', Type => 'Combobox', MaxValues => 1, Queue => 'General');
 $cf_condition_combobox_single->AddValue(Name => 'Single Passed', SortOder => 0);
 $cf_condition_combobox_single->AddValue(Name => 'Single Failed', SortOrder => 1);
 $cf_condition_combobox_single->AddValue(Name => 'Single Schrödingerized', SortOrder => 2);
 my $cf_values_combobox_single = $cf_condition_combobox_single->Values->ItemsArrayRef;
 
 my $cf_condition_autocomplete_single = RT::CustomField->new(RT->SystemUser);
-$cf_condition_autocomplete_single->Create(Name => 'ConditionAutocompleteSingle', Type => 'Select', MaxValues => 1, RenderType => 'Dropdown', Queue => 'General');
+$cf_condition_autocomplete_single->Create(Name => 'ConditionAutocompleteSingle', Type => 'Autocomplete', MaxValues => 1, Queue => 'General');
 $cf_condition_autocomplete_single->AddValue(Name => 'Single Passed', SortOder => 0);
 $cf_condition_autocomplete_single->AddValue(Name => 'Single Failed', SortOrder => 1);
 $cf_condition_autocomplete_single->AddValue(Name => 'Single Schrödingerized', SortOrder => 2);
 my $cf_values_autocomplete_single = $cf_condition_autocomplete_single->Values->ItemsArrayRef;
 
 my $cf_condition_autocomplete_multiple = RT::CustomField->new(RT->SystemUser);
-$cf_condition_autocomplete_multiple->Create(Name => 'ConditionAutocompleteMultiple', Type => 'Select', MaxValues => 0, RenderType => 'List', Queue => 'General');
+$cf_condition_autocomplete_multiple->Create(Name => 'ConditionAutocompleteMultiple', Type => 'Autocomplete', MaxValues => 0, Queue => 'General');
 $cf_condition_autocomplete_multiple->AddValue(Name => 'Multiple Passed', SortOder => 0);
 $cf_condition_autocomplete_multiple->AddValue(Name => 'Multiple Failed', SortOrder => 1);
 $cf_condition_autocomplete_multiple->AddValue(Name => 'Multiple Schrödingerized', SortOrder => 2);
