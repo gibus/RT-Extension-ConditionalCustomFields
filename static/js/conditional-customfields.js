@@ -50,6 +50,28 @@ function activate_datepicker() {
     });
 }
 
+function compare_str_or_num(a, b) {
+    if (isNaN(a) || isNaN(b)) {
+        if (a < b) {
+            return -1;
+        } else if (a == b) {
+            return 0;
+        } else {
+            return 1;
+        }
+    } else {
+        var num_a = Number(a);
+        var num_b = Number(b);
+        if (num_a < num_b) {
+            return -1;
+        } else if (num_a == num_b) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+}
+
 function condition_is_met(conditionedby_vals, condition_vals, condition_op, lang) {
     lang = (typeof lang !== 'undefined') ? lang : 'en';
     var condition_met = false;
@@ -66,12 +88,14 @@ function condition_is_met(conditionedby_vals, condition_vals, condition_op, lang
                         return !condition_met;
                     }
                 } else if (condition_op == "matches" || condition_op == "doesn't match") {
-                    var regex = RegExp(conditionedby_vals[j].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "i");
+                    var regexp = RegExp(conditionedby_vals[j].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "i");
                     if (!condition_vals[i].search(regexp)) {
                         return !condition_met;
                     }
                 } else if (condition_op == "less than") {
-                    if (new Intl.Collator(lang, {sensitivity: 'base', numeric: true}).compare(condition_vals[i].toString(), conditionedby_vals[j].toString()) <= 0) {
+                    //if (new Intl.Collator(lang, {sensitivity: 'base', numeric: true}).compare(condition_vals[i].toString(), conditionedby_vals[j].toString()) <= 0) {
+                    //}
+                    if (compare_str_or_num(condition_vals[i], conditionedby_vals[j]) <= 0) {
                         return !condition_met;
                     }
                 } else if (condition_op == "greater than") {
