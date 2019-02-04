@@ -17,7 +17,9 @@ jQuery(function() {
 %           my $condition_vals_str = $Object->CustomFieldValuesAsString($conditioned_by_cf->id);
 %           my @condition_vals = split(/\n/, $condition_vals_str);
 %           if ($conditioned_by_cf->Type =~ /^Date(Time)?$/) {
-%               @condition_vals = map {my $DateObj = RT::Date->new($session{'CurrentUser'}); $DateObj->Set(Format => 'unknown', Value => $_, Timezone => 'user'); $DateObj->ISO(Time => $conditioned_by_cf->Type eq 'DateTime');} @condition_vals;
+%               @condition_vals = map { my $DateObj = RT::Date->new($session{'CurrentUser'}); $DateObj->Set(Format => 'unknown', Value => $_, Timezone => 'user'); $DateObj->ISO(Time => $conditioned_by_cf->Type eq 'DateTime'); } @condition_vals;
+%           } elsif ($conditioned_by_cf->Type =~ /^IPAddress(Range)?$/) {
+%               @condition_vals = map { RT::ObjectCustomFieldValue->ParseIP($_) } @condition_vals;
 %           }
     cf_selector = cf_selector.replace(/:/g,'\\:');
     var conditionedby_vals = ["<% join('", "', @conditioned_by_vals) |n%>"];

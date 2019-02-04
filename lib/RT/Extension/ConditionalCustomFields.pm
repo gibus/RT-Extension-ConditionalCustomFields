@@ -119,6 +119,16 @@ sub SetConditionedBy {
 
     my @values = ref($value) eq 'ARRAY' ? @$value : ($value);
 
+    if ($cf->id) {
+        # Normalize IpAddresses to sort them as strings
+        if ($cf->Type =~ /^IPAddress(Range)?$/) {
+            @values = map { RT::ObjectCustomFieldValue->ParseIP($_); } @values;
+        # Convert from Current User Timezone to UTC
+        } elsif ($cf->Type eq 'DateTime') {
+            @values = map { my $DateObj = RT::Date->new($self->CurrentUser); $DateObj->Set(Format => 'unknown', Value => $_); $DateObj->ISO(Time => 1) } @values;
+        }
+    }
+
     sub arrays_identical {
         my( $left, $right ) = @_;
         my @leftary = ref $left eq 'ARRAY' ? @$left : ($left);
@@ -132,15 +142,7 @@ sub SetConditionedBy {
     $op = 'is' unless $op;
 
     if ($op eq 'between') {
-        if (   scalar(@values) == 2
-            && ((
-                       $cf->Type !~ /^IPAddress(Range)?$/
-                    && lc($values[0]) gt lc($values[1])
-                )
-                || (
-                       $cf->Type =~ /^IPAddress(Range)?$/
-                    && RT::ObjectCustomFieldValue->ParseIP($values[0]) gt RT::ObjectCustomFieldValue->ParseIP($values[1])
-                ))) {
+        if (scalar(@values) == 2 && lc($values[0]) gt lc($values[1])) {
             my @sorted_values = reverse @values;
             @values = @sorted_values;
         }
