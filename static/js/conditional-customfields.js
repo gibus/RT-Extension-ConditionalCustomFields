@@ -116,7 +116,7 @@ function condition_is_met(conditionedby_vals, condition_vals, condition_op, lang
                     }
                 } else if (condition_op == "matches" || condition_op == "doesn't match") {
                     var regexp = RegExp(conditionedby_vals[j].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "i");
-                    if (!condition_vals[i].search(regexp)) {
+                    if (condition_vals[i].search(regexp) != -1) {
                         return !condition_met;
                     }
                 } else if (condition_op == "less than") {
