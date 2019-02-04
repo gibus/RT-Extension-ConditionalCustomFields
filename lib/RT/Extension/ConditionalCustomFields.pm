@@ -132,7 +132,15 @@ sub SetConditionedBy {
     $op = 'is' unless $op;
 
     if ($op eq 'between') {
-        if (scalar(@values) == 2 && $values[0] gt $values[1]) {
+        if (   scalar(@values) == 2
+            && ((
+                       $cf->Type !~ /^IPAddress(Range)?$/
+                    && lc($values[0]) gt lc($values[1])
+                )
+                || (
+                       $cf->Type =~ /^IPAddress(Range)?$/
+                    && RT::ObjectCustomFieldValue->ParseIP($values[0]) gt RT::ObjectCustomFieldValue->ParseIP($values[1])
+                ))) {
             my @sorted_values = reverse @values;
             @values = @sorted_values;
         }
