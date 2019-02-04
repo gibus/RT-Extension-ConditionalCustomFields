@@ -11,7 +11,7 @@ if ($ARGSRef->{ConditionedBy}) {
                 for (my $i=0; $i < scalar(@conditioned_by); $i++) {
                     if (ref($ARGSRef->{ConditionedBy}) eq 'ARRAY') {
                         $ARGSRef->{ConditionedBy}->[$i] = RT::ObjectCustomFieldValue->ParseIP($conditioned_by[$i]);
-                        @conditioned_by = @{$ARGSRef->{ConditionedBy}};
+                        $conditioned_by[$i] = $ARGSRef->{ConditionedBy}->[$i];
                     } else {
                         $ARGSRef->{ConditionedBy} = RT::ObjectCustomFieldValue->ParseIP($conditioned_by[$i]);
                         @conditioned_by = ($ARGSRef->{ConditionedBy});
