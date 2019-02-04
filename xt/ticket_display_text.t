@@ -121,11 +121,7 @@ ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Text condition
 # Operator: between, alphabetical condition met
 $cf_conditioned_by->SetConditionedBy($cf_condition->id, 'between', ['m', 'g']);
 $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 'i am between');
-$mjs->clear_js_alerts;
 $mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
-foreach my $a ($mjs->js_alerts) {
-    warn "BLUP=!$a!\n";
-}
 $ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
 ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Text condition alphabetical val with between operator is met');
 
