@@ -121,7 +121,7 @@ sub SetConditionedBy {
 
     if ($cf->id) {
         # Normalize IpAddresses to sort them as strings
-        if ($cf->Type =~ /^IPAddress(Range)?$/) {
+        if ($cf->Type eq 'IPAddress') {
             @values = map { RT::ObjectCustomFieldValue->ParseIP($_); } @values;
         # Convert from Current User Timezone to UTC
         } elsif ($cf->Type eq 'DateTime') {
