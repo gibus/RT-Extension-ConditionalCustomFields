@@ -99,7 +99,7 @@ function naturalSort(a, b, lang) {
     return 0;
 }
 
-function condition_is_met(conditionedby_vals, condition_vals, condition_op, lang) {
+function condition_is_met(condition_vals, cf_condition_vals, condition_op, lang) {
     lang = (typeof lang !== 'undefined') ? lang : 'en';
     var condition_met = false;
 
@@ -107,28 +107,28 @@ function condition_is_met(conditionedby_vals, condition_vals, condition_op, lang
         condition_met = true;
     }
 
-    if (condition_vals.length) {
-        for (var i=0; i<condition_vals.length; i++) {
-            for (var j=0; j<conditionedby_vals.length; j++) {
+    if (cf_condition_vals.length) {
+        for (var i=0; i<cf_condition_vals.length; i++) {
+            for (var j=0; j<condition_vals.length; j++) {
                 if (condition_op == "is" || condition_op == "isn't") {
-                    if (condition_vals[i] == conditionedby_vals[j]) {
+                    if (cf_condition_vals[i] == condition_vals[j]) {
                         return !condition_met;
                     }
                 } else if (condition_op == "matches" || condition_op == "doesn't match") {
-                    var regexp = RegExp(conditionedby_vals[j].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "i");
-                    if (condition_vals[i].search(regexp) != -1) {
+                    var regexp = RegExp(condition_vals[j].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "i");
+                    if (cf_condition_vals[i].search(regexp) != -1) {
                         return !condition_met;
                     }
                 } else if (condition_op == "less than") {
-                    if (naturalSort(condition_vals[i], conditionedby_vals[j], lang) <= 0) {
+                    if (naturalSort(cf_condition_vals[i], condition_vals[j], lang) <= 0) {
                         return !condition_met;
                     }
                 } else if (condition_op == "greater than") {
-                    if (naturalSort(condition_vals[i], conditionedby_vals[j], lang) >= 0) {
+                    if (naturalSort(cf_condition_vals[i], condition_vals[j], lang) >= 0) {
                         return !condition_met;
                     }
                 } else if (condition_op == "between") {
-                    var comp = naturalSort(condition_vals[i], conditionedby_vals[j], lang);
+                    var comp = naturalSort(cf_condition_vals[i], condition_vals[j], lang);
                     if (j == 0 && comp < 0) {
                         return !condition_met;
                     } else if (j == 1 && comp > 0) {

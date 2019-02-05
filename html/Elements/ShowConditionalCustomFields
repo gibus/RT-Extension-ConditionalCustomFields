@@ -1,33 +1,33 @@
-%   my $conditioned_by = $CustomField->ConditionedBy;
-%   if ($conditioned_by) {
-%       my $conditioned_by_val = $conditioned_by->{vals} || '';
-%       my @conditioned_by_vals = ref($conditioned_by_val) eq 'ARRAY' ? @$conditioned_by_val : ($conditioned_by_val);
+%   my $condition = $CustomField->ConditionedBy;
+%   if ($condition) {
+%       my $condition_val = $condition->{vals} || '';
+%       my @condition_vals = ref($condition_val) eq 'ARRAY' ? @$condition_val : ($condition_val);
 <script type="text/javascript">
 jQuery(function() {
-%       my $conditioned_by_cf = RT::CustomField->new($session{CurrentUser});
-%       $conditioned_by_cf->Load($conditioned_by->{CF});
-%       if ($conditioned_by_cf->id) {
+%       my $condition_cf = RT::CustomField->new($session{CurrentUser});
+%       $condition_cf->Load($condition->{CF});
+%       if ($condition_cf->id) {
 %           if ($ParentSelector eq 'id') {
-    var conditionedby_selector = <% '#CF-' . $conditioned_by_cf->id . '-ShowRow' |h,n,j%>;
+    var condition_selector = <% '#CF-' . $condition_cf->id . '-ShowRow' |h,n,j%>;
     var cf_selector = <% '#CF-' . $CustomField->id . '-ShowRow' |h,n,j%>;
 %           } else {
-    var conditionedby_selector = <% '.record-field.CustomField__' . $conditioned_by_cf->Name . '_' |h,n,j%>;
+    var condition_selector = <% '.record-field.CustomField__' . $condition_cf->Name . '_' |h,n,j%>;
     var cf_selector = <% '.record-field.CustomField__' . $CustomField->Name . '_' |h,n,j%>;
 %           }
-%           my $condition_vals_str = $Object->CustomFieldValuesAsString($conditioned_by_cf->id);
-%           my @condition_vals = split(/\n/, $condition_vals_str);
-%           if ($conditioned_by_cf->Type =~ /^Date(Time)?$/) {
-%               @condition_vals = map { my $DateObj = RT::Date->new($session{'CurrentUser'}); $DateObj->Set(Format => 'unknown', Value => $_, Timezone => 'user'); $DateObj->ISO(Time => $conditioned_by_cf->Type eq 'DateTime'); } @condition_vals;
-%           } elsif ($conditioned_by_cf->Type =~ /^IPAddress(Range)?$/) {
-%               @condition_vals = map { RT::ObjectCustomFieldValue->ParseIP($_) } @condition_vals;
+%           my $cf_condition_vals_str = $Object->CustomFieldValuesAsString($condition_cf->id);
+%           my @cf_condition_vals = split(/\n/, $cf_condition_vals_str);
+%           if ($condition_cf->Type eq 'DateTime') {
+%               @cf_condition_vals = map { my $DateObj = RT::Date->new($session{'CurrentUser'}); $DateObj->Set(Format => 'ISO', Value => $_); $DateObj->ISO(Time => 1, Timezone => 'user'); } @cf_condition_vals;
+%           } elsif ($condition_cf->Type eq 'IPAddress') {
+%               @cf_condition_vals = map { RT::ObjectCustomFieldValue->ParseIP($_) } @cf_condition_vals;
 %           }
     cf_selector = cf_selector.replace(/:/g,'\\:');
-    var conditionedby_vals = ["<% join('", "', @conditioned_by_vals) |n%>"];
     var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
+    var cf_condition_vals = ["<% join('", "', @cf_condition_vals) |n%>"];
     var condition_met = false;
-%           if ($conditioned_by_cf->IsAdded($Object->id)) {
-    if (jQuery(conditionedby_selector).is(':visible')) {
-        condition_met = condition_is_met(conditionedby_vals, condition_vals, "<% $conditioned_by->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
+%           if ($condition_cf->IsAdded($Object->id)) {
+    if (jQuery(condition_selector).is(':visible')) {
+        condition_met = condition_is_met(condition_vals, cf_condition_vals, "<% $condition->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
     }
 %           } else {
     condition_met = true;
