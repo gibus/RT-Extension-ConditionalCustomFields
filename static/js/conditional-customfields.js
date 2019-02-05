@@ -99,6 +99,50 @@ function naturalSort(a, b, lang) {
     return 0;
 }
 
+function parseIP(ip) {
+    var reIPv4 = /^(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))$/;
+    var reIPv6 = /^(?:(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,7}:|(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:(?:(?::[0-9a-fA-F]{1,4}){1,6})|:(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(?:ffff(?::0{1,4}){0,1}:){0,1}(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])|(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
+    if (reIPv4.test(ip)) {
+        return ip.split('.').map(function(ip_part) { while (ip_part.length < 3) ip_part = '0' +ip_part; return ip_part; }).join('.');
+    } else if (reIPv6.test(ip)) {
+        // replace ipv4 address if any
+        var ipv4 = ip.match(/(.*:)([0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$)/);
+        if (ipv4) {
+            var ip = ipv4[1];
+            ipv4 = ipv4[2].match(/[0-9]+/g);
+            for (var i = 0;i < 4;i ++) {
+                var byte = parseInt(ipv4[i],10);
+                ipv4[i] = ("0" + byte.toString(16)).substr(-2);
+            }
+            ip += ipv4[0] + ipv4[1] + ':' + ipv4[2] + ipv4[3];
+        }
+
+        // take care of leading and trailing ::
+        ip = ip.replace(/^:|:$/g, '');
+
+        var ipv6 = ip.split(':');
+
+        for (var i = 0; i < ipv6.length; i ++) {
+            var hex = ipv6[i];
+            if (hex != "") {
+                // normalize leading zeros
+                ipv6[i] = ("0000" + hex).substr(-4);
+            }
+            else {
+                // normalize grouped zeros ::
+                hex = [];
+                for (var j = ipv6.length; j <= 8; j ++) {
+                    hex.push('0000');
+                }
+                ipv6[i] = hex.join(':');
+            }
+        }
+
+        return ipv6.join(':');
+    }
+    return ip;
+}
+
 function condition_is_met(condition_vals, cf_condition_vals, condition_op, lang) {
     lang = (typeof lang !== 'undefined') ? lang : 'en';
     var condition_met = false;
