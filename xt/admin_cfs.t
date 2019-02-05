@@ -5,78 +5,82 @@ use RT::Extension::ConditionalCustomFields::Test tests => 731;
 
 use WWW::Mechanize::PhantomJS;
 
-my $cf_condition_select_single = RT::CustomField->new(RT->SystemUser);
+# Set user TZ to play with datetime
+my $user = RT::Test->load_or_create_user(Name => 'root', Password => 'password');
+$user->SetTimezone('Europe/Paris');
+
+my $cf_condition_select_single = RT::CustomField->new($user);
 $cf_condition_select_single->Create(Name => 'ConditionSelectSingle', Type => 'Select', MaxValues => 1, RenderType => 'Dropdown', Queue => 'General');
 $cf_condition_select_single->AddValue(Name => 'Single Passed', SortOder => 0);
 $cf_condition_select_single->AddValue(Name => 'Single Failed', SortOrder => 1);
 $cf_condition_select_single->AddValue(Name => 'Single Schrödingerized', SortOrder => 2);
 my $cf_values_select_single = $cf_condition_select_single->Values->ItemsArrayRef;
 
-my $cf_condition_select_multiple = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_select_multiple = RT::CustomField->new($user);
 $cf_condition_select_multiple->Create(Name => 'ConditionSelectMultiple', Type => 'Select', MaxValues => 0, RenderType => 'List', Queue => 'General');
 $cf_condition_select_multiple->AddValue(Name => 'Multiple Passed', SortOder => 0);
 $cf_condition_select_multiple->AddValue(Name => 'Multiple Failed', SortOrder => 1);
 $cf_condition_select_multiple->AddValue(Name => 'Multiple Schrödingerized', SortOrder => 2);
 my $cf_values_select_multiple = $cf_condition_select_multiple->Values->ItemsArrayRef;
 
-my $cf_condition_freeform_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_freeform_single = RT::CustomField->new($user);
 $cf_condition_freeform_single->Create(Name => 'ConditionFreeformSingle', Type => 'Freeform', MaxValues => 1, Queue => 'General');
 
-my $cf_condition_freeform_multiple = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_freeform_multiple = RT::CustomField->new($user);
 $cf_condition_freeform_multiple->Create(Name => 'ConditionFreeformMultiple', Type => 'Freeform', MaxValues => 0, Queue => 'General');
 
-my $cf_condition_text_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_text_single = RT::CustomField->new($user);
 $cf_condition_text_single->Create(Name => 'ConditionTextSingle', Type => 'Text', MaxValues => 1, Queue => 'General');
 
-my $cf_condition_wikitext_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_wikitext_single = RT::CustomField->new($user);
 $cf_condition_wikitext_single->Create(Name => 'ConditionWikitextSingle', Type => 'Wikitext', MaxValues => 1, Queue => 'General');
 
-my $cf_condition_image_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_image_single = RT::CustomField->new($user);
 $cf_condition_image_single->Create(Name => 'ConditionImageSingle', Type => 'Image', MaxValues => 1, Queue => 'General');
 
-my $cf_condition_image_multiple = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_image_multiple = RT::CustomField->new($user);
 $cf_condition_image_multiple->Create(Name => 'ConditionImageMultiple', Type => 'Image', MaxValues => 0, Queue => 'General');
 
-my $cf_condition_binary_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_binary_single = RT::CustomField->new($user);
 $cf_condition_binary_single->Create(Name => 'ConditionBinarySingle', Type => 'Binary', MaxValues => 1, Queue => 'General');
 
-my $cf_condition_binary_multiple = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_binary_multiple = RT::CustomField->new($user);
 $cf_condition_binary_multiple->Create(Name => 'ConditionBinaryMultiple', Type => 'Binary', MaxValues => 0, Queue => 'General');
 
-my $cf_condition_combobox_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_combobox_single = RT::CustomField->new($user);
 $cf_condition_combobox_single->Create(Name => 'ConditionComboboxSingle', Type => 'Combobox', MaxValues => 1, Queue => 'General');
 $cf_condition_combobox_single->AddValue(Name => 'Single Passed', SortOder => 0);
 $cf_condition_combobox_single->AddValue(Name => 'Single Failed', SortOrder => 1);
 $cf_condition_combobox_single->AddValue(Name => 'Single Schrödingerized', SortOrder => 2);
 my $cf_values_combobox_single = $cf_condition_combobox_single->Values->ItemsArrayRef;
 
-my $cf_condition_autocomplete_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_autocomplete_single = RT::CustomField->new($user);
 $cf_condition_autocomplete_single->Create(Name => 'ConditionAutocompleteSingle', Type => 'Autocomplete', MaxValues => 1, Queue => 'General');
 $cf_condition_autocomplete_single->AddValue(Name => 'Single Passed', SortOder => 0);
 $cf_condition_autocomplete_single->AddValue(Name => 'Single Failed', SortOrder => 1);
 $cf_condition_autocomplete_single->AddValue(Name => 'Single Schrödingerized', SortOrder => 2);
 my $cf_values_autocomplete_single = $cf_condition_autocomplete_single->Values->ItemsArrayRef;
 
-my $cf_condition_autocomplete_multiple = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_autocomplete_multiple = RT::CustomField->new($user);
 $cf_condition_autocomplete_multiple->Create(Name => 'ConditionAutocompleteMultiple', Type => 'Autocomplete', MaxValues => 0, Queue => 'General');
 $cf_condition_autocomplete_multiple->AddValue(Name => 'Multiple Passed', SortOder => 0);
 $cf_condition_autocomplete_multiple->AddValue(Name => 'Multiple Failed', SortOrder => 1);
 $cf_condition_autocomplete_multiple->AddValue(Name => 'Multiple Schrödingerized', SortOrder => 2);
 my $cf_values_autocomplete_multiple = $cf_condition_autocomplete_multiple->Values->ItemsArrayRef;
 
-my $cf_condition_date_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_date_single = RT::CustomField->new($user);
 $cf_condition_date_single->Create(Name => 'ConditionDateSingle', Type => 'Date', MaxValues => 1, Queue => 'General');
 
-my $cf_condition_datetime_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_datetime_single = RT::CustomField->new($user);
 $cf_condition_datetime_single->Create(Name => 'ConditionDateTimeSingle', Type => 'DateTime', MaxValues => 1, Queue => 'General');
 
-my $cf_condition_ipaddress_single = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_ipaddress_single = RT::CustomField->new($user);
 $cf_condition_ipaddress_single->Create(Name => 'ConditionIPAddressSingle', Type => 'IPAddress', MaxValues => 1, Queue => 'General');
 
-my $cf_condition_ipaddress_multiple = RT::CustomField->new(RT->SystemUser);
+my $cf_condition_ipaddress_multiple = RT::CustomField->new($user);
 $cf_condition_ipaddress_multiple->Create(Name => 'ConditionIPAddressMultiple', Type => 'IPAddress', MaxValues => 1, Queue => 'General');
 
-my $cf_conditioned_by = RT::CustomField->new(RT->SystemUser);
+my $cf_conditioned_by = RT::CustomField->new($user);
 $cf_conditioned_by->Create(Name => 'ConditionedBy', Type => 'Freeform', MaxValues => 1, Queue => 'General');
 
 my ($base, $m) = RT::Extension::ConditionalCustomFields::Test->started_ok;
@@ -1394,10 +1398,6 @@ is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionDateSingle two
 is($conditioned_by->{vals}->[0], '2021-03-21', 'ConditionedBy ConditionDateSingle first val');
 is($conditioned_by->{vals}->[1], '2021-06-21', 'ConditionedBy ConditionDateSingle second val');
 
-# Set user TZ to play with datetime
-my $user = RT::Test->load_or_create_user(Name => 'root', Password => 'password');
-$user->SetTimezone('Europe/Paris');
-
 # Conditioned by DateTime Single
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
 $mjs->field($cf_conditioned_by_CF, $cf_condition_datetime_single->id);
@@ -1432,7 +1432,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
 is($conditioned_by->{op}, "less than", "ConditionedBy ConditionDateTimeSingle CF and less than operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionDateTimeSingle one val');
-is($conditioned_by->{vals}->[0], '2021-06-20 22:42:00', 'ConditionedBy ConditionDateTimeSingle val');
+is($conditioned_by->{vals}->[0], '2021-06-21 00:42:00', 'ConditionedBy ConditionDateTimeSingle val');
 
 $cf_conditioned_by_op_datetime_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_datetime_single, "is");
@@ -1458,7 +1458,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionDateTimeSingle CF and is operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionDateTimeSingle one val');
-is($conditioned_by->{vals}->[0], '2021-03-20 23:42:00', 'ConditionedBy ConditionDateTimeSingle val');
+is($conditioned_by->{vals}->[0], '2021-03-21 00:42:00', 'ConditionedBy ConditionDateTimeSingle val');
 
 $cf_conditioned_by_op_datetime_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_datetime_single, "greater than");
@@ -1484,7 +1484,7 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
 is($conditioned_by->{op}, "greater than", "ConditionedBy ConditionDateTimeSingle CF and greater than operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionDateTimeSingle one val');
-is($conditioned_by->{vals}->[0], '2021-03-20 23:42:00', 'ConditionedBy ConditionDateTimeSingle val');
+is($conditioned_by->{vals}->[0], '2021-03-21 00:42:00', 'ConditionedBy ConditionDateTimeSingle val');
 
 $cf_conditioned_by_op_datetime_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 $mjs->field($cf_conditioned_by_op_datetime_single, "between");
@@ -1520,8 +1520,8 @@ $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
 is($conditioned_by->{op}, "between", "ConditionedBy ConditionDateTimeSingle CF and between operation");
 is(scalar(@{$conditioned_by->{vals}}), 2, 'ConditionedBy ConditionDateTimeSingle two vals');
-is($conditioned_by->{vals}->[0], '2021-03-20 23:42:00', 'ConditionedBy ConditionDateTimeSingle first val');
-is($conditioned_by->{vals}->[1], '2021-06-20 22:42:00', 'ConditionedBy ConditionDateTimeSingle second val');
+is($conditioned_by->{vals}->[0], '2021-03-21 00:42:00', 'ConditionedBy ConditionDateTimeSingle first val');
+is($conditioned_by->{vals}->[1], '2021-06-21 00:42:00', 'ConditionedBy ConditionDateTimeSingle second val');
 
 # Conditioned by IPAddress Single
 $cf_conditioned_by_CF = $mjs->xpath('//select[@name="ConditionalCF"]', single => 1);
