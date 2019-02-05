@@ -203,7 +203,24 @@ sub ConditionedBy {
         return $self->BasedOnObj->ConditionedBy;
     }
 
-    return $attr->Content;
+    # Convert DateTime from UTC to Current User Timezone
+    my $conditioned_by = $attr->Content;
+    if ($conditioned_by && $conditioned_by->{CF}) {
+        my $cf = RT::CustomField->new($self->CurrentUser);
+        $cf->Load($conditioned_by->{CF});
+        if ($cf->id && $cf->Type eq 'DateTime') {
+            my $value = $conditioned_by->{vals} || '';
+            my @values = ref($value) eq 'ARRAY' ? @$value : ($value);
+            for (my $i=0; $i < scalar(@values); $i++) {
+                my $DateObj = RT::Date->new($self->CurrentUser);
+                $DateObj->Set(Format => 'unknown', Value => $values[$i], Timezone => 'utc');
+                $values[$i] = $DateObj->Strftime("%F %T");
+            }
+            $conditioned_by->{vals} = \@values;
+        }
+    }
+
+    return $conditioned_by;
 }
 
 sub _findGrouping {
