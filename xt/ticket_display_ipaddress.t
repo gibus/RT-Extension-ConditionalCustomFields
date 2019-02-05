@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 16;
+use RT::Extension::ConditionalCustomFields::Test tests => 17;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -39,6 +39,13 @@ $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => '192.168.1.66
 $mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
 $ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when IPAddress condition val with is operator is not met');
+
+# Operator: is, condition met, IPv6
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, 'is', '2001:db8:0:200:0:0:0:7');
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => '2001:db8:0:200:0:0:0:7');
+$mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when IPAddress condition val with is operator is met');
 
 # Operator: isn't, condition met
 $cf_conditioned_by->SetConditionedBy($cf_condition->id, "isn't", '192.168.1.6');
