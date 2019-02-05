@@ -104,10 +104,7 @@ jQuery(function() {
 %           }
 %           if ($condition_cf->Type =~ /^IPAddress(Range)?$/) {
         for (var i=0; i<condition_selector_vals.length; i++) {
-            condition_selector_vals[i] = condition_selector_vals[i].split('.').reduce(function(ipInt, octet) { return (ipInt<<8) + parseInt(octet, 10)}, 0) >>> 0;
-        }
-        for (var j=0; j<condition_vals.length; j++) {
-            condition_vals[j] = condition_vals[j].split('.').reduce(function(ipInt, octet) { return (ipInt<<8) + parseInt(octet, 10)}, 0) >>> 0;
+            condition_selector_vals[i] = parseIP(condition_selector_vals[i]);
         }
 %           }
         var condition_met = false;
