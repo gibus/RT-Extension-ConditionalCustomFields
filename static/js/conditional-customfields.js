@@ -160,7 +160,7 @@ function condition_is_met(condition_vals, cf_condition_vals, condition_op, lang)
                     }
                 } else if (condition_op == "matches" || condition_op == "doesn't match") {
                     var regexp = RegExp(condition_vals[j].replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), "i");
-                    if (cf_condition_vals[i].search(regexp) != -1) {
+                    if (regexp.test(cf_condition_vals[i])) {
                         return !condition_met;
                     }
                 } else if (condition_op == "less than") {
