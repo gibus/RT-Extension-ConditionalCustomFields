@@ -12,7 +12,7 @@
 %           my $condition_name = GetCustomFieldInputName(Object => $Object, CustomField => $condition_cf, Grouping => $condition_grouping );
 <script type="text/javascript">
 jQuery(function() {
-%           if ($condition_cf->RenderType eq 'List') {
+%           if ($condition_cf->Type eq 'Text' || $condition_cf->RenderType eq 'List') {
     var condition_selector = 'input[name="'+<% $condition_name |h,n,j%>+'"], textarea[name="'+<% $condition_name |h,n,j%>+'"]';
 %           } else {
     var condition_selector = '#'+<% $condition_name |h,n,j%>;
@@ -132,7 +132,7 @@ jQuery(function() {
         }
     });
 
-%           if ($condition_cf->RenderType eq 'List') {
+%           if ($condition_cf->Type eq 'Text' || $condition_cf->RenderType eq 'List') {
     jQuery('input[name="'+<% $condition_name |h,n,j%>+'"]').first().trigger('change');
     jQuery('textarea[name="'+<% $condition_name |h,n,j%>+'"]').trigger('change');
 %           } else {
