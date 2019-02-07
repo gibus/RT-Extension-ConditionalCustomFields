@@ -143,6 +143,19 @@ function parseIP(ip) {
     return ip;
 }
 
+function get_selector(name, type, render_type) {
+    var selector;
+    if (type == 'Text' || type == 'Wikitext') {
+        selector = 'textarea[name="' + name + '"]';
+    } else if (type == 'Select' && render_type == 'List') {
+        selector = 'input[name="' + name + '"]';
+    } else {
+        selector = '#' + name;
+    }
+    selector = selector.replace(/:/g,'\\:');
+    return selector;
+}
+
 function condition_is_met(condition_vals, cf_condition_vals, condition_op, lang) {
     lang = (typeof lang !== 'undefined') ? lang : 'en';
     var condition_met = false;
