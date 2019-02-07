@@ -90,6 +90,7 @@ jQuery(function() {
 <script type="text/javascript">
 jQuery(function() {
     var condition_obj = <% "$condition_name" |h,n,j%>;
+    var alternative_obj = condition_obj.replace(/[-:]/g, '_') + '_chosen';
     condition_obj = condition_obj.replace(/:/g,'\\:');
     jQuery('#'+condition_obj).change(function() {
         var cf_id = <% "$cf_id" |h,n,j%>;
@@ -97,7 +98,7 @@ jQuery(function() {
         var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
         var condition_met = false;
         var condition_obj_vals = jQuery(this).val();
-        if (jQuery('#'+condition_obj).is(":visible")) {
+        if (jQuery('#'+condition_obj).is(":visible") || jQuery('#'+alternative_obj).is(":visible")) {
             if (jQuery.isArray(condition_obj_vals)) {
                 jQuery.each(condition_obj_vals, function(i, condition_obj_val) {
                     if (jQuery.inArray(condition_obj_val, condition_vals) != -1) {
