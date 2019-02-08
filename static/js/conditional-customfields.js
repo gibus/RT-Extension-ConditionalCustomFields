@@ -169,15 +169,6 @@ function get_cf_current_form_values(selector, type, render_type, single) {
         var val = jQuery(selector).val();
         if (val) {
             values.push(val);
-        } else if (jQuery(selector).length) {
-            // Since file upload cannot be programatically achieved
-            // through WWW::Mechanize::PhantomJS, tests are just
-            // setting value attribute of <input type=file> elt
-            // which is handled by this chunk of code
-            var fake_val = jQuery(selector)[0].getAttribute('value');
-            if (fake_val) {
-                values.push(fake_val);
-            }
         }
         if (!(single) || values.length == 0) {
             var delete_selector = selector.replace('Upload', 'DeleteValueIds');
