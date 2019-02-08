@@ -17,28 +17,7 @@ jQuery(function() {
         var cf_id = <% "$cf_id" |h,n,j%>;
         cf_id = cf_id.replace(/:/g,'\\:');
         var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
-%           if ($condition_cf->RenderType eq 'List') {
-        var condition_selector_all_vals = jQuery(condition_selector);
-        var condition_selector_vals = Array();
-        jQuery.each(condition_selector_all_vals, function(id, val) {
-            if (jQuery(val).is(':checked')) {
-                condition_selector_vals.push(jQuery(val).val());
-            }
-        });
-%           } else {
-        var condition_selector_vals = jQuery(this).val();
-        if (!jQuery.isArray(condition_selector_vals)) {
-            condition_selector_vals = Array(condition_selector_vals);
-        }
-%           }
-%           if ($condition_cf->Type =~ /^IPAddress(Range)?$/) {
-        for (var i=0; i<condition_selector_vals.length; i++) {
-            condition_selector_vals[i] = condition_selector_vals[i].split('.').reduce(function(ipInt, octet) { return (ipInt<<8) + parseInt(octet, 10)}, 0) >>> 0;
-        }
-        for (var j=0; j<condition_vals.length; j++) {
-            condition_vals[j] = condition_vals[j].split('.').reduce(function(ipInt, octet) { return (ipInt<<8) + parseInt(octet, 10)}, 0) >>> 0;
-        }
-%           }
+        var condition_selector_vals = get_cf_current_form_values(condition_selector, '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>', <% $condition_cf->SingleValue ? 'true' : 'false' %>);
         var condition_met = false;
         if (jQuery(condition_selector).is(':visible')) {
             condition_met = condition_is_met(condition_vals, condition_selector_vals, "<% $condition->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
@@ -83,25 +62,7 @@ jQuery(function() {
         var cf_id = <% "$cf_id" |h,n,j%>;
         cf_id = cf_id.replace(/:/g,'\\:');
         var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
-%           if ($condition_cf->RenderType eq 'List') {
-        var condition_selector_all_vals = jQuery(condition_selector);
-        var condition_selector_vals = Array();
-        jQuery.each(condition_selector_all_vals, function(id, val) {
-            if (jQuery(val).is(':checked')) {
-                condition_selector_vals.push(jQuery(val).val());
-            }
-        });
-%           } else {
-        var condition_selector_vals = jQuery(this).val();
-        if (!jQuery.isArray(condition_selector_vals)) {
-            condition_selector_vals = Array(condition_selector_vals);
-        }
-%           }
-%           if ($condition_cf->Type =~ /^IPAddress(Range)?$/) {
-        for (var i=0; i<condition_selector_vals.length; i++) {
-            condition_selector_vals[i] = parseIP(condition_selector_vals[i]);
-        }
-%           }
+        var condition_selector_vals = get_cf_current_form_values(condition_selector, '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>');
         var condition_met = false;
         condition_met = condition_is_met(condition_vals, condition_selector_vals, "<% $condition->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
 

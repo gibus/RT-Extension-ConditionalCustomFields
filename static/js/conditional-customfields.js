@@ -147,13 +147,63 @@ function get_selector(name, type, render_type) {
     var selector;
     if (type == 'Text' || type == 'Wikitext') {
         selector = 'textarea[name="' + name + '"]';
-    } else if (type == 'Select' && render_type == 'List') {
+    } else if ((type == 'Select' && render_type == 'List') || type == 'Image' || type == 'Binary') {
         selector = 'input[name="' + name + '"]';
     } else {
         selector = '#' + name;
     }
     selector = selector.replace(/:/g,'\\:');
     return selector;
+}
+
+function get_cf_current_form_values(selector, type, render_type, single) {
+    var values = Array();
+    if (type == 'Select' && render_type == 'List') {
+        var all_vals = jQuery(selector);
+        jQuery.each(all_vals, function(id, val) {
+            if (jQuery(val).is(':checked')) {
+                values.push(jQuery(val).val());
+            }
+        });
+    } else if (type == 'Image' || type == 'Binary') {
+        var val = jQuery(selector).val();
+        if (val) {
+            values.push(val);
+        } else if (jQuery(selector).length) {
+            // Since file upload cannot be programatically achieved
+            // through WWW::Mechanize::PhantomJS, tests are just
+            // setting value attribute of <input type=file> elt
+            // which is handled by this chunk of code
+            var fake_val = jQuery(selector)[0].getAttribute('value');
+            if (fake_val) {
+                values.push(fake_val);
+            }
+        }
+        if (!(single) || values.length == 0) {
+            var delete_selector = selector.replace('Upload', 'DeleteValueIds');
+            var delete_vals = jQuery(delete_selector);
+            jQuery.each(delete_vals, function(id, val) {
+                if (jQuery(val).not(':checked')) {
+                    values.push(jQuery(val).next('a').text());
+                }
+            });
+        }
+    } else {
+        vals = jQuery(selector).val();
+        if (!jQuery.isArray(vals)) {
+            values = Array(vals);
+        } else {
+            values = vals;
+        }
+    }
+
+    if (type == 'IPAddress') {
+        for (var i=0; i<values.length; i++) {
+            values[i] = parseIP(values[i]);
+        }
+    }
+
+    return values;
 }
 
 function condition_is_met(condition_vals, cf_condition_vals, condition_op, lang) {
