@@ -38,7 +38,7 @@ ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Wikitext co
 my $ticket_cf_condition = $mjs->xpath('//textarea[@name="Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Values"]', single => 1);
 $mjs->field($ticket_cf_condition, 'No further informations needed');
 $mjs->eval_in_page("jQuery('textarea[name=\"Object-RT\\\\:\\\\:Ticket-" . $ticket->id . "-CustomField\\\\:Groupone-" . $cf_condition->id . "-Values\"]').trigger('change');");
-ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Text condition val with matches operator is updated to not met');
+ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Wikitext condition val with matches operator is updated to not met');
 
 # Operator: matches, condition not met
 $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => 'No further informations needed');
