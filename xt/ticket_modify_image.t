@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 26;
+use RT::Extension::ConditionalCustomFields::Test tests => 27;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -55,6 +55,13 @@ $ticket_cf_condition_name =~ s/:/\\:/g;
 # through WWW::Mechanize::PhantomJS, just set value attribute
 # of <input type=file> elt
 $mjs->eval_in_page("document.getElementsByName(\"$ticket_cf_condition_name\")[0].setAttribute('value', 'picture.png')");
+my $picture_name = 'picture.png';
+my $picture_path = RT::Test::get_relocatable_file($picture_name, 'data');
+$mjs->driver->upload_file($picture_path);
+foreach my $a ($mjs->js_alerts) {
+    warn "BLUP !$a!\n";
+}
+is($mjs->eval_in_page("document.getElementsByName(\"$ticket_cf_condition_name\")[0].files.length"), 'blup');
 $mjs->eval_in_page("jQuery('input[name=\"$ticket_cf_condition_name\"]').trigger('change');");
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Image condition val with matches operator is updated to not met');
 
