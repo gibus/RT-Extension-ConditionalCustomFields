@@ -51,17 +51,10 @@ ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Image condi
 my $ticket_cf_condition = $mjs->xpath('//input[@name="Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Upload"]', single => 1);
 my $ticket_cf_condition_name = $ticket_cf_condition->get_attribute('name');
 $ticket_cf_condition_name =~ s/:/\\:/g;
-# Since file upload cannot be programatically achieved
-# through WWW::Mechanize::PhantomJS, just set value attribute
-# of <input type=file> elt
-$mjs->eval_in_page("document.getElementsByName(\"$ticket_cf_condition_name\")[0].setAttribute('value', 'picture.png')");
 my $picture_name = 'picture.png';
 my $picture_path = RT::Test::get_relocatable_file($picture_name, 'data');
-$mjs->driver->upload_file($picture_path);
-foreach my $a ($mjs->js_alerts) {
-    warn "BLUP !$a!\n";
-}
-is($mjs->eval_in_page("document.getElementsByName(\"$ticket_cf_condition_name\")[0].files.length"), 'blup');
+$ticket_cf_condition->send_keys($picture_path);
+is($mjs->eval_in_page("document.getElementsByName(\"$ticket_cf_condition_name\")[0].files.length"), 1);
 $mjs->eval_in_page("jQuery('input[name=\"$ticket_cf_condition_name\"]').trigger('change');");
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Image condition val with matches operator is updated to not met');
 
