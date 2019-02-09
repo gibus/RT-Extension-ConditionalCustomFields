@@ -67,6 +67,7 @@ xt/queue_modify_dropdown.t
 xt/queue_modify_list.t
 xt/queue_modify_selectbox.t
 xt/ticket_display.t
+xt/ticket_modify_chosen.t
 xt/ticket_modify_dropdown.t
 xt/ticket_modify_list.t
 xt/ticket_modify_selectbox.t

@@ -1,5 +1,9 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+0.16 2019-02-09
+ - Fix check visibility of 'chosen' widget for Select CF
+ - Add tests for 'chosen' select CF
+
 0.15 2019-01-24
  - Fix textarea CF conditionned byFix textarea CF conditionned by
  - Add tests for textarea CF conditionned by
