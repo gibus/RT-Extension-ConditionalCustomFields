@@ -175,7 +175,7 @@ function get_cf_current_form_values(selector, type, render_type, single) {
             var delete_vals = jQuery(delete_selector);
             jQuery.each(delete_vals, function(id, val) {
                 if (jQuery(val).not(':checked')) {
-                    values.push(jQuery(val).next('a').text());
+                    values.push(jQuery(val).next('a').text().trim());
                 }
             });
         }
