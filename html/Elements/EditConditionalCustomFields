@@ -13,13 +13,14 @@
 <script type="text/javascript">
 jQuery(function() {
     var condition_selector = get_selector('<% $condition_name |n%>', '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>');
+    var alternative_selector = condition_selector.replace(/[-:]/g, '_') + '_chosen';
     jQuery(condition_selector).change(function() {
         var cf_id = <% "$cf_id" |h,n,j%>;
         cf_id = cf_id.replace(/:/g,'\\:');
         var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
         var condition_selector_vals = get_cf_current_form_values(condition_selector, '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>', <% $condition_cf->SingleValue ? 'true' : 'false' %>);
         var condition_met = false;
-        if (jQuery(condition_selector).is(':visible')) {
+        if (jQuery(condition_selector).is(':visible') || jQuery(alternative_selector).is(":visible")) {
             condition_met = condition_is_met(condition_vals, condition_selector_vals, "<% $condition->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
         }
 
