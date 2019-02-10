@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 14;
+use RT::Extension::ConditionalCustomFields::Test tests => 16;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -39,6 +39,19 @@ $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => '2019-03-21')
 $mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
 $ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Date condition val with is operator is not met');
+
+# Operator: isn't, condition met
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, "isn't", '2019-06-21');
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => '2019-03-21');
+$mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+ok($ticket_cf_conditioned_by->is_displayed, "Show ConditionalCF when Date condition val with isn't operator is met");
+
+# Operator: isn't, condition not met
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => '2019-06-21');
+$mjs->get($m->rt_base_url . 'Ticket/Display.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->selector('#CF-'. $cf_conditioned_by->id . '-ShowRow', single => 1);
+ok($ticket_cf_conditioned_by->is_hidden, "Hide ConditionalCF when Date condition val with isn't operator is not met");
 
 # Operator: less than, condition met
 $cf_conditioned_by->SetConditionedBy($cf_condition->id, 'less than', '2019-06-22');

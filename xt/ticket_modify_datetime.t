@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 15;
+use RT::Extension::ConditionalCustomFields::Test tests => 17;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -49,6 +49,19 @@ $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => '2019-06-21 0
 $mjs->get($m->rt_base_url . 'Ticket/Modify.html?id=' . $ticket->id);
 $ticket_cf_conditioned_by = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Grouptwo-' . $cf_conditioned_by->id . '-Value', single => 1);
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when DateTime condition val with is operator is not met');
+
+# Operator: isn't, condition met
+$cf_conditioned_by->SetConditionedBy($cf_condition->id, "isn't", '2021-06-21 00:42:00');
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => '2019-06-21 06:06:06');
+$mjs->get($m->rt_base_url . 'Ticket/Modify.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Grouptwo-' . $cf_conditioned_by->id . '-Value', single => 1);
+ok($ticket_cf_conditioned_by->is_displayed, "Show ConditionalCF when DateTime condition val with is operator isn't met");
+
+# Operator: isn't, condition not met
+$ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => '2021-06-21 00:42:00');
+$mjs->get($m->rt_base_url . 'Ticket/Modify.html?id=' . $ticket->id);
+$ticket_cf_conditioned_by = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Grouptwo-' . $cf_conditioned_by->id . '-Value', single => 1);
+ok($ticket_cf_conditioned_by->is_hidden, "Hide ConditionalCF when DateTime condition val with is operator isn't not met");
 
 # Operator: less than, condition met
 $cf_conditioned_by->SetConditionedBy($cf_condition->id, 'less than', '2019-06-21 00:42:00');

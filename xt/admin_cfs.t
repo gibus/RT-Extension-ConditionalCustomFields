@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use RT::Extension::ConditionalCustomFields::Test tests => 731;
+use RT::Extension::ConditionalCustomFields::Test tests => 755;
 
 use WWW::Mechanize::PhantomJS;
 
@@ -1278,11 +1278,12 @@ $mjs->field($cf_conditioned_by_CF, $cf_condition_date_single->id);
 $mjs->eval_in_page("jQuery('select[name=ConditionalCF]').trigger('change');");
 
 my @cf_conditioned_by_op_options_date_single = $mjs->xpath('//select[@name="ConditionalOp"]/option');
-is(scalar(@cf_conditioned_by_op_options_date_single), 4, 'Can be conditioned with 4 operations by ConditionDateSingle');
+is(scalar(@cf_conditioned_by_op_options_date_single), 5, 'Can be conditioned with 5 operations by ConditionDateSingle');
 is($cf_conditioned_by_op_options_date_single[0]->get_value, "less than", "Less than operation for conditioned by ConditionDateSingle");
 is($cf_conditioned_by_op_options_date_single[1]->get_value, "is", "Is operation for conditioned by ConditionDateSingle");
-is($cf_conditioned_by_op_options_date_single[2]->get_value, "greater than", "Greater than operation for conditioned by ConditionDateSingle");
-is($cf_conditioned_by_op_options_date_single[3]->get_value, "between", "Between operation for conditioned by ConditionDateSingle");
+is($cf_conditioned_by_op_options_date_single[2]->get_value, "isn't", "Isn't than operation for conditioned by ConditionDateSingle");
+is($cf_conditioned_by_op_options_date_single[3]->get_value, "greater than", "Greater than operation for conditioned by ConditionDateSingle");
+is($cf_conditioned_by_op_options_date_single[4]->get_value, "between", "Between operation for conditioned by ConditionDateSingle");
 
 my $cf_conditioned_by_op_date_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 is($cf_conditioned_by_op_date_single->get_value, "less than", "Less than operation selected for conditioned by ConditionDateSingle");
@@ -1337,6 +1338,35 @@ $mjs->click('Update');
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_date_single->id, 'ConditionedBy ConditionDateSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionDateSingle CF and is operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionDateSingle one val');
+is($conditioned_by->{vals}->[0], '2021-03-21', 'ConditionedBy ConditionDateSingle val');
+
+$cf_conditioned_by_op_date_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_date_single, "isn't");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_date_single->get_value, "isn't", "Isn't operation selected for conditioned by ConditionDateSingle");
+@cf_conditioned_by_value_date_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_date_single), 1, "One possible value for conditioned by isn't ConditionDateSingle");
+$calendar = $mjs->xpath('//div[@id="ui-datepicker-div"]', single => 1);
+ok($calendar->is_hidden, 'Hide Calendar before clicking on date field');
+$mjs->click($cf_conditioned_by_value_date_single[0]);
+ok($calendar->is_displayed, 'Show Calendar after clicking on date field');
+$calendar_year = $mjs->xpath('//select[@class="ui-datepicker-year"]', single => 1);
+$mjs->field($calendar_year, '2021');
+$mjs->eval_in_page("jQuery('.ui-datepicker-year').trigger('change');");
+$calendar_month = $mjs->xpath('//select[@class="ui-datepicker-month"]', single => 1);
+$mjs->field($calendar_month, '2');
+$mjs->eval_in_page("jQuery('.ui-datepicker-month').trigger('change');");
+@calendar_days = $mjs->xpath('//td[@data-month="2"]');
+is(scalar(@calendar_days), 31, 'Calendar has 31 days in March');
+$mjs->click($calendar_days[20]);
+$calendar_done = $mjs->xpath('//button[@data-handler="hide"]', single => 1);
+$mjs->click($calendar_done);
+is($cf_conditioned_by_value_date_single[0]->get_value, "2021-03-21", "Value set with datepicker for isn't ConditionalDateSingle");
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_date_single->id, 'ConditionedBy ConditionDateSingle CF');
+is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionDateSingle CF and is operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionDateSingle one val');
 is($conditioned_by->{vals}->[0], '2021-03-21', 'ConditionedBy ConditionDateSingle val');
 
@@ -1404,11 +1434,12 @@ $mjs->field($cf_conditioned_by_CF, $cf_condition_datetime_single->id);
 $mjs->eval_in_page("jQuery('select[name=ConditionalCF]').trigger('change');");
 
 my @cf_conditioned_by_op_options_datetime_single = $mjs->xpath('//select[@name="ConditionalOp"]/option');
-is(scalar(@cf_conditioned_by_op_options_datetime_single), 4, 'Can be conditioned with 4 operations by ConditionDateTimeSingle');
+is(scalar(@cf_conditioned_by_op_options_datetime_single), 5, 'Can be conditioned with 5 operations by ConditionDateTimeSingle');
 is($cf_conditioned_by_op_options_datetime_single[0]->get_value, "less than", "Less than operation for conditioned by ConditionDateTimeSingle");
 is($cf_conditioned_by_op_options_datetime_single[1]->get_value, "is", "Is operation for conditioned by ConditionDateTimeSingle");
-is($cf_conditioned_by_op_options_datetime_single[2]->get_value, "greater than", "Greater than operation for conditioned by ConditionDateTimeSingle");
-is($cf_conditioned_by_op_options_datetime_single[3]->get_value, "between", "Between operation for conditioned by ConditionDateTimeSingle");
+is($cf_conditioned_by_op_options_datetime_single[2]->get_value, "isn't", "Isn't operation for conditioned by ConditionDateTimeSingle");
+is($cf_conditioned_by_op_options_datetime_single[3]->get_value, "greater than", "Greater than operation for conditioned by ConditionDateTimeSingle");
+is($cf_conditioned_by_op_options_datetime_single[4]->get_value, "between", "Between operation for conditioned by ConditionDateTimeSingle");
 
 my $cf_conditioned_by_op_datetime_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
 is($cf_conditioned_by_op_datetime_single->get_value, "less than", "Less than operation selected for conditioned by ConditionDateTimeSingle");
@@ -1457,6 +1488,32 @@ $mjs->click('Update');
 $conditioned_by = $cf_conditioned_by->ConditionedBy;
 is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
 is($conditioned_by->{op}, "is", "ConditionedBy ConditionDateTimeSingle CF and is operation");
+is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionDateTimeSingle one val');
+is($conditioned_by->{vals}->[0], '2021-03-21 00:42:00', 'ConditionedBy ConditionDateTimeSingle val');
+
+$cf_conditioned_by_op_datetime_single = $mjs->xpath('//select[@name="ConditionalOp"]', single => 1);
+$mjs->field($cf_conditioned_by_op_datetime_single, "isn't");
+$mjs->eval_in_page("jQuery('select[name=ConditionalOp]').trigger('change');");
+is($cf_conditioned_by_op_datetime_single->get_value, "isn't", "Isn't operation selected for conditioned by ConditionDateTimeSingle");
+@cf_conditioned_by_value_datetime_single = $mjs->xpath('//input[@name="ConditionedBy"]');
+is(scalar(@cf_conditioned_by_value_datetime_single), 1, "One possible value for conditioned by isn't ConditionDateTimeSingle");
+$mjs->field($cf_conditioned_by_value_datetime_single[0], "2021-03-21 00:42:00");
+$calendar_time = $mjs->xpath('//div[@id="ui-datepicker-div"]', single => 1);
+ok($calendar_time->is_hidden, 'Hide Calendar/Time before clicking on date field');
+$mjs->click($cf_conditioned_by_value_datetime_single[0]);
+ok($calendar_time->is_displayed, 'Show Calendar/Time after clicking on date field');
+$calendar_time_year = $mjs->xpath('//select[@class="ui-datepicker-year"]/option[@value="2021"]', single => 1);
+ok($calendar_time_year->is_selected, 'Chosen year in calendar');
+$calendar_time_month = $mjs->xpath('//select[@class="ui-datepicker-month"]/option[@value="2"]', single => 1);
+ok($calendar_time_month->is_selected, 'Chosen month in calendar');
+$calendar_time_day = $mjs->xpath('//td[contains(@class, "ui-datepicker-current-day")]/a', single => 1);
+is($calendar_time_day->get_text, '21', 'Chosen day in calendar');
+$calendar_time_time = $mjs->xpath('//dd[@class="ui_tpicker_time"]', single => 1);
+is($calendar_time_time->get_text, '00:42:00', 'Chosen time in calendar');
+$mjs->click('Update');
+$conditioned_by = $cf_conditioned_by->ConditionedBy;
+is($conditioned_by->{CF}, $cf_condition_datetime_single->id, 'ConditionedBy ConditionDateTimeSingle CF');
+is($conditioned_by->{op}, "isn't", "ConditionedBy ConditionDateTimeSingle CF and isn't operation");
 is(scalar(@{$conditioned_by->{vals}}), 1, 'ConditionedBy ConditionDateTimeSingle one val');
 is($conditioned_by->{vals}->[0], '2021-03-21 00:42:00', 'ConditionedBy ConditionDateTimeSingle val');
 
