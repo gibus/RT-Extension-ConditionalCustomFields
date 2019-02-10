@@ -220,6 +220,9 @@ sub ConditionedBy {
         }
     }
 
+    # Default operator to is for backward compatibility
+    $conditioned_by->{op} = 'is' unless exists $conditioned_by->{op};
+
     return $conditioned_by;
 }
 
