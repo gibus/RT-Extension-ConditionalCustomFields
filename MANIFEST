@@ -53,6 +53,7 @@ xt/asset_dynamic_modify_selectbox.t
 xt/cascaded_ticket_display.t
 xt/cascaded_ticket_dynamic_modify.t
 xt/data/ee-rt.pdf
+xt/data/ee-sputnik.pdf
 xt/data/firstcf
 xt/data/image.png
 xt/data/initialdata
@@ -70,6 +71,7 @@ xt/multivalued_ticket_dynamic_modify_selectbox.t
 xt/multivalued_user_summary.t
 xt/no_applied_condition.t
 xt/normalize_ipaddress.t
+xt/pre_0.99_backward_compatibility.t
 xt/queue_dynamic_modify_dropdown.t
 xt/queue_dynamic_modify_list.t
 xt/queue_dynamic_modify_selectbox.t
@@ -89,8 +91,15 @@ xt/ticket_dynamic_modify_chosen.t
 xt/ticket_dynamic_modify_dropdown.t
 xt/ticket_dynamic_modify_list.t
 xt/ticket_dynamic_modify_selectbox.t
+xt/ticket_modify_all_types_conditionedby.t
+xt/ticket_modify_autocomplete.t
+xt/ticket_modify_binary.t
+xt/ticket_modify_combobox.t
+xt/ticket_modify_date.t
+xt/ticket_modify_datetime.t
 xt/ticket_modify_freeform.t
 xt/ticket_modify_image.t
+xt/ticket_modify_ipaddress.t
 xt/ticket_modify_select.t
 xt/ticket_modify_text.t
 xt/ticket_modify_wikitext.t

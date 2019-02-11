@@ -4,7 +4,7 @@ use warnings;
 no warnings qw(redefine);
 package RT::Extension::ConditionalCustomFields;
 
-our $VERSION = '0.13';
+our $VERSION = '0.99';
 
 =encoding utf8
 
@@ -22,37 +22,37 @@ Available operators are:
 
 =over
 
-=item * is
+=item * C<is>
 
 The condition is met if and only if the current value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/4.4.4/RT/ObjectCustomField.html> is equal to the value (or one of the values, see below for multivalued condition) setup for this condition. With C<isn't> operator described below, C<is> operator is the only one which is eligible for selectable L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> – with C<Select>, C<Combobox> or C<Autocomplete> type –, since their values are to be selected from a set of values. For C<Date> and C<DateTime> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, this operator is named C<on>.
 
-=item * isn't
+=item * C<isn't>
 
-The condition is met if and only if the current value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/4.4.4/RT/Queue.html> is different from the value (or none of the values, see below for multivalued condition) setup for this condition. With C<is> operator described above, C<isn't> operator is the only one which is eligible for selectable L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> – with C<Select>, C<Combobox> or C<Autocomplete> type –, since their values are to be selected from a set of values. For C<Date> and C<DateTime> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, this operator is named C<on>.
+The condition is met if and only if the current value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/4.4.4/RT/Queue.html> is different from the value (or none of the values, see below for multivalued condition) setup for this condition. With C<is> operator described above, C<isn't> operator is the only one which is eligible for selectable L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> – with C<Select>, C<Combobox> or C<Autocomplete> type –, since their values are to be selected from a set of values. For C<Date> and C<DateTime> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, this operator is named C<not on>.
 
-=item * match
+=item * C<match>
 
 The condition is met if and only if the current value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/4.4.4/RT/ObjectCustomField.html> is included in the value setup for this condition, typically if the current value is a substring of the condition value. As said above, selectable L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> – with C<Select>, C<Combobox> or C<Autocomplete> type are not eligible for this operator. Also, C<Date> and C<DateTime> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> are not eligible for this operator.
 
-=item * doesn't match
+=item * C<doesn't match>
 
 The condition is met if and only if the current value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/4.4.4/RT/ObjectCustomField.html> isn't included in the value setup for this condition, typically if the current value isn't a substring of the condition value. As said above, selectable L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> – with C<Select>, C<Combobox> or C<Autocomplete> type are not eligible for this operator. Also, C<Date> and C<DateTime> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> are not eligible for this operator.
 
-=item * less than
+=item * C<less than>
 
 The condition is met if and only if the current value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/4.4.4/RT/ObjectCustomField.html> is less than or equal to the value setup for this condition. The comparison is achieved according to some kind of L<natural sort order|https://en.wikipedia.org/wiki/Natural_sort_order>, that is: number values are compared as numbers, strings are compared alphabetically, insensitive to case and accents (C<a = á>, C<a = A>). Moreover, IP Adresses (IPv4 and IPv6) are expanded to be compared as expected. As said above, selectable L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> – with C<Select>, C<Combobox> or C<Autocomplete> type are not eligible for this operator.
 
-=item * greater than
+=item * C<greater than>
 
 The condition is met if and only if the current value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/4.4.4/RT/ObjectCustomField.html> is greater than or equal to the value setup for this condition. The comparison is achieved according to some kind of L<natural sort order|https://en.wikipedia.org/wiki/Natural_sort_order>, that is: number values are compared as numbers, strings are compared alphabetically, insensitive to case and accents (C<a = á>, C<a = A>), and dates with or without times are compared chronogically. Moreover, IP Adresses (IPv4 and IPv6) are expanded to be compared as expected. As said above, selectable L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> – with C<Select>, C<Combobox> or C<Autocomplete> type are not eligible for this operator.
 
-=item * between than
+=item * C<between>
 
 The condition is met if and only if the current value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/4.4.4/RT/ObjectCustomField.html> is greater than or equal to the first value setup for this condition and is less than or equal to the second value setup for this condition. That means that when this operator is selected, two values have to be entered. The comparison is achieved according to some kind of L<natural sort order|https://en.wikipedia.org/wiki/Natural_sort_order>, that is: number values are compared as numbers, strings are compared alphabetically, insensitive to case and accents (C<a = á>, C<a = A>), and dates with or without times are compared chronogically. Moreover, IP Adresses (IPv4 and IPv6) are expanded to be compared as expected. As said above, selectable L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> – with C<Select>, C<Combobox> or C<Autocomplete> type are not eligible for this operator.
 
 =back
 
-As an exception, C<IPAddressRange> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> are not eligible as condition L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, since there is not really any sense in comparing two ranges of IP addresses. C<IPAddress> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, combined with C<between> operator, should be sufficient for most cases where checking whether an IP address is included in a range.
+As an exception, C<IPAddressRange> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> are not eligible as condition L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, since there is not really any sense in comparing two ranges of IP addresses. C<IPAddress> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, combined with C<between> operator, should be sufficient for most cases checking whether an IP address is included in a range.
 
 If the condition L<custom field|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> is selectable – with C<Select>, C<Combobox> or C<Autocomplete> type – it can be multivalued. Then, the condition for an object is met as soon as the condition is met by at least one value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/4.4.4/RT/ObjectCustomField.html> for this object.
 
@@ -61,7 +61,7 @@ From version 0.07, the condition can be multivalued, that is: the conditioned L<
 
 I<Note that version 0.07 is a complete redesign: the API described below has changed; also, the way that ConditionedBy property is store has changed. If you upgrade from a previous version, you have to reconfigure the custom fields which are conditionned by.>
 
-Version 0.99 is also a complete redesign, with API changed, but backward compatible with previously configured L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, assuming the default condition operator is C<is>.
+Version 0.99 is also a complete redesign, with API changed, but backward compatibility with previously configured L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, assuming the default condition operator is C<is>.
 
 =head1 RT VERSION
 
@@ -466,7 +466,7 @@ The operator as a C<string> to use for comparison, either C<is>, C<isn't>, C<mat
 
 =head1 TEST SUITE
 
-C<ConditionalCustomFields> comes with a fairly complete test suite. As for every L<RT extention|https://docs.bestpractical.com/rt/4.4.4/writing_extensions.html#Tests>, to run it, you will need a installed C<RT>, set up in L<development mode|https://docs.bestpractical.com/rt/4.4.4/hacking.html#Test-suite>. But, since C<ConditionalCustomFields> operates dynamically to show or hide L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, most of its magic happens in C<Javascript>. Therefore, the test suite requires a scriptable headless browser with <Javascript> capabilities. So you also need to install L<PhantomJS|http://phantomjs.org/>, along with L<WWW:Mechanize::PhantomJS> and L<Selenium::Remote::Driver>.
+C<ConditionalCustomFields> comes with a fairly complete test suite. As for every L<RT extention|https://docs.bestpractical.com/rt/4.4.4/writing_extensions.html#Tests>, to run it, you will need a installed C<RT>, set up in L<development mode|https://docs.bestpractical.com/rt/4.4.4/hacking.html#Test-suite>. But, since C<ConditionalCustomFields> operates dynamically to show or hide L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, most of its magic happens in C<Javascript>. Therefore, the test suite requires a scriptable headless browser with C<Javascript> capabilities. So you also need to install L<PhantomJS|http://phantomjs.org/>, along with L<WWW::Mechanize::PhantomJS> and L<Selenium::Remote::Driver>.
 
 It should be noted that with version 0.99, the number of cases to test has exponentially expanded. Not only any object which can have custom fields (L<ticket|https://docs.bestpractical.com/rt/4.4.4/RT/Ticket.html>, L<queue|https://docs.bestpractical.com/rt/4.4.4/RT/Queue.html>, L<user|https://docs.bestpractical.com/rt/4.4.4/RT/User.html>, L<group|https://docs.bestpractical.com/rt/4.4.4/RT/Group.html>, L<article|https://docs.bestpractical.com/rt/4.4.4/RT/Article.html> or L<asset|https://docs.bestpractical.com/rt/4.4.4/RT/Asset.html>) should be tested. But also, any type of L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> (C<Select>, C<Freeform>, C<Text>, C<Wikitext>, C<Image>, C<Binary>, C<Combobox>, C<Autocomplete>, C<Date>, C<DateTime> and C<IPAddress>) should be tested both for condition L<custom field|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> and conditioned by L<custom field|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>. And this both for C<Single> and C<Multiple> versions (when available) of each type of L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>. C<Select> L<custom fields|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> should also be tested for each render type (C<Select box>, C<List>, C<Dropdown> and also C<Chosen> when the number of values is greater than ten). Adding to these required unitary tests, some special cases should also be included, for instance when a condition L<custom field|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> is in turn conditioned by another condition L<custom field|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html>, or when a condition L<custom field|https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> is not applied to a L<queue|https://docs.bestpractical.com/rt/4.4.4/RT/Queue.html>, etc. Eventually, the test suite includes 1871 unitary tests and 63 test files. Nevertheless some special cases may have been left over, so you're encourage to fill a bug report, so they can be fixed.
 
@@ -490,7 +490,7 @@ L<rt.cpan.org|http://rt.cpan.org/Public/Dist/Display.html?Name=RT-Extension-Cond
 
 =head1 LICENSE AND COPYRIGHT
 
-This software is Copyright (c) 2017 by Gérald Sédrati-Dinet, Easter-Eggs
+This software is Copyright (c) 2017-2019 by Gérald Sédrati-Dinet, Easter-Eggs
 
 This is free software, licensed under:
 
