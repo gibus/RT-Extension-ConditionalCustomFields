@@ -448,7 +448,7 @@ TEST SUITE
     <https://docs.bestpractical.com/rt/4.4.4/RT/CustomField.html> is not
     applied to a queue
     <https://docs.bestpractical.com/rt/4.4.4/RT/Queue.html>, etc.
-    Eventually, the test suite includes 1904 unitary tests and 63 test
+    Eventually, the test suite includes 1943 unitary tests and 63 test
     files. Nevertheless some special cases may have been left over, so
     you're encourage to fill a bug report, so they can be fixed.
 
