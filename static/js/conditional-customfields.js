@@ -158,7 +158,7 @@ function get_selector(name, type, render_type) {
 
 function get_cf_current_form_values(selector, type, render_type, single) {
     var values = Array();
-    if (type == 'Select' && render_type == 'List') {
+    if ((type == 'Select' && render_type == 'List') || type == 'Boolean') {
         var all_vals = jQuery(selector);
         jQuery.each(all_vals, function(id, val) {
             if (jQuery(val).is(':checked')) {
@@ -180,7 +180,7 @@ function get_cf_current_form_values(selector, type, render_type, single) {
             });
         }
     } else {
-        vals = jQuery(selector).val();
+        var vals = jQuery(selector).val();
         if (!jQuery.isArray(vals)) {
             values = Array(vals);
         } else {
