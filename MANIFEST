@@ -58,6 +58,7 @@ xt/data/firstcf
 xt/data/image.png
 xt/data/initialdata
 xt/data/picture.png
+xt/empty_value.t
 xt/external_customfield_values.t.in
 xt/group_dynamic_modify_dropdown.t
 xt/group_dynamic_modify_list.t

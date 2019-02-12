@@ -1,6 +1,14 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
-0.99 2018-07-11
+1.00 2019-02-12
+ - Add tests with condition on empty value
+ - Add BoolanCustomField as eligible condition CF
+ - Update number of unitary tests
+
+1.00 2019-02-11
+ - Update Changes for version 0.99
+
+0.99 2019-02-11
  - Add ConditionalOp in ConditionedBy attribute
  - Add javascript function condition_is_met
  - Add setting of ConditionedBy operation and CF with anytype
