@@ -295,7 +295,12 @@ my $old_MatchPattern = RT::CustomField->can("MatchPattern");
                 if ($condition_cf->id) {
                     my $condition_grouping = $condition_cf->_findGrouping($self->ContextObject);
                     $condition_grouping =~ s/\W//g if $condition_grouping;
-                    my $condition_arg = RT::Interface::Web::GetCustomFieldInputName(Object => $self->ContextObject, CustomField => $condition_cf, Grouping => $condition_grouping );
+                    my $object = $self->ContextObject;
+                    # empty ticket object
+                    if (ref($object) eq 'RT::Queue' && $mason_args{ARGSRef}->{id} && $mason_args{ARGSRef}->{id} eq 'new') {
+                        $object = RT::Ticket->new($self->CurrentUser);
+                    }
+                    my $condition_arg = RT::Interface::Web::GetCustomFieldInputName(Object => $object, CustomField => $condition_cf, Grouping => $condition_grouping );
 
                     my $condition_val = $mason_args{ARGSRef}->{$condition_arg};
                     my @condition_vals = ref($condition_val) eq 'ARRAY' ? @$condition_val : ($condition_val);
