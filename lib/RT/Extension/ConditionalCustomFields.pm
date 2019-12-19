@@ -118,6 +118,14 @@ or add C<RT::Extension::ConditionalCustomFields> to your existing C<@Plugins> li
 
 =back
 
+=head1 CONFIGURATION
+
+Usually, groupings of custom fields, as defined in C<$CustomFieldGroupings> configuration variable, is I<not> enabled in SelfService. This is the case if you  use RT Core. Anyway, some RT instances could have overridden this restriction to enable groupings of custom fields in SelfService.
+
+In this case, you should add to your configuration file (F</opt/rt4/etc/RT_SiteConfig.pm>) the following line, setting C<$SelfServiceCustomFieldGroupings> configuration variable to a true value:
+
+    Set($SelfServiceCustomFieldGroupings, 1);
+
 =cut
 
 RT->AddJavaScript('conditional-customfields.js');
