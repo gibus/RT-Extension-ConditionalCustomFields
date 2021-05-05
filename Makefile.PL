@@ -1,4 +1,4 @@
-https://github.com/Uninett/RT-Extension-ConditionalCustomFields.gituse inc::Module::Install;
+use inc::Module::Install;
 use utf8;
 
 RTx 'RT-Extension-ConditionalCustomFields';
