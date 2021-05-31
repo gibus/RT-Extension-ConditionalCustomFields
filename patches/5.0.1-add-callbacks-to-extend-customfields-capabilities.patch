@@ -1,0 +1,27 @@
+From 7900709683ae4a7cf14f6b598080dff472c474f1 Mon Sep 17 00:00:00 2001
+From: Wiggen94 <gjermundwiggen@gmail.com>
+Date: Wed, 5 May 2021 10:39:11 +0200
+Subject: [PATCH 2/2] Added callback to Modify.html
+
+---
+ share/html/Admin/CustomFields/Modify.html | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/share/html/Admin/CustomFields/Modify.html b/share/html/Admin/CustomFields/Modify.html
+index 90828c2..d23b147 100644
+--- a/share/html/Admin/CustomFields/Modify.html
++++ b/share/html/Admin/CustomFields/Modify.html
+@@ -349,7 +349,10 @@ else {
+ }
+
+ if ( $ARGS{'Update'} && $id ne 'new' ) {
+-
++
++    #add opportunity for extension to do something
++    $m->callback(CallbackName => 'Massage', CustomField => $CustomFieldObj, Results => \@results, ARGSRef => \%ARGS);
++
+     #we're asking about enabled on the web page but really care about disabled.
+     $ARGS{'Disabled'} = $Enabled? 0 : 1;
+
+--
+2.20.1
