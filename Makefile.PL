@@ -6,13 +6,13 @@ license 'gpl_3';
 repository 'https://github.com/gibus/RT-Extension-ConditionalCustomFields';
 
 requires_rt('4.2.0');
-rt_too_new('5.0.2');
+rt_too_new('5.0.4');
 
 readme_from 'lib/RT/Extension/ConditionalCustomFields.pm', 0, 'md', 'README.md';
 
 my ($lp) = ($INC{'RT.pm'} =~ /^(.*)[\\\/]/);
 my $lib_path = join( ' ', "$RT::LocalPath/lib", $lp );
-my $bin_path = $RT::BinPath || "$RT::BasePath/bin" || "/opt/rt4/bin";
+my $bin_path = $RT::BinPath || "$RT::BasePath/bin" || "/opt/rt4/bin" || "/opt/rt5/bin";
 
 # Straight from perldoc perlvar
 use Config;
