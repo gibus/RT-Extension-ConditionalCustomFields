@@ -1,0 +1,40 @@
+diff --git a/lib/RT/CustomField.pm b/lib/RT/CustomField.pm
+index c0112ae..b4c3b1a 100644
+--- a/lib/RT/CustomField.pm
++++ b/lib/RT/CustomField.pm
+@@ -1560,7 +1560,7 @@ sub Groupings {
+         if ( my $record_config = $config->{$record_class} ) {
+             my @order;
+             for my $category ( $category, 'Default' ) {
+-                if ( $category && $record_config->{$category} ) {
++                if ( $category && ref($record_config) eq 'HASH' && $record_config->{$category} ) {
+                     @order = @{ $record_config->{$category} };
+                     last;
+                 }
+diff --git a/lib/RT/CustomFields.pm b/lib/RT/CustomFields.pm
+index 7615799..e8d4f95 100644
+--- a/lib/RT/CustomFields.pm
++++ b/lib/RT/CustomFields.pm
+@@ -138,7 +138,7 @@ sub LimitToGrouping {
+        $config = $config->{$grouping_class} || {};
+     my %h;
+     for my $category ( $category, 'Default' ) {
+-        if ( $category && $config->{$category} ) {
++        if ( $category && ref($config) eq 'HASH' && $config->{$category} ) {
+             %h = @{ $config->{$category} };
+             last;
+         }
+diff --git a/share/html/Admin/CustomFields/Modify.html b/share/html/Admin/CustomFields/Modify.html
+index d026f76..3d771aa 100644
+--- a/share/html/Admin/CustomFields/Modify.html
++++ b/share/html/Admin/CustomFields/Modify.html
+@@ -351,6 +351,9 @@ else {
+ 
+ if ( $ARGS{'Update'} && $id ne 'new' ) {
+ 
++    #add opportunity for extension to do something
++    $m->callback(CallbackName => 'Massage', CustomField => $CustomFieldObj, Results => \@results, ARGSRef => \%ARGS);
++
+     #we're asking about enabled on the web page but really care about disabled.
+     $ARGS{'Disabled'} = $Enabled? 0 : 1;
+ 
