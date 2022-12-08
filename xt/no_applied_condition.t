@@ -26,6 +26,8 @@ RT->Config->Set('CustomFieldGroupings',
     ],
 );
 
+my $fake_ticket = RT::Ticket->new(RT->SystemUser);
+$fake_ticket->Create(Queue => 'General', Subject => 'Fake ticket to have ticket id not equal to queue id');
 my $ticket = RT::Ticket->new(RT->SystemUser);
 $ticket->Create(Queue => 'General', Subject => 'Test Ticket ConditionalCF');
 $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[1]->Name);
