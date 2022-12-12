@@ -54,7 +54,7 @@ jQuery(function() {
         }
     });
 
-    jQuery(condition_selector).on('hide', function() {
+    jQuery(condition_selector).closest('<% $ParentSelector %>').on('hide', function() {
         var cf_id = '<% $cf_id |h,n%>';
         cf_id = cf_id.replace(/:/g,'\\:');
         if (jQuery('#'+cf_id).length) {
@@ -67,7 +67,7 @@ jQuery(function() {
         }
     });
 
-    jQuery(condition_selector).on('show', function() {
+    jQuery(condition_selector).closest('<% $ParentSelector %>').on('show', function() {
         var cf_id = '<% $cf_id |h,n%>';
         cf_id = cf_id.replace(/:/g,'\\:');
         var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
