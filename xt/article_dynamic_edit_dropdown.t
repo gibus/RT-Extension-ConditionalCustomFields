@@ -61,7 +61,9 @@ ok($article_cf_conditioned_by_child->is_displayed, "Show Child when condition is
 
 $article_cf_condition = $mjs->by_id('Object-RT::Article-' . $article->id . '-CustomField-' . $cf_condition->id . '-Values', single => 1);
 $mjs->field($article_cf_condition, $cf_values->[1]->Name);
+sleep 1;
 $mjs->eval_in_page("jQuery('#Object-RT\\\\:\\\\:Article-" . $article->id . "-CustomField-" . $cf_condition->id . "-Values').trigger('change');");
+sleep 1;
 ok($article_cf_conditioned_by->is_hidden, "Hide ConditionalCF when Condition is changed to be not met");
 ok($article_cf_conditioned_by_child->is_hidden, "Hide Child when Condition is changed to be not met");
 

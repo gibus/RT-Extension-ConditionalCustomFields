@@ -27,7 +27,7 @@ $ticket->AddCustomFieldValue(Field => $cf_conditioned_by->id , Value => 'See me?
 
 my ($base, $m) = RT::Extension::ConditionalCustomFields::Test->started_ok;
 my $mjs = WWW::Mechanize::PhantomJS->new();
-$mjs->driver->ua->timeout(600);
+$mjs->driver->ua->timeout(900);
 $mjs->get($m->rt_base_url . '?user=root;pass=password');
 
 # Operator: is, condition met
@@ -39,13 +39,17 @@ ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Combobox co
 
 # Update value to condition not met
 my $ticket_cf_condition = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Value', single => 1);
+
 $mjs->field($ticket_cf_condition, $cf_values->[1]->Name);
+sleep 1;
 $mjs->eval_in_page("jQuery('#Object-RT\\\\:\\\\:Ticket-" . $ticket->id . "-CustomField\\\\:Groupone-" . $cf_condition->id . "-Value').trigger('change');");
+sleep 1;
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Combobox condition val with is operator is updated to not met');
 
 # Operator: is, condition not met
 $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[1]->Name);
 $mjs->get($m->rt_base_url . 'Ticket/Modify.html?id=' . $ticket->id);
+sleep 1;
 $ticket_cf_conditioned_by = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Grouptwo-' . $cf_conditioned_by->id . '-Value', single => 1);
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Combobox condition val with is operator is not met');
 
@@ -59,5 +63,6 @@ ok($ticket_cf_conditioned_by->is_displayed, "Show ConditionalCF when Combobox co
 # Operator: isn't, condition not met
 $ticket->AddCustomFieldValue(Field => $cf_condition->id , Value => $cf_values->[1]->Name);
 $mjs->get($m->rt_base_url . 'Ticket/Modify.html?id=' . $ticket->id);
+sleep 1;
 $ticket_cf_conditioned_by = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Grouptwo-' . $cf_conditioned_by->id . '-Value', single => 1);
 ok($ticket_cf_conditioned_by->is_hidden, "Hide ConditionalCF when Combobox condition val with is operator isn't not met");
