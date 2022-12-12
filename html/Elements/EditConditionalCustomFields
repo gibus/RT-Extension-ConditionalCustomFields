@@ -20,7 +20,7 @@
 %           }
 <script type="text/javascript">
 jQuery(function() {
-    var condition_selector = get_selector('<% $condition_name |n%>', '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>');
+    var condition_selector = get_selector('<% $condition_name |n%>', '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>', '<% RT::Handle::cmp_version($RT::VERSION, '5.0.0') |n%>');
     var alternative_selector = '#' + '<% $condition_name |n%>'.replace(/[\W]/g, '_') + '_chosen';
     jQuery(condition_selector).change(function() {
         var cf_id = '<% $cf_id |h,n%>';
