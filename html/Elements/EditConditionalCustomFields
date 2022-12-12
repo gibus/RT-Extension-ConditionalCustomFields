@@ -35,7 +35,9 @@ jQuery(function() {
         if (condition_met) {
             if (jQuery('#'+cf_id).length) {
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+%           if ($condition_cf->RenderType ne 'List') {
                 jQuery('#'+cf_id).trigger('show');
+%           }
             } else {
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').show();
                 jQuery('input[name="'+cf_id+'"]').first().trigger('show');
@@ -78,7 +80,9 @@ jQuery(function() {
         if (condition_met) {
             if (jQuery('#'+cf_id).length) {
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+%           if ($condition_cf->RenderType ne 'List') {
                 jQuery('#'+cf_id).trigger('show');
+%           }
             } else {
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').show();
                 jQuery('input[name="'+cf_id+'"]').first().trigger('show');
