@@ -189,6 +189,7 @@ RT->Config->Set('CustomFieldGroupings',
         ],
     ],
 );
+RT->Config->PostLoadCheck;
 
 my $ticket = RT::Ticket->new(RT->SystemUser);
 $ticket->Create(Queue => 'General', Subject => 'Test Ticket ConditionalCF');
