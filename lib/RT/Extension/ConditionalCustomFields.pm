@@ -280,11 +280,11 @@ sub ConditionedBy {
 
 sub _findGrouping {
     my $self = shift;
-    my $record_class = $self->_GroupingClass(shift);
+    my ($record_class, $category) = $self->_GroupingClass(shift);
     my $config = RT->Config->Get('CustomFieldGroupings');
-       $config = {} unless ref($config) eq 'HASH';
-    if ($record_class && (ref($config->{$record_class} ||= []) eq "ARRAY")) {
-        my $config_hash = {@{$config->{$record_class}}};
+    $config = {} unless ref($config) eq 'HASH';
+    if ($record_class && defined($config->{$record_class})) {
+        my $config_hash = (ref($config->{$record_class} ||= []) eq "ARRAY") ? {@{$config->{$record_class}}} : $category ? (exists $config->{$record_class}->{$category} ? {@{$config->{$record_class}->{$category}}} : {@{$config->{$record_class}->{Default}}}) : {@{$config->{$record_class}->{Default}}};
         while (my ($group, $cfs) = each %$config_hash) {
             return $group
                 if grep {$_ eq $self->Name} @$cfs;
