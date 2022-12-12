@@ -38,11 +38,20 @@ my $ticket_cf_conditioned_by = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . 
 ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Combobox condition val with is operator is met');
 
 # Update value to condition not met
-my $ticket_cf_condition = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Value', single => 1);
+my $ticket_cf_condition;
+if (RT::Handle::cmp_version($RT::VERSION, '5.0.0') < 0) {
+    $ticket_cf_condition = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Value', single => 1);
+} else {
+    $ticket_cf_condition = $mjs->xpath('//input[@name="Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Value"]', single => 1);
+}
 
 $mjs->field($ticket_cf_condition, $cf_values->[1]->Name);
 sleep 1;
-$mjs->eval_in_page("jQuery('#Object-RT\\\\:\\\\:Ticket-" . $ticket->id . "-CustomField\\\\:Groupone-" . $cf_condition->id . "-Value').trigger('change');");
+if (RT::Handle::cmp_version($RT::VERSION, '5.0.0') < 0) {
+    $mjs->eval_in_page("jQuery('#Object-RT\\\\:\\\\:Ticket-" . $ticket->id . "-CustomField\\\\:Groupone-" . $cf_condition->id . "-Value').trigger('change');");
+} else {
+    $mjs->eval_in_page('jQuery(\'input[name="Object-RT\\\\:\\\\:Ticket-' . $ticket->id . '-CustomField\\\\:Groupone-' . $cf_condition->id . '-Value"]\').trigger(\'change\');');
+}
 sleep 1;
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Combobox condition val with is operator is updated to not met');
 

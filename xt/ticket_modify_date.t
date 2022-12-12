@@ -35,10 +35,19 @@ my $ticket_cf_conditioned_by = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . 
 ok($ticket_cf_conditioned_by->is_displayed, 'Show ConditionalCF when Date condition val with is operator is met');
 
 # Update value to condition not met
-my $ticket_cf_condition = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Values', single => 1);
+my $ticket_cf_condition;
+if (RT::Handle::cmp_version($RT::VERSION, '5.0.0') < 0) {
+    $ticket_cf_condition = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Values', single => 1);
+} else {
+    $ticket_cf_condition = $mjs->xpath('//input[@name="Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Values"]', single => 1);
+}
 $mjs->field($ticket_cf_condition, '2019-03-21');
 sleep 1;
-$mjs->eval_in_page("jQuery('#Object-RT\\\\:\\\\:Ticket-" . $ticket->id . "-CustomField\\\\:Groupone-" . $cf_condition->id . "-Values').trigger('change');");
+if (RT::Handle::cmp_version($RT::VERSION, '5.0.0') < 0) {
+    $mjs->eval_in_page("jQuery('#Object-RT\\\\:\\\\:Ticket-" . $ticket->id . "-CustomField\\\\:Groupone-" . $cf_condition->id . "-Values').trigger('change');");
+} else {
+    $mjs->eval_in_page('jQuery(\'input[name="Object-RT\\\\:\\\\:Ticket-' . $ticket->id . '-CustomField\\\\:Groupone-' . $cf_condition->id . '-Values"]\').trigger(\'change\');');
+}
 sleep 1;
 ok($ticket_cf_conditioned_by->is_hidden, 'Hide ConditionalCF when Autocomplete condition val with is operator is updated to not met');
 
