@@ -54,7 +54,7 @@ $mjs->click($ticket_cf_conditioned_by_failed);
 ok($ticket_cf_conditioned_by->is_displayed, "Show ConditionalCF when parent condition is passed and child condition is changed to failed");
 ok($ticket_cf_conditioned_by_child->is_hidden, "Hide Child when parent condition is passed and child condition is changed to failed");
 
-my $ticket_cf_conditioned_by_passed = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Grouptwo-' . $cf_conditioned_by->id . '-Value-' . $cf_conditioned_by_values->[1]->id, single => 1);
+my $ticket_cf_conditioned_by_passed = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Grouptwo-' . $cf_conditioned_by->id . '-Value-' . $cf_conditioned_by_values->[0]->id, single => 1);
 $mjs->click($ticket_cf_conditioned_by_passed);
 my $ticket_cf_condition = $mjs->by_id('Object-RT::Ticket-' . $ticket->id . '-CustomField:Groupone-' . $cf_condition->id . '-Values', single => 1);
 $mjs->field($ticket_cf_condition, $cf_values->[1]->Name);
