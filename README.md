@@ -212,7 +212,7 @@ or via the web at
 
 # LICENSE AND COPYRIGHT
 
-This software is Copyright (c) 2017-2019 by Gérald Sédrati, Easter-Eggs
+This software is Copyright (c) 2017-2022 by Gérald Sédrati, Easter-Eggs
 
 This is free software, licensed under:
 
