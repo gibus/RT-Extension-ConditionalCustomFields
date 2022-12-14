@@ -1,5 +1,8 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+1.07 2022-12-14
+ - Update author's name
+
 1.06 2022-12-12
  - Update selector to hide/show queues/article according to RT5 upgrades
  - Update computing selector to Combobox/Date/DateTime according to RT5 upgrades
