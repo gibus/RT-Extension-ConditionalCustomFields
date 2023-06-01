@@ -98,11 +98,15 @@ For RT 4.4.2 or greater, apply the included patch:
     cd /opt/rt4 # Your location may be different
     patch -p1 < /download/dir/RT-Extension-ConditionalCustomFields/patches/4.4.2-add-callbacks-to-extend-customfields-capabilities.patch
 
-
-For RT 5.0.0 or greater, apply the included patch:
+For RT 5.0.0 to 5.0.3, apply the included patch:
 
     cd /opt/rt5 # Your location may be different
     patch -p1 < /download/dir/RT-Extension-ConditionalCustomFields/patches/5.0-add-callbacks-to-extend-customfields-capabilities.patch
+
+For RT 5.0.4 or greater, apply the included patch:
+
+    cd /opt/rt5 # Your location may be different
+    patch -p1 < /download/dir/RT-Extension-ConditionalCustomFields/patches/5.0.4-add-callbacks-to-extend-customfields-capabilities.patch
 
 =item Edit your F</opt/rt5/etc/RT_SiteConfig.pm>
 
