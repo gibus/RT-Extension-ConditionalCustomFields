@@ -1,5 +1,10 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+1.10 2023-10-10
+ - Really avoid JS error raised by bootstrap when triggering show on radio button (commit #62c0528 still raised error with chromium)
+ - Update links to 5.0.4 RT docs
+ - Process HTML Condition CF, only in a static way for now
+
 1.09 2023-06-01
  - Add patch for RT 5.0.4
  - Update copyright year to 2023
