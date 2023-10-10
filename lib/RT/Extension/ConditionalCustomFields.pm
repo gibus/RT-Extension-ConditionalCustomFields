@@ -54,7 +54,7 @@ The condition is met if and only if the current value of the L<instanciated cond
 
 As an exception, C<IPAddressRange> L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> are not eligible as condition L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>, since there is not really any sense in comparing two ranges of IP addresses. C<IPAddress> L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>, combined with C<between> operator, should be sufficient for most cases checking whether an IP address is included in a range.
 
-If the condition L<custom field|https://docs.bestpractical.com/rt/5.0.3/RT/CustomField.html> is selectable – with C<Select>, C<Combobox> or C<Autocomplete> type – it can be multivalued. Then, the condition for an object is met as soon as the condition is met by at least one value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/5.0.3/RT/ObjectCustomField.html> for this object.
+Also C<HTML> L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> introduced in RT 5.0.3 works only on a statuc way when displaying or editing the Object, but not dynamically when changing the text in CKE Editor.
 
 If the condition L<custom field|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> is selectable – with C<Select>, C<Combobox> or C<Autocomplete> type – it can be multivalued. Then, the condition for an object is met as soon as the condition is met by at least one value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/5.0.4/RT/ObjectCustomField.html> for this object.
 

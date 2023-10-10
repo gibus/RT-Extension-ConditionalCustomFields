@@ -145,7 +145,7 @@ function parseIP(ip) {
 
 function get_selector(name, type, render_type, rt_v5) {
     var selector;
-    if (type == 'Text' || type == 'Wikitext') {
+    if (type == 'Text' || type == 'Wikitext' || type == 'HTML') {
         selector = 'textarea[name="' + name + '"]';
     } else if ((type == 'Select' && render_type == 'List') || type == 'Image' || type == 'Binary' || (rt_v5 >= 0 && (type == 'Combobox' || type == 'Date' || type == 'DateTime'))) {
         selector = 'input[name="' + name + '"]';
