@@ -119,7 +119,11 @@ jQuery(function() {
 %           if ($condition_cf->RenderType eq 'List') {
     jQuery(condition_selector).first().trigger('change');
 %           } else {
+%           if ($condition_cf->Type eq 'HTML') {
+    condition_selector.fire('change');
+%           } else {
     jQuery(condition_selector).trigger('change');
+%           }
 %           }
 %           if ($condition_cf->Type eq 'HTML') {
         });
