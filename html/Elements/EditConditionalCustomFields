@@ -20,17 +20,30 @@
 %           }
 <script type="text/javascript">
 jQuery(function() {
+%           if ($condition_cf->Type eq 'HTML') {
+    if (typeof CKEDITOR !== 'undefined') {
+        CKEDITOR.on('instanceReady', function(ev) {
+            var condition_selector = CKEDITOR.instances['<% $condition_name |n%>'];
+            var alternative_selector = '#' + '<% $condition_name |n%>'.replace(/:/g,'\\:');
+            condition_selector.on('change', function() {
+%           } else {
     var condition_selector = get_selector('<% $condition_name |n%>', '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>', '<% RT::Handle::cmp_version($RT::VERSION, '5.0.0') |n%>');
     var alternative_selector = '#' + '<% $condition_name |n%>'.replace(/[\W]/g, '_') + '_chosen';
     jQuery(condition_selector).change(function() {
+%           }
         var cf_id = '<% $cf_id |h,n%>';
         cf_id = cf_id.replace(/:/g,'\\:');
-        var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
-        var condition_selector_vals = get_cf_current_form_values(condition_selector, '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>', <% $condition_cf->SingleValue ? 'true' : 'false' %>);
         var condition_met = false;
+        var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
+%           if ($condition_cf->Type eq 'HTML') {
+                var condition_selector_vals = Array(condition_selector.getData());
+                condition_met = condition_is_met(condition_vals, condition_selector_vals, "<% $condition->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
+%           } else {
+        var condition_selector_vals = get_cf_current_form_values(condition_selector, '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>', <% $condition_cf->SingleValue ? 'true' : 'false' %>);
         if (jQuery(condition_selector).is(':visible') || jQuery(alternative_selector).is(":visible")) {
             condition_met = condition_is_met(condition_vals, condition_selector_vals, "<% $condition->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
         }
+%           }
 
         if (condition_met) {
             var collapse_obj;
@@ -107,6 +120,10 @@ jQuery(function() {
     jQuery(condition_selector).first().trigger('change');
 %           } else {
     jQuery(condition_selector).trigger('change');
+%           }
+%           if ($condition_cf->Type eq 'HTML') {
+        });
+    }
 %           }
 });
 </script>
