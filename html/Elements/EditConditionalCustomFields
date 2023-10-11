@@ -40,7 +40,7 @@ jQuery(function() {
         var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
         var condition_selector_vals = get_cf_current_form_values(condition_selector, '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>', <% $condition_cf->SingleValue ? 'true' : 'false' %>);
         var condition_met = false;
-        if (jQuery(condition_selector).is(':visible') || jQuery(alternative_selector).is(":visible")) {
+        if (jQuery(condition_selector).is(':visible') || jQuery(alternative_selector).is(":visible") || (jQuery(condition_selector).closest('form').hasClass('inline-edit') && jQuery('.inline-edit-display .custom-field-<% $condition_cf->id %>').is(':visible'))) {
             condition_met = condition_is_met(condition_vals, condition_selector_vals, "<% $condition->{op} |n%>", '<% $session{CurrentUser}->LanguageHandle->language_tag %>');
         }
 
