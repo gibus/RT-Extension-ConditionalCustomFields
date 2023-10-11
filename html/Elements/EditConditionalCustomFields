@@ -5,7 +5,7 @@
 %       if ($condition_cf->id) {
 %           my $condition_val = $condition->{vals} || '';
 %           my @condition_vals = ref($condition_val) eq 'ARRAY' ? @$condition_val : ($condition_val);
-%           my ($cf_id, $condition_grouping, $condition_name);
+%           my ($cf_id, $condition_grouping, $condition_grouping_inlineform, $condition_inlineform, $condition_name);
 %           my $request_path = $HTML::Mason::Commands::r->path_info;
 %           my $selfservice_cf_groupings = RT->Config->Get('SelfServiceCustomFieldGroupings') || 0;
 %           if ($request_path =~ qr{^/SelfService/(Create|Update)\.html} && !$selfservice_cf_groupings) {
@@ -14,8 +14,10 @@
 %            } else {
 %               $Grouping =~ s/\W//g if $Grouping;
 %               $cf_id = GetCustomFieldInputName(Object => $Object, CustomField => $CustomField, Grouping => $Grouping );
-%               $condition_grouping = $condition_cf->_findGrouping($Object);
+%               $condition_grouping = $condition_grouping_inlineform = $condition_cf->_findGrouping($Object);
 %               $condition_grouping =~ s/\W//g if $condition_grouping;
+%               $condition_grouping_inlineform =~ s/\W/_/g if $condition_grouping;
+%               $condition_inlineform = '.ticket-info-cfs' . ($condition_inlineform ? "-$condition_grouping_inlineform" : '') . ' .inline-edit';
 %               $condition_name = GetCustomFieldInputName(Object => $Object, CustomField => $condition_cf, Grouping => $condition_grouping );
 %           }
 <script type="text/javascript">
@@ -25,6 +27,11 @@ jQuery(function() {
 %           if ($condition_cf->RenderType eq 'Dropdown') {
     waitForElm('.dropdown.CF-<% $condition_cf->id %>-Edit').then((elm) => {
         jQuery(condition_selector).trigger('change');
+    });
+    respondToVisibility(jQuery('<% $condition_inlineform %>').get(0), visible => {
+        if(visible) {
+            jQuery(condition_selector).trigger('change');
+        }
     });
 %           }
     jQuery(condition_selector).change(function() {
