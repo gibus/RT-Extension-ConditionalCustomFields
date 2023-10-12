@@ -28,11 +28,13 @@ jQuery(function() {
     waitForElm('.dropdown.CF-<% $condition_cf->id %>-Edit').then((elm) => {
         jQuery(condition_selector).trigger('change');
     });
-    respondToVisibility(jQuery('<% $condition_inlineform %>').get(0), visible => {
-        if(visible) {
-            jQuery(condition_selector).trigger('change');
-        }
-    });
+    if (jQuery('<% $condition_inlineform %>').length) {
+        respondToVisibility(jQuery('<% $condition_inlineform %>').get(0), visible => {
+            if(visible) {
+                jQuery(condition_selector).trigger('change');
+            }
+        });
+    }
 %           }
     jQuery(condition_selector).change(function() {
         var cf_id = '<% $cf_id |h,n%>';
