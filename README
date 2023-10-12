@@ -157,9 +157,9 @@ DESCRIPTION
     with between operator, should be sufficient for most cases checking
     whether an IP address is included in a range.
 
-    Also HTML custom fields
+    Also, HTML custom fields
     <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> introduced
-    in RT 5.0.3 works only on a statuc way when displaying or editing the
+    in RT 5.0.3 works only on a static way when displaying or editing the
     Object, but not dynamically when changing the text in CKE Editor.
 
     If the condition custom field
@@ -178,6 +178,12 @@ DESCRIPTION
     conditioned by, this (child) custom field
     <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> will of
     course also be conditioned by (with the same condition as its parent).
+    Nevertheless, there is a caveheat in display mode: the order matters!
+    That is the parent custom field
+    <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> should
+    have a lower sort order than the child custom field
+    <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>.
+
     From version 0.07, the condition can be multivalued, that is: the
     conditioned custom field
     <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> can be
