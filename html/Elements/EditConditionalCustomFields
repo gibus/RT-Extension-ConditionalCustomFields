@@ -51,6 +51,7 @@ jQuery(function() {
             if (jQuery('#'+cf_id).length) {
                 collapse_obj = jQuery('#'+cf_id).closest('.titlebox-content.collapse');
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('show');
             } else {
                 collapse_obj = jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('.titlebox-content.collapse');
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').show();
@@ -64,6 +65,7 @@ jQuery(function() {
         else {
             if (jQuery('#'+cf_id).length) {
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('hide');
             } else {
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').hide();
                 jQuery('input[name="'+cf_id+'"]').first().trigger('hide');
@@ -77,6 +79,7 @@ jQuery(function() {
         cf_id = cf_id.replace(/:/g,'\\:');
         if (jQuery('#'+cf_id).length) {
             jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+            jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('hide');
         } else {
             jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').hide();
             jQuery('input[name="'+cf_id+'"]').first().trigger('hide');
@@ -97,6 +100,7 @@ jQuery(function() {
             if (jQuery('#'+cf_id).length) {
                 collapse_obj = jQuery('#'+cf_id).closest('.titlebox-content.collapse');
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('show');
             } else {
                 collapse_obj = jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('.titlebox-content.collapse');
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').show();
@@ -110,6 +114,7 @@ jQuery(function() {
         else {
             if (jQuery('#'+cf_id).length) {
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('hide');
             } else {
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').hide();
                 jQuery('input[name="'+cf_id+'"]').first().trigger('hide');
