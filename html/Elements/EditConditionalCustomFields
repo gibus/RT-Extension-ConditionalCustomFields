@@ -103,7 +103,7 @@ jQuery(function() {
                 jQuery('input[name="'+cf_id+'"]').first().trigger('show');
                 jQuery('textarea[name="'+cf_id+'"]').trigger('show');
             }
-            if (collapse_obj.length && !jQuery(collapse).hasClass('show')) {
+            if (collapse_obj.length && !jQuery(collapse_obj).hasClass('show')) {
                 collapse_obj.collapse('show');
             }
         }
