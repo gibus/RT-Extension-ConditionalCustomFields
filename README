@@ -157,11 +157,6 @@ DESCRIPTION
     with between operator, should be sufficient for most cases checking
     whether an IP address is included in a range.
 
-    Also, HTML custom fields
-    <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> introduced
-    in RT 5.0.3 works only on a static way when displaying or editing the
-    Object, but not dynamically when changing the text in CKE Editor.
-
     If the condition custom field
     <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> is
     selectable – with Select, Combobox or Autocomplete type – it can be
@@ -207,6 +202,11 @@ DESCRIPTION
     compatibility with previously configured custom fields
     <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>, assuming
     the default condition operator is is.
+
+    From version 1.13, HTML custom fields
+    <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> introduced
+    in RT 5.0.3 can be defined as condition CustomField
+    <https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>.
 
 RT VERSION
     Works with RT 4.2 or greater

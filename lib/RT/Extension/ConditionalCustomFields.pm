@@ -4,7 +4,7 @@ use warnings;
 no warnings qw(redefine);
 package RT::Extension::ConditionalCustomFields;
 
-our $VERSION = '1.12';
+our $VERSION = '1.13';
 
 =encoding utf8
 
@@ -54,8 +54,6 @@ The condition is met if and only if the current value of the L<instanciated cond
 
 As an exception, C<IPAddressRange> L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> are not eligible as condition L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>, since there is not really any sense in comparing two ranges of IP addresses. C<IPAddress> L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>, combined with C<between> operator, should be sufficient for most cases checking whether an IP address is included in a range.
 
-Also, C<HTML> L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> introduced in RT 5.0.3 works only on a static way when displaying or editing the Object, but not dynamically when changing the text in CKE Editor.
-
 If the condition L<custom field|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> is selectable – with C<Select>, C<Combobox> or C<Autocomplete> type – it can be multivalued. Then, the condition for an object is met as soon as the condition is met by at least one value of the L<instanciated conditioned by custom field|https://docs.bestpractical.com/rt/5.0.4/RT/ObjectCustomField.html> for this object.
 
 If a L<custom field|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> is based on another (parent) L<custom field|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> which is conditioned by, this (child) L<custom field|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> will of course also be conditioned by (with the same condition as its parent). Nevertheless, there is a caveheat in  display mode: the order matters! That is the parent L<custom field|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> should have a lower sort order than the child L<custom field|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>.
@@ -65,6 +63,9 @@ From version 0.07, the condition can be multivalued, that is: the conditioned L<
 I<Note that version 0.07 is a complete redesign: the API described below has changed; also, the way that ConditionedBy property is store has changed. If you upgrade from a previous version, you have to reconfigure the custom fields which are conditionned by.>
 
 Version 0.99 is also a complete redesign, with API changed, but backward compatibility with previously configured L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>, assuming the default condition operator is C<is>.
+
+From version 1.13, C<HTML> L<custom fields|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html> introduced in RT 5.0.3 can be defined as condition L<CustomField|https://docs.bestpractical.com/rt/5.0.4/RT/CustomField.html>.
+
 
 =head1 RT VERSION
 

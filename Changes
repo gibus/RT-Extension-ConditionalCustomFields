@@ -1,5 +1,11 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+1.13 2023-10-13
+ - Do NOT Limit to Dropdown CF retriggering change on Condition CF after inline form has been made visible
+ - No need to play with collapse
+ - Detect visibility of inline form from form input rather than .ticket-info-cfs div which is not unique with multiple groupings
+ - Process dynamically HTML Condition CF
+
 1.12 2023-10-12
  - Fix Mason filters, should be not filtered, not html not js
  - Add some doc about sort order on cascaded CF
