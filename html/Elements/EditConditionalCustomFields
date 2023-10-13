@@ -20,26 +20,53 @@
 %           }
 <script type="text/javascript">
 jQuery(function() {
+%           if ($condition_cf->Type eq 'HTML') {
+    if (typeof CKEDITOR !== 'undefined') {
+        CKEDITOR.on('instanceReady', function(ev) {
+            var condition_cke = CKEDITOR.instances['<% $condition_name |n%>'];
+%    }
     var condition_selector = get_selector('<% $condition_name |n%>', '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>', '<% RT::Handle::cmp_version($RT::VERSION, '5.0.0') |n%>');
+%           if ($condition_cf->Type eq 'HTML') {
+    var alternative_selector = '#cke_<% $condition_name |n%>';
+    alternative_selector = alternative_selector.replace(/:/g,'\\:');
+%    } else {
     var condition_cke = 'nohtml';
     var alternative_selector = '#' + '<% $condition_name |n%>'.replace(/[\W]/g, '_') + '_chosen';
+%    }
 %           if ($condition_cf->RenderType eq 'Dropdown') {
     waitForElm('.dropdown.CF-<% $condition_cf->id %>-Edit').then((elm) => {
         jQuery(condition_selector).trigger('change');
     });
 %           }
+%           if ($condition_cf->Type eq 'HTML') {
+    if (jQuery(alternative_selector).length) {
+        respondToVisibility(jQuery(alternative_selector).get(0), visible => {
+%           } else {
     if (jQuery(condition_selector).length) {
         respondToVisibility(jQuery(condition_selector).get(0), visible => {
+%           }
             if(visible) {
+%           if ($condition_cf->Type eq 'HTML') {
+                condition_cke.fire('change');
+%    } else {
                 jQuery(condition_selector).trigger('change');
+%    }
             }
         });
     }
+%           if ($condition_cf->Type eq 'HTML') {
+    condition_cke.on('change', function() {
+%           } else {
     jQuery(condition_selector).change(function() {
+%           }
         var cf_id = '<% $cf_id |h,n%>';
         cf_id = cf_id.replace(/:/g,'\\:');
         var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
+%           if ($condition_cf->Type eq 'HTML') {
+        var condition_selector_vals = Array(condition_cke.getData());
+%           } else {
         var condition_selector_vals = get_cf_current_form_values(condition_selector, '<% $condition_cf->Type |n%>', '<% $condition_cf->RenderType |n%>', <% $condition_cf->SingleValue ? 'true' : 'false' %>);
+%           }
 
         var condition_met = false;
         if (jQuery(condition_selector).is(':visible') || jQuery(alternative_selector).is(":visible") || (jQuery(condition_selector).closest('form').hasClass('inline-edit') && jQuery('.inline-edit-display .custom-field-<% $condition_cf->id %>').is(':visible'))) {
@@ -114,7 +141,15 @@ jQuery(function() {
 %           if ($condition_cf->RenderType eq 'List') {
     jQuery(condition_selector).first().trigger('change');
 %           } else {
+%           if ($condition_cf->Type eq 'HTML') {
+    condition_cke.fire('change');
+%           } else {
     jQuery(condition_selector).trigger('change');
+%           }
+%           }
+%           if ($condition_cf->Type eq 'HTML') {
+        });
+    }
 %           }
 });
 </script>
