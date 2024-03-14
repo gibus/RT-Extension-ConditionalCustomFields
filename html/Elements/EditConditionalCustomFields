@@ -76,21 +76,21 @@ jQuery(function() {
         if (condition_met) {
             if (jQuery('#'+cf_id).length) {
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
-                jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('show');
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').triggerHandler('show');
             } else {
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').show();
-                jQuery('input[name="'+cf_id+'"]').first().trigger('show');
-                jQuery('textarea[name="'+cf_id+'"]').trigger('show');
+                jQuery('input[name="'+cf_id+'"]').first().triggerHandler('show');
+                jQuery('textarea[name="'+cf_id+'"]').triggerHandler('show');
             }
         }
         else {
             if (jQuery('#'+cf_id).length) {
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
-                jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('hide');
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').triggerHandler('hide');
             } else {
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').hide();
-                jQuery('input[name="'+cf_id+'"]').first().trigger('hide');
-                jQuery('textarea[name="'+cf_id+'"]').trigger('hide');
+                jQuery('input[name="'+cf_id+'"]').first().triggerHandler('hide');
+                jQuery('textarea[name="'+cf_id+'"]').triggerHandler('hide');
             }
         }
     });
@@ -100,11 +100,11 @@ jQuery(function() {
         cf_id = cf_id.replace(/:/g,'\\:');
         if (jQuery('#'+cf_id).length) {
             jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
-            jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('hide');
+            jQuery('#'+cf_id).closest('<% $ParentSelector %>').triggerHandler('hide');
         } else {
             jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').hide();
-            jQuery('input[name="'+cf_id+'"]').first().trigger('hide');
-            jQuery('textarea[name="'+cf_id+'"]').trigger('hide');
+            jQuery('input[name="'+cf_id+'"]').first().triggerHandler('hide');
+            jQuery('textarea[name="'+cf_id+'"]').triggerHandler('hide');
         }
     });
 
@@ -120,21 +120,21 @@ jQuery(function() {
         if (condition_met) {
             if (jQuery('#'+cf_id).length) {
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').show();
-                jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('show');
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').triggerHandler('show');
             } else {
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').show();
-                jQuery('input[name="'+cf_id+'"]').first().trigger('show');
-                jQuery('textarea[name="'+cf_id+'"]').trigger('show');
+                jQuery('input[name="'+cf_id+'"]').first().triggerHandler('show');
+                jQuery('textarea[name="'+cf_id+'"]').triggerHandler('show');
             }
         }
         else {
             if (jQuery('#'+cf_id).length) {
                 jQuery('#'+cf_id).closest('<% $ParentSelector %>').hide();
-                jQuery('#'+cf_id).closest('<% $ParentSelector %>').trigger('hide');
+                jQuery('#'+cf_id).closest('<% $ParentSelector %>').triggerHandler('hide');
             } else {
                 jQuery('input[name="'+cf_id+'"], textarea[name="'+cf_id+'"]').closest('<% $ParentSelector %>').hide();
-                jQuery('input[name="'+cf_id+'"]').first().trigger('hide');
-                jQuery('textarea[name="'+cf_id+'"]').trigger('hide');
+                jQuery('input[name="'+cf_id+'"]').first().triggerHandler('hide');
+                jQuery('textarea[name="'+cf_id+'"]').triggerHandler('hide');
             }
         }
     });
