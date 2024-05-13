@@ -1,7 +1,6 @@
 %   my $condition = $CustomField->ConditionedBy;
 %   if ($condition) {
-%       my $condition_cf = RT::CustomField->new($session{CurrentUser});
-%       $condition_cf->Load($condition->{CF});
+%       my $condition_cf = $Object->LoadCustomFieldByIdentifier($condition->{CF});
 %       if ($condition_cf->id) {
 %           my $condition_val = $condition->{vals} || '';
 %           my @condition_vals = ref($condition_val) eq 'ARRAY' ? @$condition_val : ($condition_val);
