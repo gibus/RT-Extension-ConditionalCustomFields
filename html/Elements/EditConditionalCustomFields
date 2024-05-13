@@ -35,7 +35,7 @@ jQuery(function() {
 %    }
 %           if ($condition_cf->RenderType eq 'Dropdown') {
     waitForElm('.dropdown.CF-<% $condition_cf->id %>-Edit').then((elm) => {
-        jQuery(condition_selector).trigger('change');
+        jQuery(condition_selector).triggerHandler('change');
     });
 %           }
 %           if ($condition_cf->Type eq 'HTML') {
@@ -49,7 +49,7 @@ jQuery(function() {
 %           if ($condition_cf->Type eq 'HTML') {
                 condition_cke.fire('change');
 %    } else {
-                jQuery(condition_selector).trigger('change');
+                jQuery(condition_selector).triggerHandler('change');
 %    }
             }
         });
@@ -139,12 +139,12 @@ jQuery(function() {
         }
     });
 %           if ($condition_cf->RenderType eq 'List') {
-    jQuery(condition_selector).first().trigger('change');
+    jQuery(condition_selector).first().triggerHandler('change');
 %           } else {
 %           if ($condition_cf->Type eq 'HTML') {
     condition_cke.fire('change');
 %           } else {
-    jQuery(condition_selector).trigger('change');
+    jQuery(condition_selector).triggerHandler('change');
 %           }
 %           }
 %           if ($condition_cf->Type eq 'HTML') {
