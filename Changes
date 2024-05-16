@@ -1,6 +1,6 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
-1.15 2024-05-16
+1.16 2024-05-16
  - Fix errors on admin CF where there is no ContextObect
 
 1.15 2024-05-13
