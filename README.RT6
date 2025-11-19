@@ -1,0 +1,21 @@
+Notes on using this with RT6:
+
+With RT6 < 6.0.2, you'll need to apply
+https://github.com/bestpractical/rt/commit/e850fd32174689de8d267d0c51d2c94ddf4e0542.patch
+to re-add missing callback Elements/EditCustomFields/AfterCustomFieldValue.
+This patch is not needed for RT 6.0.2 or newer.
+
+Note that this callback is now deprecated in RT 6.0.x, and will be removed as
+of RT 6.2 - and you'll see messages to this effect in your RT log!
+The right way to handle this is to rename the callback to
+Elements/EditCustomField/AfterCustomFieldValue (note the missing 's' in
+EditCustomField!) - but this will break RT5 compatibility, without ensuring
+the old callback only runs on RT < 6 and the new one on RT >= 6.
+
+Note that there's still an unresolved bug with the new custom ticket display layouts
+new to RT6 (in in Admin -> Page Layouts -> Ticket -> Display Layouts): Conditional
+custom fields do not appear to work with this custom layout.  I haven't had a chance
+to look into this issue yet, so anyone installing this update should remain aware of
+this issue.
+
+ -- PinkFreud, 2025-11-18

@@ -1,4 +1,7 @@
 <& /Elements/EditConditionalCustomFields, CustomField => $CustomField, Object => $Object, Grouping => $Grouping, ParentSelector => '.edit-custom-field' &>
+<%INIT>
+return unless $Object;
+</%INIT>
 <%ARGS>
 $CustomField
 $Object

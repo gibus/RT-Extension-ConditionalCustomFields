@@ -1,4 +1,4 @@
-<& /Elements/EditConditionalCustomFields, CustomField => $CustomField, Object => $Object, ParentSelector => RT::Handle::cmp_version($RT::VERSION, '5.0.0') < 0 ? 'tr' : 'div.form-row' &>
+<& /Elements/EditConditionalCustomFields, CustomField => $CustomField, Object => $Object, ParentSelector => RT::Handle::cmp_version($RT::VERSION, '5.0.0') < 0 ? 'tr' : 'div.edit-custom-field' &>
 <%ARGS>
 $CustomField
 $Object
