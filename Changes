@@ -1,5 +1,12 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+1.17 2025-11-25
+ - Update doc for deleted js tests
+ - Update attributes first id according to RT versions
+ - Delete javascript tests, phantomjs cannot cope with bootstrap.js
+ - Fix _findGrouping for RT::Ticket or RT::Asset creation
+ - Fix JS condition_is_met() with empty current value
+
 1.16 2024-05-16
  - Fix errors on admin CF where there is no ContextObect
 
