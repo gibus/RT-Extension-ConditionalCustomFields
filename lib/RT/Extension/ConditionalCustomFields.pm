@@ -288,14 +288,27 @@ sub ConditionedBy {
 
 sub _findGrouping {
     my $self = shift;
-    my ($record_class, $category) = $self->_GroupingClass(shift);
+    my $obj = shift;
+    my ($record_class, $category) = $self->_GroupingClass($obj);
     my $config = RT->Config->Get('CustomFieldGroupings');
     $config = {} unless ref($config) eq 'HASH';
     if ($record_class && defined($config->{$record_class})) {
-        my $config_hash = (ref($config->{$record_class} ||= []) eq "ARRAY") ? {@{$config->{$record_class}}} : $category ? (exists $config->{$record_class}->{$category} ? {@{$config->{$record_class}->{$category}}} : {@{$config->{$record_class}->{Default}}}) : {@{$config->{$record_class}->{Default}}};
-        while (my ($group, $cfs) = each %$config_hash) {
-            return $group
+        unless ($obj->id || $category || ref($config->{$record_class} ||= []) ne 'HASH') {
+            # No category RT::Ticket or RT::Asset $obj is created
+            my $config_class = $config->{$record_class};
+            foreach my $cat (keys %$config_class) {
+                my $config_hash = {@{$config_class->{$cat}}};
+                while (my ($group, $cfs) = each %$config_hash) {
+                    return $group
+                        if grep {$_ eq $self->Name} @$cfs;
+                }
+            }
+        } else {
+            my $config_hash = (ref($config->{$record_class} ||= []) eq "ARRAY") ? {@{$config->{$record_class}}} : $category ? (exists $config->{$record_class}->{$category} ? {@{$config->{$record_class}->{$category}}} : {@{$config->{$record_class}->{Default}}}) : {@{$config->{$record_class}->{Default}}};
+            while (my ($group, $cfs) = each %$config_hash) {
+                return $group
                 if grep {$_ eq $self->Name} @$cfs;
+            }
         }
     }
     return undef;
