@@ -205,7 +205,7 @@ function condition_is_met(condition_vals, cf_condition_vals, condition_op, lang)
         condition_met = true;
     }
 
-    if (cf_condition_vals.length) {
+    if (cf_condition_vals && cf_condition_vals.length) {
         for (var i=0; i<cf_condition_vals.length; i++) {
             for (var j=0; j<condition_vals.length; j++) {
                 if (condition_op == "is" || condition_op == "isn't") {
