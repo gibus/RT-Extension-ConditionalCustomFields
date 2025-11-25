@@ -260,14 +260,14 @@ sub ConditionedBy {
         return $self->BasedOnObj->ConditionedBy;
     }
 
-    # Convert DateTime from UTC to Current User Timezone
     my $conditioned_by = $attr->Content;
     if ($conditioned_by && $conditioned_by->{CF}) {
-        my $cf = RT::CustomField->new($self->CurrentUser);
+        my $cf = RT::CustomField->new(RT->SystemUser);
         $cf->Load($conditioned_by->{CF});
         if ($self->ContextObject) {
             $cf = $self->ContextObject->LoadCustomFieldByIdentifier($conditioned_by->{CF});
         }
+        # Convert DateTime from UTC to Current User Timezone
         if ($cf->id && $cf->Type eq 'DateTime') {
             my $value = $conditioned_by->{vals} || '';
             my @values = ref($value) eq 'ARRAY' ? @$value : ($value);
@@ -325,7 +325,7 @@ my $old_MatchPattern = RT::CustomField->can("MatchPattern");
         if ($mason) {
             my %mason_args = @{$mason->current_args};
             if ($mason_args{ARGSRef}) {
-                my $condition_cf = RT::CustomField->new($self->CurrentUser);
+                my $condition_cf = RT::CustomField->new(RT->SystemUser);
                 $condition_cf->Load($conditioned_by->{CF});
                 if ( $self->ContextObject ) {
                     $condition_cf = $self->ContextObject->LoadCustomFieldByIdentifier($conditioned_by->{CF});
