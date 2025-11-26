@@ -1,5 +1,7 @@
 <script type="text/javascript"><!--
 jQuery(function() {
+%   my $request_path = $HTML::Mason::Commands::r->path_info;
+%   my $ajax_url  = $request_path !~ /SelfService\/Display\.html/ ? '/Helpers/GetCustomFieldValues' : '/SelfService/GetCustomFieldValues';
 %   my $condition = $CustomField->ConditionedBy;
 %   if ($condition) {
 %       my $condition_val = $condition->{vals} || '';
@@ -18,7 +20,7 @@ jQuery(function() {
     var cf_condition_vals;
     jQuery.ajax({
         dataType: "json",
-        url: '/Helpers/GetCustomFieldValues',
+        url: '<% $ajax_url %>',
         async: false,
         data:  {ObjectType: '<% ref($Object) %>', ObjectId: <% $Object->id %>, CustomFieldId: <% $condition_cf->id %>},
         success: function(res) {
@@ -43,8 +45,8 @@ jQuery(function() {
         jQuery(cf_selector).hide();
     }
 
-%           if (ref($Object) eq 'RT::Ticket' || ref($Object) eq 'RT::Asset') {
     var condition_event = '<% 'customField-' . $condition_cf->id . 'Changed' |n%>';
+%           if ((ref($Object) eq 'RT::Ticket' && $request_path !~ /SelfService\/Display\.html/) || ref($Object) eq 'RT::Asset') {
 
     document.body.addEventListener('htmx:load', function(evt) {
         var cf_container = jQuery(evt.detail.elt).parent('div.show-custom-fields-container');
@@ -65,7 +67,7 @@ jQuery(function() {
         var cf_condition_vals;
         jQuery.ajax({
             dataType: "json",
-            url: '/Helpers/GetCustomFieldValues',
+            url: '<% $ajax_url %>',
             async: false,
             data:  {ObjectId: <% $Object->id %>, CustomFieldId: <% $condition_cf->id %>},
             success: function(res) {
@@ -92,15 +94,17 @@ jQuery(function() {
         var cf_event = '<% 'customField-' . $CustomField->id . 'Changed' |n%>';
         jQuery(body).triggerHandler(cf_event, condition_met);
     });
-%           } elsif (ref($Object) eq 'RT::Article') {
-    var condition_event = 'mainContainerChanged';
+%           } elsif ((ref($Object) eq 'RT::Ticket' && $request_path =~ /SelfService\/Display\.html/) || ref($Object) eq 'RT::Article') {
+    var main_container_event = 'mainContainerChanged';
 
     document.body.addEventListener('htmx:load', function(evt) {
-        console.log(evt.detail.elt);
-        var cf_container = jQuery(evt.detail.elt).children('div').first();
-        if (cf_container.length) {
-            var condition_event_re = new RegExp(condition_event);
-            if (condition_event_re.test(cf_container.attr('hx-trigger'))) {
+        var main_container = jQuery(evt.detail.elt).children('div').first();
+        if (main_container.length) {
+            var main_container_event_re = new RegExp(main_container_event);
+            if (main_container_event_re.test(main_container.attr('hx-trigger'))) {
+            if (!jQuery(condition_selector).is(':visible')) {
+                condition_met = false;
+            }
                 if (condition_met) {
                     jQuery(cf_selector).show();
                 }
