@@ -189,7 +189,6 @@ jQuery(function() {
                     }
                 }
             });
-            //console.log(cf_container);
         }
     });
 %           if ($condition_cf->RenderType eq 'List') {
