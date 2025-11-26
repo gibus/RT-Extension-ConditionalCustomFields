@@ -1,5 +1,16 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+2.01 2025-11-26
+ - Update test for RT 6 Attributes
+ - Make it works for SelfService tickets
+ - Redirect to AJAX Helper from SelfService
+ - No need to check for pre RT 5 version, since this version of ConditionalCustomFields works with RT 6
+ - Update to work with RT 6 and HTMX
+ - Add AJAX Helper to dynamically get CF values for use with HTMX
+ - Pass Grouping as argument to /Elements/ShowConditionalCustomFields
+ - Remove obsolete callbacks in RT 6, now centralized to /Elements/EditCustomField/AfterCustomFieldValue
+ - Move obsolete Callback to the one used by RT 6
+
 1.17 2025-11-25
  - Update doc for deleted js tests
  - Update attributes first id according to RT versions
