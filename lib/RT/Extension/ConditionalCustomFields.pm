@@ -75,6 +75,10 @@ Works with RT 6 (use v1.x versions of this module for previous version of RT)
 
 =over
 
+=item export C<$RTHOME=/home/of/your/RT/installation/lib>
+
+This is needed if your C<RT> installation directory is not C</opt/rt6/>, as documented in L<https://docs.bestpractical.com/rt/6.0.2/extensions.html>.
+
 =item C<perl Makefile.PL>
 
 =item C<make>
