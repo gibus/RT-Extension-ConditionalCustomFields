@@ -9,7 +9,7 @@ no warnings 'once';
 use Term::ANSIColor qw(:constants);
 use Module::Install::Base;
 use base 'Module::Install::Base';
-our $VERSION = '0.43';
+our $VERSION = '0.44';
 
 use FindBin;
 use File::Glob     ();
