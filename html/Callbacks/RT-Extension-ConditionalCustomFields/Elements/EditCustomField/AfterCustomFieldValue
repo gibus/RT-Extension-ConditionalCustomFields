@@ -4,3 +4,6 @@ $CustomField
 $Object
 $Grouping => undef
 </%ARGS>
+<%INIT>
+return unless $Object;
+</%INIT>
