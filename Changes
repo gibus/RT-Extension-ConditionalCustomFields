@@ -1,5 +1,9 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+1.18 2026-01-19
+ - Update copyright year to 2026
+ - Prepend Ajax url with WebPath (thx RA12322)
+
 1.17 2025-11-25
  - Update doc for deleted js tests
  - Update attributes first id according to RT versions
