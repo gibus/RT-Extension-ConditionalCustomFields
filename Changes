@@ -1,5 +1,9 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+1.19 2026-01-27
+ - Fix install errors due to debian version of Module::Install::RTx
+ - Add documentation for setting $RTHOME on installation
+
 1.18 2026-01-19
  - Update copyright year to 2026
  - Prepend Ajax url with WebPath (thx RA12322)
