@@ -193,7 +193,7 @@ or via the web at
 
 # LICENSE AND COPYRIGHT
 
-This software is Copyright (c) 2017-2025 by Gérald Sédrati, Easter-Eggs
+This software is Copyright (c) 2017-2026 by Gérald Sédrati, Easter-Eggs
 
 This is free software, licensed under:
 
