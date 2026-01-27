@@ -213,6 +213,11 @@ RT VERSION
     module for RT 6)
 
 INSTALLATION
+    export $RTHOME=/home/of/your/RT/installation/lib
+        This is needed if your RT installation directory is not /opt/rt5/,
+        as documented in
+        <https://docs.bestpractical.com/rt/5.0.9/extensions.html>.
+
     perl Makefile.PL
     make
     make install
