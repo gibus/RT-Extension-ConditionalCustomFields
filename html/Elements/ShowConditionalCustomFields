@@ -11,7 +11,8 @@ jQuery(function() {
     var cf_selector = '<% '#CF-' . $CustomField->id . '-ShowRow' |n%>';
 %           } else {
     var condition_selector = '<% '.record-field.CustomField__' . $condition_cf->Name . '_' |n%>';
-    var cf_selector = '<% '.record-field.CustomField__' . $CustomField->Name . '_' |n%>';
+%   my $customfield_name = CSSClass($CustomField->Name);
+    var cf_selector = '<% '.record-field.CustomField__' . $customfield_name . '_' |n%>';
 %           }
 %           my $cf_condition_vals_str = $Object->CustomFieldValuesAsString($condition_cf->id);
 %           my @cf_condition_vals = split(/\n/, $cf_condition_vals_str);
