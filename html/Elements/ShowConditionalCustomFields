@@ -13,7 +13,8 @@ jQuery(function() {
     var cf_selector = '<% '#CF-' . $CustomField->id . '-ShowRow' |n%>';
 %           } else {
     var condition_selector = '<% '.record-field.CustomField__' . $condition_cf->Name . '_' |n%>';
-    var cf_selector = '<% '.record-field.CustomField__' . $CustomField->Name . '_' |n%>';
+%   my $customfield_name = CSSClass($CustomField->Name);
+    var cf_selector = '<% '.record-field.CustomField__' . $customfield_name . '_' |n%>';
 %           }
     cf_selector = cf_selector.replace(/:/g,'\\:');
     var condition_vals = ["<% join('", "', @condition_vals) |n%>"];
