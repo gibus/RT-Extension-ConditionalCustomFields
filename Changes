@@ -1,5 +1,9 @@
 Revision history for RT-Extension-ConditionalCustomFields
 
+1.20 2026-01-29
+ - Fix displaying User or Group CFs when Condition is not displayed
+ - Fix css class name when displaying User or Group CFs with accents or quotes
+
 1.19 2026-01-27
  - Fix install errors due to debian version of Module::Install::RTx
  - Add documentation for setting $RTHOME on installation
